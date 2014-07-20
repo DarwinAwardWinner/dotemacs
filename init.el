@@ -53,8 +53,7 @@ By default, DIRECTORY is set to `user-emacs-directory'."
 (cask-initialize)
 ;; Install packages from Cask file
 (cask-install-in-subprocess)
-;; Ensure Pallet is installed and loaded.
-(or (package-installed-p 'pallet) (package-install 'pallet))
+(cask-initialize)
 (require 'pallet)
 
 ;; Need to require org after installing so we get the updated org, not
