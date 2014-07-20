@@ -1,0 +1,18 @@
+# -*- mode: conf; -*-
+/persistence
+TAGS
+.\#*
+\#*
+tramp
+/session.*
+url/
+# site-lisp/el-get
+emms
+/.cask
+/.emacs.desktop*
+/ac-comphist.dat
+/config.el
+/var/
+/history
+/elpa/
+/el-get/
