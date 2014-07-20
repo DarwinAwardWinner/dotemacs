@@ -1,0 +1,510 @@
+* Bootstrappping
+The [[file:init.el][init.el]] file does all the bootstrapping necessary to load this
+file. The following describes what happens in the init.el file.
+** Disable GC during init
+This sets the GC threshold extremely high so that garbage collection
+will almost never occur during the initialization process. This
+significantly speeds up the process. Obviously this provides the
+greatest benefit if it is done as soon as possible during the init
+process.
+** Bootstrapping Cask & Pallet
+This code ensures that Cask and Pallet are installed and propetly set
+up, and that all packages specified in the Cask file are installed and
+initialized. One of those packages is org, which is naturally required
+to load this file.
+
+See thefile for the list of packages that will be
+installed. This is modified by Pallet whenever =package-install= is
+used to install a new package.
+* Installing packages from Cask file
+This ensures that all packages requested in the [[file:Cask][Cask]] file are
+installed.
+
+  #+BEGIN_SRC emacs-lisp
+    ;; (defun cask-install-in-subprocess (&optional directory force)
+    ;;   "Run `cask install' command in DIRECTORY.
+    
+    ;; If the Cask file is modified outside emacs (e.g. updated by a
+    ;; `git pull'), then `cask install' needs to be run to install the
+    ;; updated list of packages. It is safe to run this function at
+    ;; every init, however, because it only runs `cask install' if the
+    ;; Cask file contains packages that aren't yet installed. So in the
+    ;; common case where the Cask file has not been modified, this is a
+    ;; no-op. The second argument FORCE can be used to override this
+    ;; check and force `cask install' to be run regardless.
+    
+    ;; Note that we execute the shell command `cask install' rather than
+    ;; calling the `cask-install' function because the latter modifies
+    ;; the Emacs environment in such a way as to prevent proper package
+    ;; initialization.
+    
+    ;; By default, DIRECTORY is set to `user-emacs-directory'."
+    ;;   (interactive)
+    ;;   (let* ((package-list
+    ;;           (mapcar #'cask-dependency-name
+    ;;                   (cask--dependencies (cask-setup user-emacs-directory))))
+    ;;          (need-install
+    ;;           (or force
+    ;;               (cl-notevery #'epl-package-installed-p package-list))))
+    ;;     (when need-install
+    ;;       (let ((default-directory (or directory user-emacs-directory))
+    ;;         (cask-bin (or (executable-find "cask") "~/.cask/bin/cask")))
+    ;;     (call-process cask-bin nil nil nil "install")))))
+    
+    ;; (cask-install-in-subprocess)
+  #+END_SRC
+
+* Fixing Default Directory
+  Regardless of which directory Emacs is started from, I want buffers
+  such as =*scratch*= to have their =default-directory= set to my home
+  directory. A special case of this is on OS X, in which the Emacs app
+  is started with =default-directory= set to "/".
+  
+  #+BEGIN_SRC emacs-lisp
+    (dolist (buf (buffer-list))
+      (ignore-errors
+        (with-current-buffer buf
+          (when (and (null (buffer-file-name buf))
+                     (string= default-directory "/"))
+            (message "Changing default dir from / to ~/ in %s" (buffer-name buf))
+            (cd "~")))))
+  #+END_SRC
+
+* Package Configuration
+
+  #+BEGIN_SRC emacs-lisp
+    (require 'use-package)
+  #+END_SRC
+
+** auto-complete
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package auto-complete
+       :init (global-auto-complete-mode 1)
+       :ensure t)
+   #+END_SRC
+
+** autopair
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package autopair
+       :init (progn (autopair-global-mode 1)
+                    (setq autopair-skip-whitespace 'chomp)
+                    (setq autopair-skip-criteria 'always))
+       :ensure t)
+   #+END_SRC
+
+** bar-cursor
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package bar-cursor
+       :init (bar-cursor-mode 1)
+       :ensure t)
+   #+END_SRC
+
+** browse-url
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package browse-url
+       :bind ("<s-mouse-1>" . browse-url-at-mouse)
+       :ensure t)
+   #+END_SRC
+
+** bs (Buffer Show)
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package bs
+       :bind ("C-x C-b" . bs-show)
+       :ensure t)
+   #+END_SRC
+
+** cl-lib
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package cl-lib)
+   #+END_SRC
+
+** cperl-mode
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package cperl-mode
+       :init 
+       ;; Replace `perl-mode' with `cperl-mode'.
+       (progn
+         (mapc 
+          (lambda (x) 
+            (when (eq (cdr x) 'perl-mode)
+              (setcdr x 'cperl-mode)))
+          auto-mode-alist)
+         (mapc 
+          (lambda (x) 
+            (when (eq (cdr x) 'perl-mode)
+              (setcdr x 'cperl-mode)))
+          interpreter-mode-alist))
+       :ensure t)
+   #+END_SRC
+
+** ess
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ess
+       :config
+       (progn
+         (setq ess-default-style 'OWN)
+         (setq ess-own-style-list
+               (cons (cons 'ess-arg-function-offset-new-line '(4))
+                     (cl-remove-if
+                      (lambda (x)
+                        (eq (car x) 'ess-arg-function-offset-new-line))
+                      (cdr (assoc 'C++ ess-style-alist))))))
+       :ensure t)
+   #+END_SRC
+
+** ess-site
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ess-site)
+   #+END_SRC
+
+** esup
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package esup 
+       :defer t
+       :ensure t)
+   #+END_SRC
+
+** highlight-cl
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package highlight-cl
+       :init (progn
+               (add-hook 'emacs-lisp-mode-hook 'highlight-cl-add-font-lock-keywords)
+               (add-hook 'lisp-interaction-mode-hook 'highlight-cl-add-font-lock-keywords))
+       :ensure t)
+   #+END_SRC
+
+** ido-speed-hack
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ido-speed-hack)
+   #+END_SRC
+
+** ido-ubiquitous
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ido-ubiquitous
+       :ensure t)    
+   #+END_SRC
+
+** lexbind-mode
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package lexbind-mode
+       :init (add-hook 'emacs-lisp-mode-hook 'lexbind-mode)
+       :ensure t)
+   #+END_SRC
+
+** magit
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit
+       :bind (("C-c g" . magit-status))
+       :config (progn
+                 (defun disable-magit-highlight-in-buffer () 
+                   (face-remap-add-relative 'magit-item-highlight '()))
+                 (add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer))
+       :ensure t)
+   #+END_SRC
+
+** markdown-mode
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package markdown-mode
+       :mode ("\\.\\(md\\|mkdn\\)$" . markdown-mode)
+       :ensure t)
+   #+END_SRC
+
+** osx-pseudo-daemon
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package osx-pseudo-daemon
+       :ensure t)
+   #+END_SRC
+
+** pretty-symbols
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package pretty-symbols
+       :config
+       (add-hook 
+        'after-change-major-mode-hook
+        (lambda ()
+          (when (memq major-mode
+                      (delete-dups
+                       (cl-mapcan (lambda (x) (cl-copy-list (nth 3 x))) 
+                               pretty-symbol-patterns)))
+            (pretty-symbols-mode 1))))
+       :ensure t)
+   #+END_SRC
+
+** smex
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package smex
+       :bind (("M-x" . smex)
+              ("M-X" . smex-major-mode-commands)
+              ("C-c C-c M-x" . execute-extended-command))
+       :ensure t)
+   #+END_SRC
+
+* Set up and load a separate custom file 
+This is the file where everything set via =M-x customize= goes.
+
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (load custom-file)
+#+END_SRC
+* Tweaks
+** Use GNU ls for =insert-directory= if possible
+On OS X (and probably other platforms), "ls" may not refer to GNU
+ls. If GNU ls is installed on these platforms, it is typically
+installed under the name "gls" instead. So if "gls" is available, we
+prefer to use it.
+
+  #+BEGIN_SRC emacs-lisp
+    (if (executable-find "gls")
+        (setq insert-directory-program "gls"))
+  #+END_SRC
+** Use system trash bin
+   TODO This is OSX-specific. Make it portable and more robust.
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar trash-command "trash")
+     
+     (defun system-move-file-to-trash (filename)
+       "Move file to OS X trash.
+     
+     This assumes that a program called `trash' is in your $PATH and
+     that this program will, when passed a single file path as an
+     argument, move that file to the trash."
+       (call-process trash-command nil nil nil filename))
+   #+END_SRC
+
+** Use external mailer for bug reports
+   This calls =report-emacs-bug=, then =report-emacs-insert-to-mailer=,
+   then cleans up the bug buffers.
+
+   The backquoting interpolation is used to copy the interactive form
+   from =report-emacs-bug=.
+
+   #+BEGIN_SRC emacs-lisp
+     (eval
+      `(defun report-emacs-bug-via-mailer (&rest args)
+         "Report a bug in GNU Emacs.
+     
+     Prompts for bug subject. Opens external mailer."
+         ,(interactive-form 'report-emacs-bug)
+         (save-window-excursion
+           (apply 'report-emacs-bug args)
+           (report-emacs-bug-insert-to-mailer)
+           (mapc (lambda (buf) 
+                   (with-current-buffer buf
+                     (let ((buffer-file-name nil))
+                       (kill-buffer (current-buffer)))))
+                 (list "*Bug Help*" (current-buffer))))))
+   #+END_SRC
+
+** Pull PATH and MANPATH from shell
+
+   #+BEGIN_SRC emacs-lisp
+     ;; TODO: make a package out of this
+     ;; Pull PATH and MANPATH from the shell
+     (defun parse-envvar (var-and-value)
+       (let ((match-pos (string-match-p "=" var-and-value)))
+         (when match-pos
+           (cons (substring var-and-value 0 match-pos)
+                 (substring var-and-value (1+ match-pos))))))
+     
+     (defun pull-env-vars-from-shell (vars)
+       (when (stringp vars)
+         (setq vars (list vars)))
+       (let* ((output (shell-command-to-string "bash --login -c env"))
+              (lines (split-string output nil t)))
+         (loop for line in lines
+               for (var . value) = (parse-envvar line)
+               if (member var vars)
+               do (setenv var value)
+               and if (string= var "PATH") do
+               (setq exec-path (split-string value path-separator t)))))
+     
+     (pull-env-vars-from-shell '("PATH" "MANPATH"))
+   #+END_SRC
+
+** Fix OSX movement keys
+
+   #+BEGIN_SRC emacs-lisp
+     ;; Match standard OSX movement keys, etc. (compensating for swapping
+     ;; alt and command keys)
+     (when (or (featurep 'ns) 
+               (eq system-type 'darwin))
+       (when (version<= "24.4.0" emacs-version)
+         (warn "Update the point movement key config in init.el"))
+       ;; Super is the Alt/option key
+       (global-set-key (kbd "s-<left>") 'left-word)
+       (global-set-key (kbd "s-<right>") 'right-word)
+       (global-set-key (kbd "s-<backspace>") 'backward-kill-word)
+       (global-set-key (kbd "s-<kp-delete>") 'kill-word)
+       (global-set-key (kbd "s-`") 'tmm-menubar)
+       ;; Meta is the command key
+       (global-set-key (kbd "M-<left>") 'move-beginning-of-line)
+       (global-set-key (kbd "M-<right>") 'move-end-of-line)
+       (global-set-key (kbd "M-<backspace>") nil)
+       (global-set-key (kbd "M-<kp-delete>") nil)
+       (global-set-key (kbd "M-`") 'other-frame))
+   #+END_SRC
+
+** Tell Emacs where to find its C source code
+
+   #+BEGIN_SRC emacs-lisp
+     (setq find-function-C-source-directory "~/src/emacs/src")
+   #+END_SRC
+
+** Allow typing a sexp and then replacing it with its value
+
+   #+BEGIN_SRC emacs-lisp
+     (defun eval-replace-preceding-sexp ()
+       "Replace the preceding sexp with its value."
+       (interactive)
+       (let ((value (eval (preceding-sexp))))
+         (kill-sexp -1)
+         (insert (format "%s" value))))
+     (global-set-key (kbd "C-c C-e") 'eval-replace-preceding-sexp)
+   #+END_SRC
+
+** Tell =fixup-whitespace= not to delete indentation
+
+   #+BEGIN_SRC emacs-lisp
+     (defadvice fixup-whitespace (around indent-line activate)
+       "Don't delete indentation; instead do correct indentation.
+     
+     When `fixup-whitespace' is called with the point in the
+     indentation region of the line (i.e. before the first
+     non-whitespace character), indent the line instead of deleting
+     the indentation."
+       (if (<= (current-column)
+              (save-excursion
+                (back-to-indentation)
+                (current-column)))
+           (indent-for-tab-command)
+         ad-do-it))
+   #+END_SRC
+
+** Have =indent-region= indent containing defun if mark is inactive
+
+   #+BEGIN_SRC emacs-lisp
+     (defadvice indent-region (around indent-defun activate)
+       "Indent containing defun if mark is not active."
+       (if (and transient-mark-mode
+                (not mark-active))
+           (save-excursion
+             (mark-defun)
+             (call-interactively #'indent-region))
+         ad-do-it))
+   #+END_SRC
+
+** Always indent after newline
+
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "RET") #'newline-and-indent)
+   #+END_SRC
+
+** Turn on eldoc mode in elisp modes
+
+   #+BEGIN_SRC emacs-lisp
+     (dolist (hook '(lisp-interaction-mode-hook
+                     emacs-lisp-mode-hook))
+        (add-hook hook #'turn-on-eldoc-mode))
+   #+END_SRC
+
+** Fix ess-roxy behavior
+
+   #+BEGIN_SRC emacs-lisp
+     (eval-after-load 'ess-roxy
+       '(defadvice newline-and-indent (around ess-roxy-newline activate)
+          "Insert a newline in a roxygen field."
+          (cond
+           ;; Not in roxy entry; do nothing
+           ((not (ess-roxy-entry-p))
+            ad-do-it)
+           ;; Point at beginning of first line of entry; do nothing
+           ((= (point) (ess-roxy-beg-of-entry))
+            ad-do-it)
+           ;; Otherwise: skip over roxy comment string if necessary and then
+           ;; newline and then inset new roxy comment string
+           (t
+            (let ((point-after-roxy-string
+                   (save-excursion (forward-line 0)
+                                   (move-beginning-of-line nil)
+                                   (point))))
+              (goto-char (max (point) point-after-roxy-string)))
+            ad-do-it
+            (insert (concat (ess-roxy-guess-str t) " "))))))
+   #+END_SRC
+
+** Tramp remote sudo
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'tramp)
+     (add-to-list 'tramp-default-proxies-alist
+                  '(nil "\\`root\\'" "/ssh:%h:"))
+     (add-to-list 'tramp-default-proxies-alist
+                  '((regexp-quote (system-name)) nil nil))
+   #+END_SRC
+
+** Function for inserting src blocks in Org Mode
+
+   #+BEGIN_SRC emacs-lisp
+     (defun org-insert-src-block (src-code-type)
+       "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+       (interactive
+        (let ((src-code-types
+               '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                 "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
+                 "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
+                 "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
+                 "scheme" "sqlite")))
+          (list (ido-completing-read "Source code type: " src-code-types))))
+       (progn
+         (newline-and-indent)
+         (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+         (newline-and-indent)
+         (insert "#+END_SRC\n")
+         (previous-line 2)
+         (org-edit-src-code)))
+   #+END_SRC
+
+* Start emacs server
+
+  #+BEGIN_SRC emacs-lisp
+    (ignore-errors (server-start))
+  #+END_SRC
+
+* Cleanup
+** Kill Compile Log Buffer
+Loading this config sometimes leaves a Compile Log buffer lying
+around. Kill it. Also kill its associated window.
+
+#+BEGIN_SRC emacs-lisp
+  (when (get-buffer "*Compile-Log*")
+    (kill-buffer "*Compile-Log*"))
+#+END_SRC
+
+** Set up initial window configuration
+Ensure that Emacs starts with just a single window.
+
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'after-init-hook 
+              (lambda () 
+                (delete-other-windows)))
+  #+END_SRC
