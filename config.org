@@ -76,6 +76,20 @@ installed.
     (require 'use-package)
   #+END_SRC
 
+** adjust-parens
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package adjust-parens
+       :init (progn
+                 (defun turn-on-adjust-parens-mode ()
+                   (adjust-parens-mode 1))
+                 (dolist (hook '(lisp-interaction-mode-hook
+                                 emacs-lisp-mode-hook))
+                   (add-hook hook #'turn-on-adjust-parens-mode)))
+       :commands adjust-parens-mode
+       :ensure t)
+   #+END_SRC
+
 ** auto-complete
 
    #+BEGIN_SRC emacs-lisp
