@@ -16,44 +16,6 @@ to load this file.
 See thefile for the list of packages that will be
 installed. This is modified by Pallet whenever =package-install= is
 used to install a new package.
-* Installing packages from Cask file
-This ensures that all packages requested in the [[file:Cask][Cask]] file are
-installed.
-
-  #+BEGIN_SRC emacs-lisp
-    ;; (defun cask-install-in-subprocess (&optional directory force)
-    ;;   "Run `cask install' command in DIRECTORY.
-    
-    ;; If the Cask file is modified outside emacs (e.g. updated by a
-    ;; `git pull'), then `cask install' needs to be run to install the
-    ;; updated list of packages. It is safe to run this function at
-    ;; every init, however, because it only runs `cask install' if the
-    ;; Cask file contains packages that aren't yet installed. So in the
-    ;; common case where the Cask file has not been modified, this is a
-    ;; no-op. The second argument FORCE can be used to override this
-    ;; check and force `cask install' to be run regardless.
-    
-    ;; Note that we execute the shell command `cask install' rather than
-    ;; calling the `cask-install' function because the latter modifies
-    ;; the Emacs environment in such a way as to prevent proper package
-    ;; initialization.
-    
-    ;; By default, DIRECTORY is set to `user-emacs-directory'."
-    ;;   (interactive)
-    ;;   (let* ((package-list
-    ;;           (mapcar #'cask-dependency-name
-    ;;                   (cask--dependencies (cask-setup user-emacs-directory))))
-    ;;          (need-install
-    ;;           (or force
-    ;;               (cl-notevery #'epl-package-installed-p package-list))))
-    ;;     (when need-install
-    ;;       (let ((default-directory (or directory user-emacs-directory))
-    ;;         (cask-bin (or (executable-find "cask") "~/.cask/bin/cask")))
-    ;;     (call-process cask-bin nil nil nil "install")))))
-    
-    ;; (cask-install-in-subprocess)
-  #+END_SRC
-
 * Fixing Default Directory
   Regardless of which directory Emacs is started from, I want buffers
   such as =*scratch*= to have their =default-directory= set to my home
