@@ -1,3 +1,10 @@
+* Introductory Notes
+
+This file is called "config.org" and not "init.org" because during the
+loading process, it creates a correspondingly-named ".el" file, and
+there already is an "init.el" here. Note also that "README.org" is a
+link here.
+
 * Bootstrappping
 The [[file:init.el][init.el]] file does all the bootstrapping necessary to load this
 file. The following describes what happens in the init.el file.
