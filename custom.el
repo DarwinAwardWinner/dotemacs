@@ -34,6 +34,7 @@
  '(global-adjust-parens-mode t)
  '(global-undo-tree-mode t)
  '(icomplete-mode t)
+ '(ido-case-fold t)
  '(ido-confirm-unique-completion t)
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory (quote first))
