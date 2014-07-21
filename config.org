@@ -467,6 +467,12 @@ prefer to use it.
          (org-edit-src-code)))
    #+END_SRC
 
+** Use conf-mode for .gitignore files
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'auto-mode-alist '("\\.gitignore\\'" . conf-mode))
+   #+END_SRC
+
 * Start emacs server
 
   #+BEGIN_SRC emacs-lisp
