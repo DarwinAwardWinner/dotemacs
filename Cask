@@ -4,6 +4,7 @@
 (source org)
 
 (depends-on "adjust-parens")
+(depends-on "apache-mode")
 (depends-on "auto-complete")
 (depends-on "autopair")
 (depends-on "bar-cursor")

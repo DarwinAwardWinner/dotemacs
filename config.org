@@ -59,6 +59,18 @@ used to install a new package.
        :ensure t)
    #+END_SRC
 
+** apache-mode
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package apache-mode
+       :mode ("/apache2/.*\\.conf\\'" . apache2-mode)
+       :init (progn
+               (defun apache-magic-mode-detect ()
+                 (string-match-p "^\\s-*#.*\\bsyntax=apache\\b" (buffer-string)))
+               (add-to-list 'magic-mode-alist '(apache-magic-mode-detect . apache-mode)))
+       :ensure t)
+   #+END_SRC
+
 ** auto-complete
 
    #+BEGIN_SRC emacs-lisp
