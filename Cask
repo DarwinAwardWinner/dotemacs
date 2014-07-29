@@ -12,6 +12,7 @@
 (depends-on "esup")
 (depends-on "highlight-cl")
 (depends-on "ido-ubiquitous")
+(depends-on "ido-yes-or-no")
 (depends-on "keydef")
 (depends-on "lexbind-mode")
 (depends-on "magit")
