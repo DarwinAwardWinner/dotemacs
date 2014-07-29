@@ -19,6 +19,7 @@
 (depends-on "org-plus-contrib")
 (depends-on "osx-pseudo-daemon")
 (depends-on "pallet")
+(depends-on "php-mode")
 (depends-on "pretty-symbols")
 (depends-on "smex")
 (depends-on "use-package")
