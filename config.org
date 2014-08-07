@@ -485,6 +485,118 @@ prefer to use it.
      (add-to-list 'auto-mode-alist '("\\.gitignore\\'" . conf-mode))
    #+END_SRC
 
+** Macros for running a function without user input
+This code builds up the ~without-user-input~ function, which is like
+~progn~ except that if BODY makes any attempt to read user input, all
+further execution is calceled and the form returns nil (note that it
+does /not/ signal an error, it simply returns).
+
+   #+BEGIN_SRC emacs-lisp
+     (defmacro without-minibuffer (&rest body)
+       "Like `progn', but stop and return nil if BODY tries to use the minibuffer.
+
+     Also disable dialogs while evaluating BODY forms, since dialogs
+     are just an alternative to the minibuffer."
+       `(catch 'tried-to-use-minibuffer
+          (minibuffer-with-setup-hook
+              (lambda (&rest args) (throw 'tried-to-use-minibuffer nil))
+            (let ((use-dialog-box))          ; No cheating by using dialogs instead of minibuffer
+              ,@body))))
+
+     (defmacro without-functions (flist &rest body)
+       "Evaluate BODY, but stop and return nil if BODY calls any of the functions named in FLIST."
+       (let* (;; Functions are disabled by setting their body to this
+              ;; temporarily.
+              (fbody
+               '((&rest args) (throw 'forbidden-function nil)))
+              ;; This will form the first argument to `flet'
+              (function-redefinitions
+               (mapcar (lambda (fname) (cons fname fbody)) flist)))
+         `(catch 'forbidden-function
+            (flet ,function-redefinitions
+              ,@body))))
+
+     (defmacro without-user-input (&rest body)
+       "Like `progn', but prevent any user interaction in BODY."
+       `(without-functions (read-event)
+          (without-minibuffer
+            ,@body)))
+
+     ;; These should be indented like progn
+     (put 'without-minibuffer 'lisp-indent-function
+          (get 'progn 'lisp-indent-function))
+     (put 'without-functions 'lisp-indent-function
+          (get 'let 'lisp-indent-function))
+     (put 'without-user-input 'lisp-indent-function
+          (get 'progn 'lisp-indent-function))
+   #+END_SRC
+
+** Emacs desktop additions
+The following additions ensure that the saved desktop file is always
+up-to-date.
+
+*** Add a desktop-save function that aborts if user input is required
+When running in hooks, it's not disasterous if we can't save the
+desktop for some reason, and we don't want to bother the user, so we
+wrap the normal saving function to force it to do nothing instead of
+asking for user input.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun desktop-save-in-desktop-dir-never-ask (&rest args)
+        "Like `desktop-save-in-desktop-dir' but aborts if input is required.
+
+      If `desktop-save-in-desktop-dir' tries to solicit user input,
+      this aborts and returns nil instead. It is intended for use in
+      place of `desktop-save-in-desktop-dir' in hooks where you don't
+      want to bother the user if something weird happens."
+        (without-user-input
+          (apply #'desktop-save-in-desktop-dir args)))
+    #+END_SRC
+
+*** Save desktop with every autosave
+
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'auto-save-hook 'desktop-save-in-desktop-dir-never-ask)
+    #+END_SRC
+
+*** Save desktop after opening or closing a file
+This will ensure that all open files are saved in the desktop. An idle
+timer and tripwire variable are used used to avoid saving the desktop
+multiple times when multiple files are opened or closed in rapid
+succession.
+
+    #+BEGIN_SRC emacs-lisp
+      (defvar desktop-mode-desktop-is-stale nil
+        "This is set to non-nil when a file is opened or closed.")
+
+      (defun desktop-mode-set-stale ()
+        "If current buffer has a file, set the stale desktop flag."
+        (when buffer-file-name
+          (setq desktop-mode-desktop-is-stale t)))
+      (defun desktop-mode-set-current ()
+        "Unconditionally clear the stale desktop flag."
+        (setq desktop-mode-desktop-is-stale nil))
+      (add-hook 'kill-buffer-hook #'desktop-mode-set-stale)
+      (add-hook 'find-file-hook #'desktop-mode-set-stale)
+      (add-hook 'desktop-after-read-hook #'desktop-mode-set-current)
+
+      (defun desktop-mode-save-if-stale ()
+        (when desktop-mode-desktop-is-stale
+          (desktop-save-in-desktop-dir-never-ask)
+          (desktop-mode-set-current)))
+
+      (run-with-idle-timer 0.1 t #'desktop-mode-save-if-stale)
+    #+END_SRC
+
+** Set up a function for reloading the init file
+
+   #+BEGIN_SRC emacs-lisp
+     (defun reinit ()
+       (interactive)
+       (save-window-excursion
+         (load user-init-file)))
+   #+END_SRC
+
 * Start emacs server
 
   #+BEGIN_SRC emacs-lisp
