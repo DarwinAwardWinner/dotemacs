@@ -264,6 +264,47 @@ be investigated).
        :ensure t)
    #+END_SRC
 
+** org-mode
+   The default implementation of the ~org-in-src-block-p~ function is
+   broken and always returns nil, so we reimplement it correctly here.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org
+       :config
+       (defun org-in-src-block-p (&optional inside)
+         "Whether point is in a code source block.
+          When INSIDE is non-nil, don't consider we are within a src block
+          when point is at #+BEGIN_SRC or #+END_SRC."
+         (save-match-data
+           (let* ((elem (org-element-at-point))
+                  (elem-type (car elem))
+                  (props (cadr elem))
+                  (end (plist-get props :end))
+                  (pb (plist-get props :post-blank))
+                  (content-end
+                   (save-excursion
+                     (goto-char end)
+                     (forward-line (- pb))
+                     (point)))
+                  (case-fold-search t))
+             (and
+              ;; Elem is a src block
+              (eq elem-type 'src-block)
+              ;; Make sure point is not on one of the blank lines after the
+              ;; element.
+              (< (point) content-end)
+              ;; If INSIDE is non-nil, then must not be at block delimiter
+              (not
+               (and
+                inside
+                (save-excursion
+                  (beginning-of-line)
+                  (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
+       ;; We don't set ensure here because the org-mode package has a
+       ;; different name. See the Cask file.
+       :ensure nil)
+   #+END_SRC
+
 ** osx-pseudo-daemon
 
    #+BEGIN_SRC emacs-lisp
