@@ -10,6 +10,7 @@
 (depends-on "bar-cursor")
 (depends-on "ess")
 (depends-on "esup")
+(depends-on "helm")
 (depends-on "highlight-cl")
 (depends-on "ido-ubiquitous")
 (depends-on "ido-yes-or-no")
