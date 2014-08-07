@@ -54,19 +54,25 @@ compile log buffer is left intact so any warnings or errros can still
 be investigated).
 
 * Fixing Default Directory
-  Regardless of which directory Emacs is started from, I want buffers
-  such as =*scratch*= to have their ~default-directory~ set to my home
-  directory. A special case of this is on OS X, in which the Emacs app
-  is started with ~default-directory~ set to "/".
-  
+  Regardless of which directory Emacs is started from, I want the
+  initial non-file buffers such as =*scratch*= and =*Messages*= to
+  have their ~default-directory~ set to my home directory. This code
+  goes through all non-file buffers whose default directories are the
+  emacs starting directory or the root directory, and changes their
+  default directories to my home directory.
+
   #+BEGIN_SRC emacs-lisp
-    (dolist (buf (buffer-list))
-      (ignore-errors
-        (with-current-buffer buf
-          (when (and (null (buffer-file-name buf))
-                     (string= default-directory "/"))
-            (message "Changing default dir from / to ~/ in %s" (buffer-name buf))
-            (cd "~")))))
+    (let ((orig-default-directory default-directory))
+      (unless (f-same? default-directory "~")
+        (dolist (buf (buffer-list))
+          (ignore-errors
+            (with-current-buffer buf
+              (when (and (null (buffer-file-name buf))
+                         (or (f-same? default-directory orig-default-directory)
+                             (f-root? default-directory)))
+                (message "Changing default dir from %s to ~/ in %s"
+                         default-directory (buffer-name buf))
+                (cd "~")))))))
   #+END_SRC
 
 * Package Configuration
