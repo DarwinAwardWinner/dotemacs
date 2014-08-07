@@ -49,13 +49,15 @@ used to install a new package.
 
    #+BEGIN_SRC emacs-lisp
      (use-package adjust-parens
-       :init (progn
-                 (defun turn-on-adjust-parens-mode ()
-                   (adjust-parens-mode 1))
-                 (dolist (hook '(lisp-interaction-mode-hook
-                                 emacs-lisp-mode-hook))
-                   (add-hook hook #'turn-on-adjust-parens-mode)))
        :commands adjust-parens-mode
+       :init (progn
+               ;; This line is required to silence a compiler warning
+               (declare-function adjust-parens-mode (locate-library "adjust-parens"))
+               (defun turn-on-adjust-parens-mode ()
+                 (adjust-parens-mode 1))
+               (dolist (hook '(lisp-interaction-mode-hook
+                               emacs-lisp-mode-hook))
+                 (add-hook hook #'turn-on-adjust-parens-mode)))
        :ensure t)
    #+END_SRC
 
@@ -475,7 +477,7 @@ prefer to use it.
          (insert (format "#+BEGIN_SRC %s\n" src-code-type))
          (newline-and-indent)
          (insert "#+END_SRC\n")
-         (previous-line 2)
+         (forward-line -2)
          (org-edit-src-code)))
    #+END_SRC
 
@@ -492,6 +494,8 @@ further execution is calceled and the form returns nil (note that it
 does /not/ signal an error, it simply returns).
 
    #+BEGIN_SRC emacs-lisp
+     (require 'cl-macs)
+
      (defmacro without-minibuffer (&rest body)
        "Like `progn', but stop and return nil if BODY tries to use the minibuffer.
 
@@ -513,7 +517,7 @@ does /not/ signal an error, it simply returns).
               (function-redefinitions
                (mapcar (lambda (fname) (cons fname fbody)) flist)))
          `(catch 'forbidden-function
-            (flet ,function-redefinitions
+            (cl-flet ,function-redefinitions
               ,@body))))
 
      (defmacro without-user-input (&rest body)
