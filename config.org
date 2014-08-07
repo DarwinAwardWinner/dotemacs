@@ -1,12 +1,33 @@
 * Introductory Notes
+This is my Emacs configuration. Most of it is stored as Emacs Lisp
+source blocks in in this Org-mode file.
 
 This file is called "config.org" and not "init.org" because during the
 loading process, it creates a correspondingly-named ".el" file, and
 there already is an "init.el" here. Note also that "README.org" is a
 link here.
 
+** How to install this config
+In order to install this config, simply clone this repository into
+=~/.emacs.d/=:
+
+#+BEGIN_SRC sh
+  git clone https://github.com/DarwinAwardWinner/dotemacs.git ~/.emacs.d
+#+END_SRC
+
+If you have an old =.emacs= file or =.emacs.d= directory that you want
+to save, move them out of the way first so that they don't interfere
+with the new config.
+
+** First run
+The first time you start up Emacs after installing this configuration, it
+will install Cask, Pallet, then use those to install all necessary
+packages, as described below in the [[*Bootstrappping][Bootstrappping]] section. This will
+take a while. Subsequent startups will not require this time and
+should be relatively fast.
+
 * Bootstrappping
-The [[file:init.el][init.el]] file does all the bootstrapping necessary to load this
+The [[file+emacs:init.el][=init.el=]] file does all the bootstrapping necessary to load this
 file. The following describes what happens in the init.el file.
 ** Disable GC during init
 This sets the GC threshold extremely high so that garbage collection
@@ -20,9 +41,9 @@ up, and that all packages specified in the =Cask= file are installed and
 initialized. One of those packages is org, which is naturally required
 to load this file.
 
-See the =Cask= file for the list of packages that will be
+See the [[file+emacs:Cask][=Cask=]] file for the list of packages that will be
 installed. This is modified by Pallet whenever ~package-install~ is
-used to install a new package.
+used to install a new package, and should not be edited manually.
 
 ** Load =config.org=
 Finally, init.el loads this file using ~org-babel-load-file~. Because
