@@ -15,8 +15,10 @@
             (url-copy-file "https://raw.github.com/cask/cask/master/go"
                            cask-install-file t)
             (call-process "python" nil nil nil cask-install-file))
-        (delete-file cask-install-file))))
-  (require 'cask "~/.cask/cask.el"))
+        (delete-file cask-install-file)))
+    (or (require 'cask nil 'noerror)
+        ;; Final load attempt will throw an error if it can't load.
+        (require 'cask "~/.cask/cask.el"))))
 
 (defun cask-install-in-subprocess (&optional directory)
   "Run `cask install' command in DIRECTORY.
