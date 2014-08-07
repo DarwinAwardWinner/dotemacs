@@ -76,10 +76,16 @@ be investigated).
   #+END_SRC
 
 * Package Configuration
-
+  This section sets up some package-specific configuration options
   #+BEGIN_SRC emacs-lisp
     (require 'use-package)
   #+END_SRC
+
+  Eval the following Elisp code to re-sort the below entries (this
+  code line is not in a source block because it is not part of the
+  actual configuration and should not be executed upon init):
+
+  =CODE (org-sort-entries nil ?a) CODE=
 
 ** adjust-parens
 
