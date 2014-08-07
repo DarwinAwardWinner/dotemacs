@@ -20,6 +20,7 @@
  '(cperl-merge-trailing-else nil)
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
+ '(desktop-path (quote ("~/.emacs.d/persistence" "~")))
  '(desktop-save-mode t)
  '(directory-free-space-program "/opt/local/bin/gdf")
  '(dired-auto-revert-buffer (quote dired-directory-changed-p))
