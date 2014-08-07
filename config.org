@@ -15,14 +15,23 @@ significantly speeds up the process. Obviously this provides the
 greatest benefit if it is done as soon as possible during the init
 process.
 ** Bootstrapping Cask & Pallet
-This code ensures that Cask and Pallet are installed and propetly set
-up, and that all packages specified in the Cask file are installed and
+This code ensures that Cask and Pallet are installed and properly set
+up, and that all packages specified in the =Cask= file are installed and
 initialized. One of those packages is org, which is naturally required
 to load this file.
 
-See thefile for the list of packages that will be
+See the =Cask= file for the list of packages that will be
 installed. This is modified by Pallet whenever ~package-install~ is
 used to install a new package.
+
+** Load =config.org=
+Finally, init.el loads this file using ~org-babel-load-file~. Because
+it specifies the compile option, this may create a compile log
+window. So the whole thing is wrapper in ~save-window-excursion~ to
+ensure that the window configuration remains unchanged (but the
+compile log buffer is left intact so any warnings or errros can still
+be investigated).
+
 * Fixing Default Directory
   Regardless of which directory Emacs is started from, I want buffers
   such as =*scratch*= to have their ~default-directory~ set to my home
