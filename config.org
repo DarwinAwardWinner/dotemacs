@@ -21,13 +21,13 @@ initialized. One of those packages is org, which is naturally required
 to load this file.
 
 See thefile for the list of packages that will be
-installed. This is modified by Pallet whenever =package-install= is
+installed. This is modified by Pallet whenever ~package-install~ is
 used to install a new package.
 * Fixing Default Directory
   Regardless of which directory Emacs is started from, I want buffers
-  such as =*scratch*= to have their =default-directory= set to my home
+  such as =*scratch*= to have their ~default-directory~ set to my home
   directory. A special case of this is on OS X, in which the Emacs app
-  is started with =default-directory= set to "/".
+  is started with ~default-directory~ set to "/".
   
   #+BEGIN_SRC emacs-lisp
     (dolist (buf (buffer-list))
@@ -261,7 +261,7 @@ This is the file where everything set via =M-x customize= goes.
   (load custom-file)
 #+END_SRC
 * Tweaks
-** Use GNU ls for =insert-directory= if possible
+** Use GNU ls for ~insert-directory~ if possible
 On OS X (and probably other platforms), "ls" may not refer to GNU
 ls. If GNU ls is installed on these platforms, it is typically
 installed under the name "gls" instead. So if "gls" is available, we
@@ -287,11 +287,11 @@ prefer to use it.
    #+END_SRC
 
 ** Use external mailer for bug reports
-   This calls =report-emacs-bug=, then =report-emacs-insert-to-mailer=,
+   This calls ~report-emacs-bug~, then ~report-emacs-insert-to-mailer~,
    then cleans up the bug buffers.
 
    The backquoting interpolation is used to copy the interactive form
-   from =report-emacs-bug=.
+   from ~report-emacs-bug~.
 
    #+BEGIN_SRC emacs-lisp
      (eval
@@ -377,7 +377,7 @@ prefer to use it.
      (global-set-key (kbd "C-c C-e") 'eval-replace-preceding-sexp)
    #+END_SRC
 
-** Tell =fixup-whitespace= not to delete indentation
+** Tell ~fixup-whitespace~ not to delete indentation
 
    #+BEGIN_SRC emacs-lisp
      (defadvice fixup-whitespace (around indent-line activate)
@@ -395,7 +395,7 @@ prefer to use it.
          ad-do-it))
    #+END_SRC
 
-** Have =indent-region= indent containing defun if mark is inactive
+** Have ~indent-region~ indent containing defun if mark is inactive
 
    #+BEGIN_SRC emacs-lisp
      (defadvice indent-region (around indent-defun activate)
@@ -598,6 +598,7 @@ succession.
    #+END_SRC
 
 * Start emacs server
+This allows ~emacsclient~ to connect.
 
   #+BEGIN_SRC emacs-lisp
     (ignore-errors (server-start))
