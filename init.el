@@ -54,6 +54,11 @@ By default, DIRECTORY is set to `user-emacs-directory'."
 ;; Install packages from Cask file
 (cask-install-in-subprocess)
 (cask-initialize)
+;; The following line seems like it should be redundant with the
+;; previous line, but for some reason it is not. `cask-initialize'
+;; doesn't seem to initialize any packages that were just installed by
+;; `cask-install-in-subprocess'. This does.
+(package-initialize)
 (require 'pallet)
 
 ;; Need to require org after installing so we get the updated org
