@@ -491,21 +491,3 @@ prefer to use it.
     (ignore-errors (server-start))
   #+END_SRC
 
-* Cleanup
-** Kill Compile Log Buffer
-Loading this config sometimes leaves a Compile Log buffer lying
-around. Kill it. Also kill its associated window.
-
-#+BEGIN_SRC emacs-lisp
-  (when (get-buffer "*Compile-Log*")
-    (kill-buffer "*Compile-Log*"))
-#+END_SRC
-
-** Set up initial window configuration
-Ensure that Emacs starts with just a single window.
-
-  #+BEGIN_SRC emacs-lisp
-    (add-hook 'after-init-hook 
-              (lambda () 
-                (delete-other-windows)))
-  #+END_SRC

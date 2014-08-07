@@ -56,10 +56,11 @@ By default, DIRECTORY is set to `user-emacs-directory'."
 (cask-initialize)
 (require 'pallet)
 
-;; Need to require org after installing so we get the updated org, not
-;; the old builtin version.
+;; Need to require org after installing so we get the updated org
+;; pacakge, not the old builtin version.
 (require 'org)
-(org-babel-load-file (expand-file-name "config.org" user-emacs-directory) 'compile)
+(save-window-excursion
+  (org-babel-load-file (expand-file-name "config.org" user-emacs-directory) 'compile))
 
 ;; ;; Ensure el-get is installed and set up
 ;; (setq el-get-install-dir "~/.emacs.d/el-get/el-get")
