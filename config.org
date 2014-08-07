@@ -22,12 +22,12 @@ with the new config.
 ** First run
 The first time you start up Emacs after installing this configuration, it
 will install Cask, Pallet, then use those to install all necessary
-packages, as described below in the [[*Bootstrappping][Bootstrappping]] section. This will
+packages, as described below in the Bootstrappping section. This will
 take a while. Subsequent startups will not require this time and
 should be relatively fast.
 
 * Bootstrappping
-The [[file+emacs:init.el][=init.el=]] file does all the bootstrapping necessary to load this
+The =init.el= file does all the bootstrapping necessary to load this
 file. The following describes what happens in the init.el file.
 ** Disable GC during init
 This sets the GC threshold extremely high so that garbage collection
@@ -41,7 +41,7 @@ up, and that all packages specified in the =Cask= file are installed and
 initialized. One of those packages is org, which is naturally required
 to load this file.
 
-See the [[file+emacs:Cask][=Cask=]] file for the list of packages that will be
+See the =Cask= file for the list of packages that will be
 installed. This is modified by Pallet whenever ~package-install~ is
 used to install a new package, and should not be edited manually.
 
