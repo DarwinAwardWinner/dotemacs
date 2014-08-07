@@ -49,6 +49,7 @@
  '(ido-use-virtual-buffers t)
  '(ido-yes-or-no-mode t)
  '(indent-tabs-mode nil)
+ '(kill-whole-line t)
  '(magit-completing-read-function (quote magit-ido-completing-read))
  '(magit-repo-dirs (quote ("/Users/ryan/Projects")))
  '(magit-status-buffer-switch-function (quote switch-to-buffer))
