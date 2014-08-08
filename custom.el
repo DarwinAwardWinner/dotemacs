@@ -71,6 +71,7 @@
  '(save-place t nil (saveplace))
  '(save-place-file "~/.emacs.d/persistence/.emacs-places")
  '(savehist-mode t)
+ '(send-mail-function (quote mailclient-send-it))
  '(show-paren-mode t)
  '(sml-modeline-mode t)
  '(tramp-default-method "sftp")
