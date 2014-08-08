@@ -61,19 +61,23 @@ be investigated).
   emacs starting directory or the root directory, and changes their
   default directories to my home directory.
 
+  This code only runs during init. If the config is reloaded later
+  after init, this will not run again.
+
   #+BEGIN_SRC emacs-lisp
-    (let ((orig-default-directory default-directory))
-      (unless (f-same? default-directory "~")
-        (dolist (buf (buffer-list))
-          (ignore-errors
-            (with-current-buffer buf
-              (when (and (null (buffer-file-name buf))
-                         (not (bound-and-true-p dired-directory))
-                         (or (f-same? default-directory orig-default-directory)
-                             (f-root? default-directory)))
-                (message "Changing default dir from %s to ~/ in %s"
-                         default-directory (buffer-name buf))
-                (cd "~")))))))
+    (unless after-init-time
+      (let ((orig-default-directory default-directory))
+        (unless (f-same? default-directory "~")
+          (dolist (buf (buffer-list))
+            (ignore-errors
+              (with-current-buffer buf
+                (when (and (null (buffer-file-name buf))
+                           (not (bound-and-true-p dired-directory))
+                           (or (f-same? default-directory orig-default-directory)
+                               (f-root? default-directory)))
+                  (message "Changing default dir from %s to ~/ in %s"
+                           default-directory (buffer-name buf))
+                  (cd "~"))))))))
   #+END_SRC
 
 * Package Configuration
