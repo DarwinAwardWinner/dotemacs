@@ -331,6 +331,30 @@ be investigated).
           (org-edit-src-code)))
     #+END_SRC
 
+    The next function calls ~org-edit-src-code~ on the src block at
+    point, but creates one first if necessary using
+    ~org-insert-src-block~.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun org-insert-or-edit-src-block ()
+        (interactive)
+        (if (org-in-src-block-p)
+             (org-edit-src-code)
+          ;; We use `call-interactively' to trigger the language prompt
+          (call-interactively 'org-insert-src-block)))
+    #+END_SRC
+
+    Lastly we define a key binding for this function. We also define
+    the same key combination, as well as the standard "C-c C-c", to
+    exit the source editing buffer. This way, the same key combination
+    can be used to enter and exit.
+
+    #+BEGIN_SRC emacs-lisp
+      (keydef (org "C-c C-'") org-insert-or-edit-src-block)
+      (keydef (org-src "C-c C-'") org-edit-src-exit)
+      (keydef (org-src "C-c C-c") org-edit-src-exit)
+    #+END_SRC
+
 ** osx-pseudo-daemon
 
    #+BEGIN_SRC emacs-lisp
@@ -575,9 +599,9 @@ prefer to use it.
    #+END_SRC
 
 ** Macros for running a function without user input
-This code builds up the ~without-user-input~ function, which is like
+This code builds up the ~without-user-input~ macro, which is like
 ~progn~ except that if BODY makes any attempt to read user input, all
-further execution is calceled and the form returns nil (note that it
+further execution is canceled and the form returns nil (note that it
 does /not/ signal an error, it simply returns).
 
    #+BEGIN_SRC emacs-lisp
