@@ -265,45 +265,71 @@ be investigated).
    #+END_SRC
 
 ** org-mode
-   The default implementation of the ~org-in-src-block-p~ function is
-   broken and always returns nil, so we reimplement it correctly here.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package org
-       :config
-       (defun org-in-src-block-p (&optional inside)
-         "Whether point is in a code source block.
-          When INSIDE is non-nil, don't consider we are within a src block
-          when point is at #+BEGIN_SRC or #+END_SRC."
-         (save-match-data
-           (let* ((elem (org-element-at-point))
-                  (elem-type (car elem))
-                  (props (cadr elem))
-                  (end (plist-get props :end))
-                  (pb (plist-get props :post-blank))
-                  (content-end
-                   (save-excursion
-                     (goto-char end)
-                     (forward-line (- pb))
-                     (point)))
-                  (case-fold-search t))
-             (and
-              ;; Elem is a src block
-              (eq elem-type 'src-block)
-              ;; Make sure point is not on one of the blank lines after the
-              ;; element.
-              (< (point) content-end)
-              ;; If INSIDE is non-nil, then must not be at block delimiter
-              (not
-               (and
-                inside
-                (save-excursion
-                  (beginning-of-line)
-                  (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
-       ;; We don't set ensure here because the org-mode package has a
-       ;; different name. See the Cask file.
-       :ensure nil)
-   #+END_SRC
+*** Fix ~org-in-src-block-p~
+    The default implementation of the ~org-in-src-block-p~ function is
+    broken and always returns nil, so we reimplement it correctly
+    here.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package org
+        :config
+        (defun org-in-src-block-p (&optional inside)
+          "Whether point is in a code source block.
+           When INSIDE is non-nil, don't consider we are within a src block
+           when point is at #+BEGIN_SRC or #+END_SRC."
+          (save-match-data
+            (let* ((elem (org-element-at-point))
+                   (elem-type (car elem))
+                   (props (cadr elem))
+                   (end (plist-get props :end))
+                   (pb (plist-get props :post-blank))
+                   (content-end
+                    (save-excursion
+                      (goto-char end)
+                      (forward-line (- pb))
+                      (point)))
+                   (case-fold-search t))
+              (and
+               ;; Elem is a src block
+               (eq elem-type 'src-block)
+               ;; Make sure point is not on one of the blank lines after the
+               ;; element.
+               (< (point) content-end)
+               ;; If INSIDE is non-nil, then must not be at block delimiter
+               (not
+                (and
+                 inside
+                 (save-excursion
+                   (beginning-of-line)
+                   (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
+        ;; We don't set ensure here because the org-mode package has a
+        ;; different name. See the Cask file.
+        :ensure nil)
+    #+END_SRC
+
+*** Function for inserting src blocks in Org Mode
+    The following function inserts a new src block into an org-mode buffer.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun org-insert-src-block (src-code-type)
+        "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+        (interactive
+         (let ((src-code-types
+                '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                  "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
+                  "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
+                  "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
+                  "scheme" "sqlite")))
+           (list (ido-completing-read "Source code type: " src-code-types))))
+        (progn
+          (newline-and-indent)
+          (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+          (newline-and-indent)
+          (insert "#+END_SRC\n")
+          (forward-line -2)
+          (org-edit-src-code)))
+    #+END_SRC
 
 ** osx-pseudo-daemon
 
@@ -540,28 +566,6 @@ prefer to use it.
                   '(nil "\\`root\\'" "/ssh:%h:"))
      (add-to-list 'tramp-default-proxies-alist
                   '((regexp-quote (system-name)) nil nil))
-   #+END_SRC
-
-** Function for inserting src blocks in Org Mode
-
-   #+BEGIN_SRC emacs-lisp
-     (defun org-insert-src-block (src-code-type)
-       "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
-       (interactive
-        (let ((src-code-types
-               '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
-                 "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
-                 "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
-                 "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
-                 "scheme" "sqlite")))
-          (list (ido-completing-read "Source code type: " src-code-types))))
-       (progn
-         (newline-and-indent)
-         (insert (format "#+BEGIN_SRC %s\n" src-code-type))
-         (newline-and-indent)
-         (insert "#+END_SRC\n")
-         (forward-line -2)
-         (org-edit-src-code)))
    #+END_SRC
 
 ** Use conf-mode for .gitignore files
