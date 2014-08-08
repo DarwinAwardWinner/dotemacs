@@ -703,6 +703,18 @@ succession.
       (run-with-idle-timer 0.1 t #'desktop-mode-save-if-stale)
     #+END_SRC
 
+** Put enabled/disabled commands in =custom.el=
+By default, ~enable-command~ and ~disable-command~ append their
+declarations to =user-init-file=. But I want them appended to =custom.el=
+instead.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice en/disable-command (around put-in-custom-file activate)
+    "Put declarations in `custom-file'."
+    (let ((user-init-file custom-file))
+      ad-do-it))
+#+END_SRC
+
 ** Set up a function for reloading the init file
 
    #+BEGIN_SRC emacs-lisp
