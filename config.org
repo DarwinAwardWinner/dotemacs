@@ -730,9 +730,15 @@ instead.
    #+END_SRC
 
 * Start emacs server
-This allows ~emacsclient~ to connect.
+This allows ~emacsclient~ to connect. We avoid starting the server in
+batch mode since there is no point in that case.
+
+Errors are ignored in case there are two instances of Emacs
+running. The first will start the server, and the second will silently
+fail, since a server is already running.
 
   #+BEGIN_SRC emacs-lisp
-    (ignore-errors (server-start))
+    (unless noninteractive
+      (ignore-errors (server-start)))
   #+END_SRC
 
