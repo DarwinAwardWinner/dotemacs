@@ -777,6 +777,19 @@ would rather have it start in the same directory as the first file.
        (find-file emacs-config-org-file))
    #+END_SRC
 
+** TODO Highlight line
+
+** TODO Centered line mode
+
+** TODO volatile highlight
+
+** TODO undo-tree
+
+** TODO Machine-specific settings
+
+*** TODO reveal-in-funder
+
+** TODO pointback
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in
 batch mode since there is no point in that case.
