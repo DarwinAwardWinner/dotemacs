@@ -7,6 +7,7 @@
 (depends-on "anzu")
 (depends-on "apache-mode")
 (depends-on "auto-complete")
+(depends-on "auto-dim-other-buffers")
 (depends-on "autopair")
 (depends-on "bar-cursor")
 (depends-on "ess")
