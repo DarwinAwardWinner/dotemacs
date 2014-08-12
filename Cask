@@ -29,4 +29,5 @@
 (depends-on "php-mode")
 (depends-on "pretty-symbols")
 (depends-on "smex")
+(depends-on "sml-modeline")
 (depends-on "use-package")
