@@ -34,6 +34,7 @@
  '(ess-use-tracebug nil)
  '(exec-path (quote ("~/bin" "/Applications/Emacs.app/Contents/MacOS/libexec" "/Applications/Emacs.app/Contents/MacOS/bin" "/opt/local/bin" "/usr/local/bin" "/usr/bin" "/bin" "/usr/sbin" "/sbin")))
  '(global-adjust-parens-mode t)
+ '(global-anzu-mode t)
  '(global-undo-tree-mode t)
  '(icomplete-mode t)
  '(ido-case-fold t)
