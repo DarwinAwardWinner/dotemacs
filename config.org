@@ -720,6 +720,43 @@ instead.
       ad-do-it))
 #+END_SRC
 
+** Fix ~diff~ behavior when backup file is not in same directory
+My settings put all backup files in one directory. So when ~diff~
+prmopts for the second file, it starts in that backup directory. I
+would rather have it start in the same directory as the first file.
+
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice diff (before same-dir-for-both-files activate)
+    "Only prompt with backup file in same directory.
+
+  When called interactively, `diff' normally offers to compare
+  against the latest backup file of the selected file. But this
+  isn't great if that backup file is in a dedicated backup
+  directory far away from the original directory. So this advice
+  only allows it to offer backup files from the same directory.
+
+  This advice doesn't actually modify the function's behavior in
+  any way. It simply overrides the interactive form."
+    (interactive
+     (let* ((newf (if (and buffer-file-name (file-exists-p buffer-file-name))
+                      (read-file-name
+                       (concat "Diff new file (default "
+                               (file-name-nondirectory buffer-file-name) "): ")
+                       nil buffer-file-name t)
+                    (read-file-name "Diff new file: " nil nil t)))
+            (oldf (file-newest-backup newf)))
+       (setq oldf (if (and oldf (file-exists-p oldf)
+                           (f-same? (f-dirname newf) (f-dirname oldf)))
+                      (read-file-name
+                       (concat "Diff original file (default "
+                               (file-name-nondirectory oldf) "): ")
+                       (file-name-directory oldf) oldf t)
+                    (read-file-name "Diff original file: "
+                                    (file-name-directory newf) nil t)))
+       (list oldf newf (diff-switches)))))
+#+END_SRC
+
 ** Set up a function for reloading the init file
 
    #+BEGIN_SRC emacs-lisp
