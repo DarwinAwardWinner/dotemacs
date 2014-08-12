@@ -169,11 +169,12 @@ be investigated).
    #+END_SRC
 
 ** cperl-mode
+Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
+~interpreter-mode-alist~.
 
    #+BEGIN_SRC emacs-lisp
      (use-package cperl-mode
        :init 
-       ;; Replace `perl-mode' with `cperl-mode'.
        (progn
          (mapc 
           (lambda (x) 
@@ -588,6 +589,7 @@ prefer to use it.
    #+END_SRC
 
 ** Tramp remote sudo
+This allows TRAMP to use sudo on remote hosts.
 
    #+BEGIN_SRC emacs-lisp
      (require 'tramp)
