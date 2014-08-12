@@ -729,6 +729,15 @@ instead.
          (load user-init-file)))
    #+END_SRC
 
+** Set up a function for editing this file
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar emacs-config-org-file (f-join user-emacs-directory "config.org"))
+     (defun edit-emacs-config ()
+       (interactive)
+       (find-file emacs-config-org-file))
+   #+END_SRC
+
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in
 batch mode since there is no point in that case.
