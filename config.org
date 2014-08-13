@@ -64,27 +64,28 @@ be investigated).
   This code only runs during init. If the config is reloaded later
   after init, this will not run again.
 
-  #+BEGIN_SRC emacs-lisp
-    (unless after-init-time
-      (let ((orig-default-directory default-directory))
-        (unless (f-same? default-directory "~")
-          (dolist (buf (buffer-list))
-            (ignore-errors
-              (with-current-buffer buf
-                (when (and (null (buffer-file-name buf))
-                           (not (bound-and-true-p dired-directory))
-                           (or (f-same? default-directory orig-default-directory)
-                               (f-root? default-directory)))
-                  (message "Changing default dir from %s to ~/ in %s"
-                           default-directory (buffer-name buf))
-                  (cd "~"))))))))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (unless after-init-time
+    (let ((orig-default-directory default-directory))
+      (unless (f-same? default-directory "~")
+        (dolist (buf (buffer-list))
+          (ignore-errors
+            (with-current-buffer buf
+              (when (and (null (buffer-file-name buf))
+                         (not (bound-and-true-p dired-directory))
+                         (or (f-same? default-directory orig-default-directory)
+                             (f-root? default-directory)))
+                (message "Changing default dir from %s to ~/ in %s"
+                         default-directory (buffer-name buf))
+                (cd "~"))))))))
+#+END_SRC
 
 * Package Configuration
   This section sets up some package-specific configuration options
-  #+BEGIN_SRC emacs-lisp
-    (require 'use-package)
-  #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (require 'use-package)
+#+END_SRC
 
   Eval the following Elisp code to re-sort the below entries (this
   code line is not in a source block because it is not part of the
@@ -94,100 +95,100 @@ be investigated).
 
 ** adjust-parens
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package adjust-parens
-       :commands adjust-parens-mode
-       :init (progn
-               ;; This line is required to silence a compiler warning
-               (declare-function adjust-parens-mode (locate-library "adjust-parens"))
-               (defun turn-on-adjust-parens-mode ()
-                 (adjust-parens-mode 1))
-               (dolist (hook '(lisp-interaction-mode-hook
-                               emacs-lisp-mode-hook))
-                 (add-hook hook #'turn-on-adjust-parens-mode)))
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package adjust-parens
+    :commands adjust-parens-mode
+    :init (progn
+            ;; This line is required to silence a compiler warning
+            (declare-function adjust-parens-mode (locate-library "adjust-parens"))
+            (defun turn-on-adjust-parens-mode ()
+              (adjust-parens-mode 1))
+            (dolist (hook '(lisp-interaction-mode-hook
+                            emacs-lisp-mode-hook))
+              (add-hook hook #'turn-on-adjust-parens-mode)))
+    :ensure t)
+#+END_SRC
 
 ** apache-mode
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package apache-mode
-       :mode ("/apache2/.*\\.conf\\'" . apache2-mode)
-       :init (progn
-               (defun apache-magic-mode-detect ()
-                 (string-match-p "^\\s-*#.*\\bsyntax=apache\\b" (buffer-string)))
-               (add-to-list 'magic-mode-alist '(apache-magic-mode-detect . apache-mode)))
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package apache-mode
+    :mode ("/apache2/.*\\.conf\\'" . apache2-mode)
+    :init (progn
+            (defun apache-magic-mode-detect ()
+              (string-match-p "^\\s-*#.*\\bsyntax=apache\\b" (buffer-string)))
+            (add-to-list 'magic-mode-alist '(apache-magic-mode-detect . apache-mode)))
+    :ensure t)
+#+END_SRC
 
 ** auto-complete
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package auto-complete
-       :init (global-auto-complete-mode 1)
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-complete
+    :init (global-auto-complete-mode 1)
+    :ensure t)
+#+END_SRC
 
 ** autopair
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package autopair
-       :init (progn (autopair-global-mode 1)
-                    (setq autopair-skip-whitespace 'chomp)
-                    (setq autopair-skip-criteria 'always))
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package autopair
+    :init (progn (autopair-global-mode 1)
+                 (setq autopair-skip-whitespace 'chomp)
+                 (setq autopair-skip-criteria 'always))
+    :ensure t)
+#+END_SRC
 
 ** bar-cursor
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package bar-cursor
-       :init (bar-cursor-mode 1)
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package bar-cursor
+    :init (bar-cursor-mode 1)
+    :ensure t)
+#+END_SRC
 
 ** browse-url
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package browse-url
-       :bind ("<s-mouse-1>" . browse-url-at-mouse)
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package browse-url
+    :bind ("<s-mouse-1>" . browse-url-at-mouse)
+    :ensure t)
+#+END_SRC
 
 ** bs (Buffer Show)
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package bs
-       :bind ("C-x C-b" . bs-show)
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package bs
+    :bind ("C-x C-b" . bs-show)
+    :ensure t)
+#+END_SRC
 
 ** cl-lib
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package cl-lib)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package cl-lib)
+#+END_SRC
 
 ** cperl-mode
 Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
 ~interpreter-mode-alist~.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package cperl-mode
-       :init 
-       (progn
-         (mapc 
-          (lambda (x) 
-            (when (eq (cdr x) 'perl-mode)
-              (setcdr x 'cperl-mode)))
-          auto-mode-alist)
-         (mapc 
-          (lambda (x) 
-            (when (eq (cdr x) 'perl-mode)
-              (setcdr x 'cperl-mode)))
-          interpreter-mode-alist))
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package cperl-mode
+    :init
+    (progn
+      (mapc
+       (lambda (x)
+         (when (eq (cdr x) 'perl-mode)
+           (setcdr x 'cperl-mode)))
+       auto-mode-alist)
+      (mapc
+       (lambda (x)
+         (when (eq (cdr x) 'perl-mode)
+           (setcdr x 'cperl-mode)))
+       interpreter-mode-alist))
+    :ensure t)
+#+END_SRC
 
 Add binding for ~cperl-perldoc~.
 
@@ -197,84 +198,84 @@ Add binding for ~cperl-perldoc~.
 
 ** ess
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package ess
-       :config
-       (progn
-         (setq ess-default-style 'OWN)
-         (setq ess-own-style-list
-               (cons (cons 'ess-arg-function-offset-new-line '(4))
-                     (cl-remove-if
-                      (lambda (x)
-                        (eq (car x) 'ess-arg-function-offset-new-line))
-                      (cdr (assoc 'C++ ess-style-alist))))))
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package ess
+    :config
+    (progn
+      (setq ess-default-style 'OWN)
+      (setq ess-own-style-list
+            (cons (cons 'ess-arg-function-offset-new-line '(4))
+                  (cl-remove-if
+                   (lambda (x)
+                     (eq (car x) 'ess-arg-function-offset-new-line))
+                   (cdr (assoc 'C++ ess-style-alist))))))
+    :ensure t)
+#+END_SRC
 
 ** ess-site
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package ess-site)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package ess-site)
+#+END_SRC
 
 ** esup
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package esup 
-       :defer t
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package esup
+    :defer t
+    :ensure t)
+#+END_SRC
 
 ** highlight-cl
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package highlight-cl
-       :init (progn
-               (add-hook 'emacs-lisp-mode-hook 'highlight-cl-add-font-lock-keywords)
-               (add-hook 'lisp-interaction-mode-hook 'highlight-cl-add-font-lock-keywords))
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-cl
+    :init (progn
+            (add-hook 'emacs-lisp-mode-hook 'highlight-cl-add-font-lock-keywords)
+            (add-hook 'lisp-interaction-mode-hook 'highlight-cl-add-font-lock-keywords))
+    :ensure t)
+#+END_SRC
 
 ** ido-speed-hack
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package ido-speed-hack)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package ido-speed-hack)
+#+END_SRC
 
 ** ido-ubiquitous
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package ido-ubiquitous
-       :ensure t)    
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package ido-ubiquitous
+    :ensure t)
+#+END_SRC
 
 ** lexbind-mode
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package lexbind-mode
-       :init (add-hook 'emacs-lisp-mode-hook 'lexbind-mode)
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package lexbind-mode
+    :init (add-hook 'emacs-lisp-mode-hook 'lexbind-mode)
+    :ensure t)
+#+END_SRC
 
 ** magit
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package magit
-       :bind (("C-c g" . magit-status))
-       :config (progn
-                 (defun disable-magit-highlight-in-buffer () 
-                   (face-remap-add-relative 'magit-item-highlight '()))
-                 (add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer))
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :bind (("C-c g" . magit-status))
+    :config (progn
+              (defun disable-magit-highlight-in-buffer ()
+                (face-remap-add-relative 'magit-item-highlight '()))
+              (add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer))
+    :ensure t)
+#+END_SRC
 
 ** markdown-mode
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package markdown-mode
-       :mode ("\\.\\(md\\|mkdn\\)$" . markdown-mode)
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :mode ("\\.\\(md\\|mkdn\\)$" . markdown-mode)
+    :ensure t)
+#+END_SRC
 
 ** org-mode
 
@@ -347,60 +348,60 @@ Add binding for ~cperl-perldoc~.
     point, but creates one first if necessary using
     ~org-insert-src-block~.
 
-    #+BEGIN_SRC emacs-lisp
-      (defun org-insert-or-edit-src-block ()
-        (interactive)
-        (if (org-in-src-block-p)
-             (org-edit-src-code)
-          ;; We use `call-interactively' to trigger the language prompt
-          (call-interactively 'org-insert-src-block)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun org-insert-or-edit-src-block ()
+    (interactive)
+    (if (org-in-src-block-p)
+         (org-edit-src-code)
+      ;; We use `call-interactively' to trigger the language prompt
+      (call-interactively 'org-insert-src-block)))
+#+END_SRC
 
     Lastly we define a key binding for this function. We also define
     the same key combination, as well as the standard "C-c C-c", to
     exit the source editing buffer. This way, the same key combination
     can be used to enter and exit.
 
-    #+BEGIN_SRC emacs-lisp
-      (keydef (org "C-c C-'") org-insert-or-edit-src-block)
-      (keydef (org-src "C-c C-'") org-edit-src-exit)
-      (keydef (org-src "C-c C-c") org-edit-src-exit)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (keydef (org "C-c C-'") org-insert-or-edit-src-block)
+  (keydef (org-src "C-c C-'") org-edit-src-exit)
+  (keydef (org-src "C-c C-c") org-edit-src-exit)
+#+END_SRC
 
 ** osx-pseudo-daemon
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package osx-pseudo-daemon
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package osx-pseudo-daemon
+    :ensure t)
+#+END_SRC
 
 ** pretty-symbols
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package pretty-symbols
-       :config
-       (add-hook 
-        'after-change-major-mode-hook
-        (lambda ()
-          (when (memq major-mode
-                      (delete-dups
-                       (cl-mapcan (lambda (x) (cl-copy-list (nth 3 x))) 
-                               pretty-symbol-patterns)))
-            (pretty-symbols-mode 1))))
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package pretty-symbols
+    :config
+    (add-hook
+     'after-change-major-mode-hook
+     (lambda ()
+       (when (memq major-mode
+                   (delete-dups
+                    (cl-mapcan (lambda (x) (cl-copy-list (nth 3 x)))
+                            pretty-symbol-patterns)))
+         (pretty-symbols-mode 1))))
+    :ensure t)
+#+END_SRC
 
 ** smex
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package smex
-       :bind (("M-x" . smex)
-              ("M-X" . smex-major-mode-commands)
-              ("C-c C-c M-x" . execute-extended-command))
-       :ensure t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package smex
+    :bind (("M-x" . smex)
+           ("M-X" . smex-major-mode-commands)
+           ("C-c C-c M-x" . execute-extended-command))
+    :ensure t)
+#+END_SRC
 
-* Set up and load a separate custom file 
+* Set up and load a separate custom file
 This is the file where everything set via =M-x customize= goes.
 
 #+BEGIN_SRC emacs-lisp
@@ -414,24 +415,24 @@ ls. If GNU ls is installed on these platforms, it is typically
 installed under the name "gls" instead. So if "gls" is available, we
 prefer to use it.
 
-  #+BEGIN_SRC emacs-lisp
-    (if (executable-find "gls")
-        (setq insert-directory-program "gls"))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (if (executable-find "gls")
+      (setq insert-directory-program "gls"))
+#+END_SRC
 ** Use system trash bin
    TODO This is OSX-specific. Make it portable and more robust.
 
-   #+BEGIN_SRC emacs-lisp
-     (defvar trash-command "trash")
-     
-     (defun system-move-file-to-trash (filename)
-       "Move file to OS X trash.
-     
-     This assumes that a program called `trash' is in your $PATH and
-     that this program will, when passed a single file path as an
-     argument, move that file to the trash."
-       (call-process trash-command nil nil nil filename))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defvar trash-command "trash")
+
+  (defun system-move-file-to-trash (filename)
+    "Move file to OS X trash.
+
+  This assumes that a program called `trash' is in your $PATH and
+  that this program will, when passed a single file path as an
+  argument, move that file to the trash."
+    (call-process trash-command nil nil nil filename))
+#+END_SRC
 
 ** Use external mailer for bug reports
    This calls ~report-emacs-bug~, then ~report-emacs-insert-to-mailer~,
@@ -440,176 +441,176 @@ prefer to use it.
    The backquoting interpolation is used to copy the interactive form
    from ~report-emacs-bug~.
 
-   #+BEGIN_SRC emacs-lisp
-     (eval
-      `(defun report-emacs-bug-via-mailer (&rest args)
-         "Report a bug in GNU Emacs.
-     
-     Prompts for bug subject. Opens external mailer."
-         ,(interactive-form 'report-emacs-bug)
-         (save-window-excursion
-           (apply 'report-emacs-bug args)
-           (report-emacs-bug-insert-to-mailer)
-           (mapc (lambda (buf) 
-                   (with-current-buffer buf
-                     (let ((buffer-file-name nil))
-                       (kill-buffer (current-buffer)))))
-                 (list "*Bug Help*" (current-buffer))))))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (eval
+   `(defun report-emacs-bug-via-mailer (&rest args)
+      "Report a bug in GNU Emacs.
+
+  Prompts for bug subject. Opens external mailer."
+      ,(interactive-form 'report-emacs-bug)
+      (save-window-excursion
+        (apply 'report-emacs-bug args)
+        (report-emacs-bug-insert-to-mailer)
+        (mapc (lambda (buf)
+                (with-current-buffer buf
+                  (let ((buffer-file-name nil))
+                    (kill-buffer (current-buffer)))))
+              (list "*Bug Help*" (current-buffer))))))
+#+END_SRC
 
 ** Pull PATH and MANPATH from shell
 
-   #+BEGIN_SRC emacs-lisp
-     ;; TODO: make a package out of this
-     ;; Pull PATH and MANPATH from the shell
-     (defun parse-envvar (var-and-value)
-       (let ((match-pos (string-match-p "=" var-and-value)))
-         (when match-pos
-           (cons (substring var-and-value 0 match-pos)
-                 (substring var-and-value (1+ match-pos))))))
-     
-     (defun pull-env-vars-from-shell (vars)
-       (when (stringp vars)
-         (setq vars (list vars)))
-       (let* ((output (shell-command-to-string "bash --login -c env"))
-              (lines (split-string output nil t)))
-         (loop for line in lines
-               for (var . value) = (parse-envvar line)
-               if (member var vars)
-               do (setenv var value)
-               and if (string= var "PATH") do
-               (setq exec-path (split-string value path-separator t)))))
-     
-     (pull-env-vars-from-shell '("PATH" "MANPATH"))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  ;; TODO: make a package out of this
+  ;; Pull PATH and MANPATH from the shell
+  (defun parse-envvar (var-and-value)
+    (let ((match-pos (string-match-p "=" var-and-value)))
+      (when match-pos
+        (cons (substring var-and-value 0 match-pos)
+              (substring var-and-value (1+ match-pos))))))
+
+  (defun pull-env-vars-from-shell (vars)
+    (when (stringp vars)
+      (setq vars (list vars)))
+    (let* ((output (shell-command-to-string "bash --login -c env"))
+           (lines (split-string output nil t)))
+      (loop for line in lines
+            for (var . value) = (parse-envvar line)
+            if (member var vars)
+            do (setenv var value)
+            and if (string= var "PATH") do
+            (setq exec-path (split-string value path-separator t)))))
+
+  (pull-env-vars-from-shell '("PATH" "MANPATH"))
+#+END_SRC
 
 ** Fix OSX movement keys
 
-   #+BEGIN_SRC emacs-lisp
-     ;; Match standard OSX movement keys, etc. (compensating for swapping
-     ;; alt and command keys)
-     (when (or (featurep 'ns) 
-               (eq system-type 'darwin))
-       (when (version<= "24.4.0" emacs-version)
-         (warn "Update the point movement key config in init.el"))
-       ;; Super is the Alt/option key
-       (global-set-key (kbd "s-<left>") 'left-word)
-       (global-set-key (kbd "s-<right>") 'right-word)
-       (global-set-key (kbd "s-<backspace>") 'backward-kill-word)
-       (global-set-key (kbd "s-<kp-delete>") 'kill-word)
-       (global-set-key (kbd "s-`") 'tmm-menubar)
-       ;; Meta is the command key
-       (global-set-key (kbd "M-<left>") 'move-beginning-of-line)
-       (global-set-key (kbd "M-<right>") 'move-end-of-line)
-       (global-set-key (kbd "M-<backspace>") nil)
-       (global-set-key (kbd "M-<kp-delete>") nil)
-       (global-set-key (kbd "M-`") 'other-frame))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  ;; Match standard OSX movement keys, etc. (compensating for swapping
+  ;; alt and command keys)
+  (when (or (featurep 'ns)
+            (eq system-type 'darwin))
+    (when (version<= "24.4.0" emacs-version)
+      (warn "Update the point movement key config in init.el"))
+    ;; Super is the Alt/option key
+    (global-set-key (kbd "s-<left>") 'left-word)
+    (global-set-key (kbd "s-<right>") 'right-word)
+    (global-set-key (kbd "s-<backspace>") 'backward-kill-word)
+    (global-set-key (kbd "s-<kp-delete>") 'kill-word)
+    (global-set-key (kbd "s-`") 'tmm-menubar)
+    ;; Meta is the command key
+    (global-set-key (kbd "M-<left>") 'move-beginning-of-line)
+    (global-set-key (kbd "M-<right>") 'move-end-of-line)
+    (global-set-key (kbd "M-<backspace>") nil)
+    (global-set-key (kbd "M-<kp-delete>") nil)
+    (global-set-key (kbd "M-`") 'other-frame))
+#+END_SRC
 
 ** Tell Emacs where to find its C source code
 
-   #+BEGIN_SRC emacs-lisp
-     (setq find-function-C-source-directory "~/src/emacs/src")
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq find-function-C-source-directory "~/src/emacs/src")
+#+END_SRC
 
 ** Allow typing a sexp and then replacing it with its value
 
-   #+BEGIN_SRC emacs-lisp
-     (defun eval-replace-preceding-sexp ()
-       "Replace the preceding sexp with its value."
-       (interactive)
-       (let ((value (eval (preceding-sexp))))
-         (kill-sexp -1)
-         (insert (format "%s" value))))
-     (global-set-key (kbd "C-c C-e") 'eval-replace-preceding-sexp)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun eval-replace-preceding-sexp ()
+    "Replace the preceding sexp with its value."
+    (interactive)
+    (let ((value (eval (preceding-sexp))))
+      (kill-sexp -1)
+      (insert (format "%s" value))))
+  (global-set-key (kbd "C-c C-e") 'eval-replace-preceding-sexp)
+#+END_SRC
 
 ** Tell ~fixup-whitespace~ not to delete indentation
 
-   #+BEGIN_SRC emacs-lisp
-     (defadvice fixup-whitespace (around indent-line activate)
-       "Don't delete indentation; instead do correct indentation.
-     
-     When `fixup-whitespace' is called with the point in the
-     indentation region of the line (i.e. before the first
-     non-whitespace character), indent the line instead of deleting
-     the indentation."
-       (if (<= (current-column)
-              (save-excursion
-                (back-to-indentation)
-                (current-column)))
-           (indent-for-tab-command)
-         ad-do-it))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defadvice fixup-whitespace (around indent-line activate)
+    "Don't delete indentation; instead do correct indentation.
+
+  When `fixup-whitespace' is called with the point in the
+  indentation region of the line (i.e. before the first
+  non-whitespace character), indent the line instead of deleting
+  the indentation."
+    (if (<= (current-column)
+           (save-excursion
+             (back-to-indentation)
+             (current-column)))
+        (indent-for-tab-command)
+      ad-do-it))
+#+END_SRC
 
 ** Have ~indent-region~ indent containing defun if mark is inactive
 
-   #+BEGIN_SRC emacs-lisp
-     (defadvice indent-region (around indent-defun activate)
-       "Indent containing defun if mark is not active."
-       (if (and transient-mark-mode
-                (not mark-active))
-           (save-excursion
-             (mark-defun)
-             (call-interactively #'indent-region))
-         ad-do-it))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defadvice indent-region (around indent-defun activate)
+    "Indent containing defun if mark is not active."
+    (if (and transient-mark-mode
+             (not mark-active))
+        (save-excursion
+          (mark-defun)
+          (call-interactively #'indent-region))
+      ad-do-it))
+#+END_SRC
 
 ** Always indent after newline
 
-   #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "RET") #'newline-and-indent)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "RET") #'newline-and-indent)
+#+END_SRC
 
 ** Turn on eldoc mode in elisp modes
 
-   #+BEGIN_SRC emacs-lisp
-     (dolist (hook '(lisp-interaction-mode-hook
-                     emacs-lisp-mode-hook))
-        (add-hook hook #'turn-on-eldoc-mode))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (dolist (hook '(lisp-interaction-mode-hook
+                  emacs-lisp-mode-hook))
+     (add-hook hook #'turn-on-eldoc-mode))
+#+END_SRC
 
 ** Fix ess-roxy behavior
 
-   #+BEGIN_SRC emacs-lisp
-     (eval-after-load 'ess-roxy
-       '(defadvice newline-and-indent (around ess-roxy-newline activate)
-          "Insert a newline in a roxygen field."
-          (cond
-           ;; Not in roxy entry; do nothing
-           ((not (ess-roxy-entry-p))
-            ad-do-it)
-           ;; Point at beginning of first line of entry; do nothing
-           ((= (point) (ess-roxy-beg-of-entry))
-            ad-do-it)
-           ;; Otherwise: skip over roxy comment string if necessary and then
-           ;; newline and then inset new roxy comment string
-           (t
-            (let ((point-after-roxy-string
-                   (save-excursion (forward-line 0)
-                                   (move-beginning-of-line nil)
-                                   (point))))
-              (goto-char (max (point) point-after-roxy-string)))
-            ad-do-it
-            (insert (concat (ess-roxy-guess-str t) " "))))))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load 'ess-roxy
+    '(defadvice newline-and-indent (around ess-roxy-newline activate)
+       "Insert a newline in a roxygen field."
+       (cond
+        ;; Not in roxy entry; do nothing
+        ((not (ess-roxy-entry-p))
+         ad-do-it)
+        ;; Point at beginning of first line of entry; do nothing
+        ((= (point) (ess-roxy-beg-of-entry))
+         ad-do-it)
+        ;; Otherwise: skip over roxy comment string if necessary and then
+        ;; newline and then inset new roxy comment string
+        (t
+         (let ((point-after-roxy-string
+                (save-excursion (forward-line 0)
+                                (move-beginning-of-line nil)
+                                (point))))
+           (goto-char (max (point) point-after-roxy-string)))
+         ad-do-it
+         (insert (concat (ess-roxy-guess-str t) " "))))))
+#+END_SRC
 
 ** Tramp remote sudo
 This allows TRAMP to use sudo on remote hosts.
 
-   #+BEGIN_SRC emacs-lisp
-     (require 'tramp)
-     (add-to-list 'tramp-default-proxies-alist
-                  '(nil "\\`root\\'" "/ssh:%h:"))
-     (add-to-list 'tramp-default-proxies-alist
-                  '((regexp-quote (system-name)) nil nil))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (require 'tramp)
+  (add-to-list 'tramp-default-proxies-alist
+               '(nil "\\`root\\'" "/ssh:%h:"))
+  (add-to-list 'tramp-default-proxies-alist
+               '((regexp-quote (system-name)) nil nil))
+#+END_SRC
 
 ** Use conf-mode for .gitignore files
 
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'auto-mode-alist '("\\.gitignore\\'" . conf-mode))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.gitignore\\'" . conf-mode))
+#+END_SRC
 
 ** Macros for running a function without user input
 This code builds up the ~without-user-input~ macro, which is like
@@ -617,47 +618,47 @@ This code builds up the ~without-user-input~ macro, which is like
 further execution is canceled and the form returns nil (note that it
 does /not/ signal an error, it simply returns).
 
-   #+BEGIN_SRC emacs-lisp
-     (require 'cl-macs)
+#+BEGIN_SRC emacs-lisp
+  (require 'cl-macs)
 
-     (defmacro without-minibuffer (&rest body)
-       "Like `progn', but stop and return nil if BODY tries to use the minibuffer.
+  (defmacro without-minibuffer (&rest body)
+    "Like `progn', but stop and return nil if BODY tries to use the minibuffer.
 
-     Also disable dialogs while evaluating BODY forms, since dialogs
-     are just an alternative to the minibuffer."
-       `(catch 'tried-to-use-minibuffer
-          (minibuffer-with-setup-hook
-              (lambda (&rest args) (throw 'tried-to-use-minibuffer nil))
-            (let ((use-dialog-box))          ; No cheating by using dialogs instead of minibuffer
-              ,@body))))
+  Also disable dialogs while evaluating BODY forms, since dialogs
+  are just an alternative to the minibuffer."
+    `(catch 'tried-to-use-minibuffer
+       (minibuffer-with-setup-hook
+           (lambda (&rest args) (throw 'tried-to-use-minibuffer nil))
+         (let ((use-dialog-box))          ; No cheating by using dialogs instead of minibuffer
+           ,@body))))
 
-     (defmacro without-functions (flist &rest body)
-       "Evaluate BODY, but stop and return nil if BODY calls any of the functions named in FLIST."
-       (let* (;; Functions are disabled by setting their body to this
-              ;; temporarily.
-              (fbody
-               '((&rest args) (throw 'forbidden-function nil)))
-              ;; This will form the first argument to `flet'
-              (function-redefinitions
-               (mapcar (lambda (fname) (cons fname fbody)) flist)))
-         `(catch 'forbidden-function
-            (cl-flet ,function-redefinitions
-              ,@body))))
+  (defmacro without-functions (flist &rest body)
+    "Evaluate BODY, but stop and return nil if BODY calls any of the functions named in FLIST."
+    (let* (;; Functions are disabled by setting their body to this
+           ;; temporarily.
+           (fbody
+            '((&rest args) (throw 'forbidden-function nil)))
+           ;; This will form the first argument to `flet'
+           (function-redefinitions
+            (mapcar (lambda (fname) (cons fname fbody)) flist)))
+      `(catch 'forbidden-function
+         (cl-flet ,function-redefinitions
+           ,@body))))
 
-     (defmacro without-user-input (&rest body)
-       "Like `progn', but prevent any user interaction in BODY."
-       `(without-functions (read-event)
-          (without-minibuffer
-            ,@body)))
+  (defmacro without-user-input (&rest body)
+    "Like `progn', but prevent any user interaction in BODY."
+    `(without-functions (read-event)
+       (without-minibuffer
+         ,@body)))
 
-     ;; These should be indented like progn
-     (put 'without-minibuffer 'lisp-indent-function
-          (get 'progn 'lisp-indent-function))
-     (put 'without-functions 'lisp-indent-function
-          (get 'let 'lisp-indent-function))
-     (put 'without-user-input 'lisp-indent-function
-          (get 'progn 'lisp-indent-function))
-   #+END_SRC
+  ;; These should be indented like progn
+  (put 'without-minibuffer 'lisp-indent-function
+       (get 'progn 'lisp-indent-function))
+  (put 'without-functions 'lisp-indent-function
+       (get 'let 'lisp-indent-function))
+  (put 'without-user-input 'lisp-indent-function
+       (get 'progn 'lisp-indent-function))
+#+END_SRC
 
 ** Emacs desktop additions
 The following additions ensure that the saved desktop file is always
@@ -669,23 +670,23 @@ desktop for some reason, and we don't want to bother the user, so we
 wrap the normal saving function to force it to do nothing instead of
 asking for user input.
 
-    #+BEGIN_SRC emacs-lisp
-      (defun desktop-save-in-desktop-dir-never-ask (&rest args)
-        "Like `desktop-save-in-desktop-dir' but aborts if input is required.
+#+BEGIN_SRC emacs-lisp
+  (defun desktop-save-in-desktop-dir-never-ask (&rest args)
+    "Like `desktop-save-in-desktop-dir' but aborts if input is required.
 
-      If `desktop-save-in-desktop-dir' tries to solicit user input,
-      this aborts and returns nil instead. It is intended for use in
-      place of `desktop-save-in-desktop-dir' in hooks where you don't
-      want to bother the user if something weird happens."
-        (without-user-input
-          (apply #'desktop-save-in-desktop-dir args)))
-    #+END_SRC
+  If `desktop-save-in-desktop-dir' tries to solicit user input,
+  this aborts and returns nil instead. It is intended for use in
+  place of `desktop-save-in-desktop-dir' in hooks where you don't
+  want to bother the user if something weird happens."
+    (without-user-input
+      (apply #'desktop-save-in-desktop-dir args)))
+#+END_SRC
 
 *** Save desktop with every autosave
 
-    #+BEGIN_SRC emacs-lisp
-      (add-hook 'auto-save-hook 'desktop-save-in-desktop-dir-never-ask)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'auto-save-hook 'desktop-save-in-desktop-dir-never-ask)
+#+END_SRC
 
 *** Save desktop after opening or closing a file
 This will ensure that all open files are saved in the desktop. An idle
@@ -693,28 +694,28 @@ timer and tripwire variable are used used to avoid saving the desktop
 multiple times when multiple files are opened or closed in rapid
 succession.
 
-    #+BEGIN_SRC emacs-lisp
-      (defvar desktop-mode-desktop-is-stale nil
-        "This is set to non-nil when a file is opened or closed.")
+#+BEGIN_SRC emacs-lisp
+  (defvar desktop-mode-desktop-is-stale nil
+    "This is set to non-nil when a file is opened or closed.")
 
-      (defun desktop-mode-set-stale ()
-        "If current buffer has a file, set the stale desktop flag."
-        (when buffer-file-name
-          (setq desktop-mode-desktop-is-stale t)))
-      (defun desktop-mode-set-current ()
-        "Unconditionally clear the stale desktop flag."
-        (setq desktop-mode-desktop-is-stale nil))
-      (add-hook 'kill-buffer-hook #'desktop-mode-set-stale)
-      (add-hook 'find-file-hook #'desktop-mode-set-stale)
-      (add-hook 'desktop-after-read-hook #'desktop-mode-set-current)
+  (defun desktop-mode-set-stale ()
+    "If current buffer has a file, set the stale desktop flag."
+    (when buffer-file-name
+      (setq desktop-mode-desktop-is-stale t)))
+  (defun desktop-mode-set-current ()
+    "Unconditionally clear the stale desktop flag."
+    (setq desktop-mode-desktop-is-stale nil))
+  (add-hook 'kill-buffer-hook #'desktop-mode-set-stale)
+  (add-hook 'find-file-hook #'desktop-mode-set-stale)
+  (add-hook 'desktop-after-read-hook #'desktop-mode-set-current)
 
-      (defun desktop-mode-save-if-stale ()
-        (when desktop-mode-desktop-is-stale
-          (desktop-save-in-desktop-dir-never-ask)
-          (desktop-mode-set-current)))
+  (defun desktop-mode-save-if-stale ()
+    (when desktop-mode-desktop-is-stale
+      (desktop-save-in-desktop-dir-never-ask)
+      (desktop-mode-set-current)))
 
-      (run-with-idle-timer 0.1 t #'desktop-mode-save-if-stale)
-    #+END_SRC
+  (run-with-idle-timer 0.1 t #'desktop-mode-save-if-stale)
+#+END_SRC
 
 ** Put enabled/disabled commands in =custom.el=
 By default, ~enable-command~ and ~disable-command~ append their
@@ -767,21 +768,21 @@ would rather have it start in the same directory as the first file.
 
 ** Set up a function for reloading the init file
 
-   #+BEGIN_SRC emacs-lisp
-     (defun reinit ()
-       (interactive)
-       (save-window-excursion
-         (load user-init-file)))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun reinit ()
+    (interactive)
+    (save-window-excursion
+      (load user-init-file)))
+#+END_SRC
 
 ** Set up a function for editing this file
 
-   #+BEGIN_SRC emacs-lisp
-     (defvar emacs-config-org-file (f-join user-emacs-directory "config.org"))
-     (defun edit-emacs-config ()
-       (interactive)
-       (find-file emacs-config-org-file))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defvar emacs-config-org-file (f-join user-emacs-directory "config.org"))
+  (defun edit-emacs-config ()
+    (interactive)
+    (find-file emacs-config-org-file))
+#+END_SRC
 
 ** TODO Highlight line
 
@@ -805,8 +806,7 @@ or in case the current Emacs is already running a server. The first
 will start the server, and the second will silently fail, since a
 server is already running.
 
-  #+BEGIN_SRC emacs-lisp
-    (unless noninteractive
-      (ignore-errors (server-start)))
-  #+END_SRC
-
+#+BEGIN_SRC emacs-lisp
+  (unless noninteractive
+    (ignore-errors (server-start)))
+#+END_SRC
