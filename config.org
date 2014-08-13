@@ -189,6 +189,12 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
        :ensure t)
    #+END_SRC
 
+Add binding for ~cperl-perldoc~.
+
+#+BEGIN_SRC emacs-lisp
+  (keydef (cperl "C-c C-d") cperl-perldoc)
+#+END_SRC
+
 ** ess
 
    #+BEGIN_SRC emacs-lisp
