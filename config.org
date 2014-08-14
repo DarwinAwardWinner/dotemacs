@@ -424,6 +424,65 @@ Add binding for ~cperl-perldoc~.
     :ensure t)
 #+END_SRC
 
+* el-get package configuration
+Some packages are not available through ~package-install~. These are
+installed and maintained through el-get.
+
+This code loads el-get and sets it up to load all the packages listed
+below. We run the el-get setup at the end of init so that it will run
+after all the below packages have been added to ~el-get-sources~.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package el-get
+    :ensure t)
+#+END_SRC
+
+  Eval the following Elisp code to re-sort the below entries (this
+  code line is not in a source block because it is not part of the
+  actual configuration and should not be executed upon init):
+
+  =CODE (org-sort-entries nil ?a) CODE=
+
+** git-wip
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list
+   'el-get-sources
+   '(:name git-wip
+           :type github
+           :pkgname "DarwinAwardWinner/git-wip"
+           :load-path "emacs"
+           :features git-wip-mode))
+#+END_SRC
+
+** ido-speed-hack
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list
+   'el-get-sources
+   '(:name ido-mode-el
+           :type github
+           :pkgname "danskarda/ido-mode-el"))
+  (add-to-list
+   'el-get-sources
+   '(:name ido-speed-hack
+           :type github
+           :pkgname "danskarda/ido-speed-hack"))
+#+END_SRC
+
+* el-get installation
+After adding all necessary packages to ~el-get-sources~, now we can
+install and initialize them.
+
+#+BEGIN_SRC emacs-lisp
+  (defun el-get-do-setup ()
+    (interactive)
+    (loop for src in el-get-sources
+          for src-name = (el-get-source-name src)
+          do (with-demoted-errors (el-get 'sync src-name))))
+  (el-get-do-setup)
+#+END_SRC
+
 * Set up and load a separate custom file
 This is the file where everything set via =M-x customize= goes.
 
