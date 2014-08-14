@@ -80,6 +80,24 @@ be investigated).
                 (cd "~"))))))))
 #+END_SRC
 
+* Preliminary setup
+This sets up a few functions that will be used later in the
+configuration, so they need to be defined up front.
+
+** Eval after init function
+
+#+BEGIN_SRC emacs-lisp
+  (defun eval-after-init (form)
+    "Like `eval', but waits until after init.
+
+  During emacs initialization, this registers FORM to be evaluated
+  in `after-init-hook'. After initialization, this is equivalent
+  to `(eval FORM)'."
+    (if after-init-time
+        (eval form)
+      (add-to-list 'after-init-hook `(lambda () ,form))))
+#+END_SRC
+
 * Package Configuration
   This section sets up some package-specific configuration options
 
