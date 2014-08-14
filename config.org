@@ -398,14 +398,19 @@ Add binding for ~cperl-perldoc~.
 #+BEGIN_SRC emacs-lisp
   (use-package pretty-symbols
     :config
-    (add-hook
-     'after-change-major-mode-hook
-     (lambda ()
-       (when (memq major-mode
-                   (delete-dups
-                    (cl-mapcan (lambda (x) (cl-copy-list (nth 3 x)))
-                            pretty-symbol-patterns)))
-         (pretty-symbols-mode 1))))
+    (progn
+      (defun pretty-symbols-enable-if-available ()
+        "Enable pretty-symbols in buffer if applicable.
+
+  If current buffer's `major-mode' has any pretty symbol
+     substitution rules associated with it, then enable
+     `pretty-symbols-mode', otherwise do nothing."
+        (when (apply #'derived-mode-p
+                    (delete-dups
+                     (cl-mapcan (lambda (x) (cl-copy-list (nth 3 x)))
+                                pretty-symbol-patterns)))
+         (pretty-symbols-mode 1)))
+      (add-hook 'after-change-major-mode-hook #'pretty-symbols-enable-if-available))
     :ensure t)
 #+END_SRC
 
