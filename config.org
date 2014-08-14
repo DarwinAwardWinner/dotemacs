@@ -1051,6 +1051,8 @@ common-win.el.
 *** TODO reveal-in-funder
 
 ** TODO pointback
+
+** TODO ess-smart-underscore
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in
 batch mode since there is no point in that case.
