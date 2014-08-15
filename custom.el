@@ -36,6 +36,7 @@
  '(exec-path (quote ("~/bin" "/Applications/Emacs.app/Contents/MacOS/libexec" "/Applications/Emacs.app/Contents/MacOS/bin" "/opt/local/bin" "/usr/local/bin" "/usr/bin" "/bin" "/usr/sbin" "/sbin")))
  '(global-adjust-parens-mode t)
  '(global-anzu-mode t)
+ '(global-hl-line-mode t)
  '(global-undo-tree-mode t)
  '(icomplete-mode t)
  '(ido-case-fold t)
@@ -89,6 +90,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auto-dim-other-buffers-face ((t (:background "gray97"))))
+ '(hl-line ((t (:background "azure"))))
  '(magit-item-highlight ((t nil))))
 
 (put 'scroll-left 'disabled nil)
