@@ -1038,8 +1038,6 @@ common-win.el.
          "dim grey" "DimGray" "DimGrey" "black"))))
 #+END_SRC
 
-** TODO Highlight line
-
 ** TODO Centered line mode
 
 ** TODO volatile highlight
