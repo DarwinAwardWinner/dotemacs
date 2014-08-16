@@ -481,6 +481,8 @@ after all the below packages have been added to ~el-get-sources~.
 #+END_SRC
 
 ** ido-speed-hack
+Ido-speed-hack comes along with a modified ido version, which we also
+install.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list
@@ -1079,14 +1081,13 @@ This hides or shortens the names of minor modes in the modeline.
              eldoc-mode
              autopair-mode
              auto-complete-mode
-             git-gutter+-mode)))
+             git-gutter+-mode
+             undo-tree-mode)))
 #+END_SRC
 
 ** TODO Centered line mode
 
 ** TODO volatile highlight
-
-** TODO undo-tree
 
 ** TODO Machine-specific settings
 

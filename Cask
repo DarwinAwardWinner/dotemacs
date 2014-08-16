@@ -58,4 +58,5 @@
 (depends-on "pretty-symbols")
 (depends-on "smex")
 (depends-on "sml-modeline")
+(depends-on "undo-tree")
 (depends-on "use-package")
