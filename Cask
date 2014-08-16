@@ -27,6 +27,7 @@
 (depends-on "esup")
 (depends-on "f")
 (depends-on "git-commit-mode")
+(depends-on "git-gutter+")
 (depends-on "git-gutter-fringe+")
 (depends-on "github-browse-file")
 (depends-on "github-clone")
