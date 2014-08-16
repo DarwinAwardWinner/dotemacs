@@ -94,7 +94,8 @@
  '(use-dialog-box nil)
  '(user-mail-address "rct@thompsonclan.org")
  '(vc-make-backup-files t)
- '(void-text-area-pointer (quote text)))
+ '(void-text-area-pointer (quote text))
+ '(winner-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

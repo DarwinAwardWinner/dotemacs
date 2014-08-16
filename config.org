@@ -1097,7 +1097,6 @@ This hides or shortens the names of minor modes in the modeline.
 
 ** TODO ess-smart-underscore
 
-** TODO winner
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in
 batch mode since there is no point in that case.
