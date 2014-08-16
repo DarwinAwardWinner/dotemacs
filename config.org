@@ -173,6 +173,15 @@ configuration, so they need to be defined up front.
     :ensure t)
 #+END_SRC
 
+** browse-url
+This binds Shift+click to open a link
+
+#+BEGIN_SRC emacs-lisp
+  (use-package browse-url
+    :bind ("<s-mouse-1>" . browse-url-at-mouse))
+
+#+END_SRC
+
 ** bs (Buffer Show)
 
 #+BEGIN_SRC emacs-lisp
@@ -438,15 +447,6 @@ See https://github.com/DarwinAwardWinner/git-custom-commands/blob/master/bin/git
            ("M-X" . smex-major-mode-commands)
            ("C-c C-c M-x" . execute-extended-command))
     :ensure t)
-#+END_SRC
-
-** browse-url
-This binds Shift+click to open a link
-
-#+BEGIN_SRC emacs-lisp
-  (use-package browse-url
-    :bind ("<s-mouse-1>" . browse-url-at-mouse))
-
 #+END_SRC
 
 * el-get package configuration
