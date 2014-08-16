@@ -63,5 +63,6 @@
 (depends-on "smex")
 (depends-on "sml-modeline")
 (depends-on "sr-speedbar")
+(depends-on "tempbuf")
 (depends-on "undo-tree")
 (depends-on "use-package")

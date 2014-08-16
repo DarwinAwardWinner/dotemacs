@@ -1085,6 +1085,61 @@ This hides or shortens the names of minor modes in the modeline.
              undo-tree-mode)))
 #+END_SRC
 
+** Tempbuf mode
+The below code sets up specific modes to be automatically marked as
+temporary. Rather than adding to many different major-mode hooks, this
+uses ~after-change-major-mode-hook~ to work in every major mode in
+every buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'tempbuf)
+
+  (defun mode-symbol (sym)
+    "Append \"-mode\" to SYM unless it already ends in it."
+    (let ((symname (symbol-name sym)))
+      (intern
+       (concat symname
+               (unless (s-suffix? "-mode" symname)
+                 "-mode")))))
+
+  (defun tempbuf-major-mode-hook ()
+    "Turn on `tempbuf-mode' in current buffer if buffer's `major-mode' is in `tempbuf-temporary-major-modes'.
+
+  Else turn off `tempbuf-mode'."
+    (if (apply #'derived-mode-p tempbuf-temporary-major-modes)
+        (turn-on-tempbuf-mode)
+      (turn-off-tempbuf-mode)))
+
+  (defun tempbuf-setup-temporary-major-modes (symbol newval)
+    (set-default symbol (mapcar 'mode-symbol newval))
+    ;; Set tempbuf-mode correctly in existing buffers.
+    (mapc (lambda (buf)
+            (with-current-buffer buf
+              (tempbuf-major-mode-hook)))
+          (buffer-list)))
+
+  (defcustom tempbuf-temporary-major-modes nil
+    "Major modes in which `tempbuf-mode' should be activated.
+
+  This will cause buffers of these modes to be automatically killed
+  if they are inactive for a short while."
+    :group 'tempbuf
+    :set 'tempbuf-setup-temporary-major-modes
+    :type '(repeat (symbol :tag "Mode")))
+
+  (add-hook 'after-change-major-mode-hook 'tempbuf-major-mode-hook)
+
+#+END_SRC
+
+*** Tempbuf mode in ess-help buffers
+This mode requires special handling because it doesn't use
+~after-change-major-mode-hook~, I think.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load 'ess-custom
+    '(add-hook 'ess-help-mode-hook 'tempbuf-major-mode-hook))
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
@@ -1094,8 +1149,6 @@ This hides or shortens the names of minor modes in the modeline.
 *** TODO reveal-in-funder
 
 ** TODO pointback
-
-** TODO ess-smart-underscore
 
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in

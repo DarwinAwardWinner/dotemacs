@@ -86,6 +86,7 @@
  '(send-mail-function (quote mailclient-send-it))
  '(show-paren-mode t)
  '(sml-modeline-mode t)
+ '(tempbuf-temporary-major-modes (quote (Custom-mode w3-mode Man-mode view-mode help-mode apropos-mode completion-list-mode dired-mode ibuffer-mode bookmark-bmenu-mode ess-help-mode compilation-mode vc-dir-mode vc-hg-log-view-mode occur-mode diff-mode magit-key-mode magit-log-edit-mode ess-help-mode)))
  '(tramp-default-method "sftp")
  '(undo-tree-auto-save-history t)
  '(undo-tree-history-directory-alist (quote (("." . "~/.emacs.d/persistence/undo-tree"))))
