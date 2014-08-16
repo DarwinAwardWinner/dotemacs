@@ -17,6 +17,7 @@
 (depends-on "crontab-mode")
 (depends-on "dash")
 (depends-on "debian-changelog-mode")
+(depends-on "diminish")
 (depends-on "el-get")
 (depends-on "el-get")
 (depends-on "ert")

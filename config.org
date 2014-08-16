@@ -1063,6 +1063,25 @@ common-win.el.
          "dim grey" "DimGray" "DimGrey" "black"))))
 #+END_SRC
 
+** Diminish
+This hides or shortens the names of minor modes in the modeline.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish
+    :init (mapc
+           (lambda (arg)
+             (if (listp arg)
+                 (apply #'diminish arg)
+               (funcall #'diminish arg)))
+           '(anzu-mode
+             auto-dim-other-buffers-mode
+             magit-auto-revert-mode
+             eldoc-mode
+             autopair-mode
+             auto-complete-mode
+             git-gutter+-mode)))
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
