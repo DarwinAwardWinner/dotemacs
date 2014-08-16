@@ -280,11 +280,27 @@ Add binding for ~cperl-perldoc~.
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :bind (("C-c g" . magit-status))
-    :config (progn
-              (defun disable-magit-highlight-in-buffer ()
-                (face-remap-add-relative 'magit-item-highlight '()))
-              (add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer))
+    :config
+    (progn
+      (defun disable-magit-highlight-in-buffer ()
+        (face-remap-add-relative 'magit-item-highlight '()))
+      (add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer))
     :ensure t)
+#+END_SRC
+
+*** Magit myinit
+This code makes magit call ~git myinit~ instead of ~git init~ when the
+former is available.
+
+See https://github.com/DarwinAwardWinner/git-custom-commands/blob/master/bin/git-myinit
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice magit-run-git (before use-myinit activate)
+    "use git-myinit instead of git-init"
+    (when (and (equal (car args) "init")
+               (executable-find "git-myinit"))
+      (setcar args "myinit")
+      (message "Modified command: %S" args)))
 #+END_SRC
 
 ** markdown-mode
