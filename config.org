@@ -271,7 +271,7 @@ Add binding for ~cperl-perldoc~.
 
 #+BEGIN_SRC emacs-lisp
   (use-package lexbind-mode
-    :init (add-hook 'emacs-lisp-mode-hook 'lexbind-mode)
+    :init (add-hook 'emacs-lisp-mode-hook (apply-partially #'lexbind-mode 1))
     :ensure t)
 #+END_SRC
 
