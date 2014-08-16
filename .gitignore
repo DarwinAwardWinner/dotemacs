@@ -16,3 +16,6 @@ emms
 /history
 /elpa/
 /el-get/
+/abbrev_defs
+/bookmarks
+/eshell/
