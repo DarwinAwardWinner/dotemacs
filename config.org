@@ -1286,7 +1286,7 @@ This mode requires special handling because it doesn't use
 
 ** TODO Machine-specific settings
 
-*** TODO reveal-in-funder
+*** TODO reveal-in-finder
 
 ** TODO pointback
 
