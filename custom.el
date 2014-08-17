@@ -44,6 +44,7 @@
  '(global-anzu-mode t)
  '(global-git-gutter+-mode t)
  '(global-hl-line-mode t)
+ '(global-pointback-mode t)
  '(global-undo-tree-mode t)
  '(icomplete-mode t)
  '(ido-case-fold t)

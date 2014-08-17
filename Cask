@@ -47,6 +47,7 @@
 (depends-on "osx-pseudo-daemon")
 (depends-on "pallet")
 (depends-on "php-mode")
+(depends-on "pointback")
 (depends-on "popup")
 (depends-on "pretty-symbols")
 (depends-on "smex")
