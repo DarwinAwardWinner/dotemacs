@@ -268,6 +268,19 @@ Add binding for ~cperl-perldoc~.
     :ensure t)
 #+END_SRC
 
+** git-gutter+
+Loading these packages is necessary to activate them, so they are
+loaded eagerly.
+
+#+BEGIN_SRC emacs-lisp
+    (use-package git-gutter+
+      :ensure t)
+    (use-package git-gutter-fringe+
+      :ensure t)
+#+END_SRC
+
+#+END_SRC
+
 ** highlight-cl
 
 #+BEGIN_SRC emacs-lisp
