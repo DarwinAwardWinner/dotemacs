@@ -35,6 +35,7 @@
 (depends-on "header2")
 (depends-on "helm")
 (depends-on "highlight-cl")
+(depends-on "highlight-defined")
 (depends-on "ido-load-library")
 (depends-on "ido-ubiquitous")
 (depends-on "ido-yes-or-no")
