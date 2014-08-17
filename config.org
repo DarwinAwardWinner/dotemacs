@@ -369,6 +369,17 @@ I want ~magit-init~ to create a direcotry if it doesn't exist.
       (make-directory directory)))
 #+END_SRC
 
+*** Magit init show status when interactive
+When ~magit-init~ is running interactively, it should show the status
+buffer after initialization.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice magit-init (after show-status activate)
+    "Show the status buffer after initialization if interactive."
+    (when (called-interactively-p 'interactive)
+      (magit-status directory)))
+#+END_SRC
+
 ** markdown-mode
 
 #+BEGIN_SRC emacs-lisp
