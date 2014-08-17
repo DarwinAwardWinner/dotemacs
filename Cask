@@ -51,6 +51,7 @@
 (depends-on "pointback")
 (depends-on "popup")
 (depends-on "pretty-symbols")
+(depends-on "projectile")
 (depends-on "smex")
 (depends-on "sml-modeline")
 (depends-on "sr-speedbar")
