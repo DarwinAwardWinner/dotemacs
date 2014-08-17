@@ -1216,23 +1216,22 @@ control the diminishing of modes.
 
   Interactively, enter (with completion) the name of any diminished mode (a
   mode that was formerly a minor mode on which you invoked M-x diminish).
-  To restore all diminished modes to minor status, answer `diminished-modes'.
+  To restore all diminished modes to minor status, answer `all'.
   The response to the prompt shouldn't be quoted.  However, in Lisp code,
-  the arg must be quoted as a symbol, as in (diminish-undo 'diminished-modes)."
+  the arg must be quoted as a symbol, as in (diminish-undo 'all)."
     (interactive
      (if diminished-mode-alist
          (list (read (completing-read
                       "Restore what diminished mode: "
-                      (cons (list "diminished-modes")
+                      (cons (list "all")
                             (mapcar (lambda (x) (list (symbol-name (car x))))
                                     diminished-mode-alist))
                       nil t nil 'diminish-history-symbols)))
        (error "No minor modes are currently diminished.")))
-    (if (eq mode 'diminished-modes)
-        (let ((diminished-modes diminished-mode-alist))
-          (while diminished-modes
-            (diminish-undo (caar diminished-modes))
-            (callf cdr diminished-modes)))
+    (if (eq mode 'all)
+        (cl-loop for dmode in diminished-mode-alist
+                 for mode-name = (car dmode)
+                 do (diminish-undo mode-name))
       (let ((minor      (assq mode      minor-mode-alist))
             (diminished (assq mode diminished-mode-alist)))
         (or minor
@@ -1249,7 +1248,7 @@ control the diminishing of modes.
                   newlist))
     (set-default symbol newlist)
     ;; Un-diminish all modes
-    (diminish-undo 'diminished-modes)
+    (diminish-undo 'all)
     ;; Diminish each mode the new list
     (mapc (lambda (x)
             (unless (listp x)
@@ -1262,7 +1261,6 @@ control the diminishing of modes.
   (defcustom diminished-minor-modes '()
     "Minor modes to be diminished, and their diminished text, if any."
     :group 'diminish
-    :type '(repeat )
     :type '(alist :key-type (symbol :tag "Mode"
                                     :match (lambda (w v)
                                              (or (null v)
