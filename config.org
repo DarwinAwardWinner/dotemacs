@@ -98,6 +98,21 @@ configuration, so they need to be defined up front.
       (add-to-list 'after-init-hook `(lambda () ,form))))
 #+END_SRC
 
+** Macro to protect buffer modified status
+This defines a macro that saves the modified status of current buffer
+and restores it after evaluating body.
+
+#+BEGIN_SRC emacs-lisp
+  (defmacro preserve-buffer-modified-p (&rest body)
+    "Evaluate BODY, then restore buffer modified status."
+    `(let ((bmp (buffer-modified-p)))
+       (prog1
+           (progn ,@body)
+         (set-buffer-modified-p bmp))))
+  (put 'preserve-buffer-modified-p 'lisp-indent-function
+       (get 'progn 'lisp-indent-function))
+#+END_SRC
+
 * Package Configuration
   This section sets up some package-specific configuration options
 
