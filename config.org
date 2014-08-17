@@ -1341,8 +1341,6 @@ This mode requires special handling because it doesn't use
 
 *** TODO reveal-in-finder
 
-** TODO pointback
-
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in
 batch mode since there is no point in that case.
