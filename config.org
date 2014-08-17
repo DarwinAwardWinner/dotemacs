@@ -300,7 +300,10 @@ Add binding for ~cperl-perldoc~.
 #+END_SRC
 
 ** magit
+This section contains settings related to magit.
 
+*** Disable magit highlight
+I find magit item highlighting distracting
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :bind (("C-c g" . magit-status))
@@ -325,6 +328,45 @@ See https://github.com/DarwinAwardWinner/git-custom-commands/blob/master/bin/git
                (executable-find "git-myinit"))
       (setcar args "myinit")
       (message "Modified command: %S" args)))
+#+END_SRC
+
+*** Magit init create directory
+I want ~magit-init~ to create a direcotry if it doesn't exist.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice magit-init (before create-nonexistent-directory activate)
+    "If DIRECTORY does not exist, create it.
+
+  This will not create the directory recursively, so the parent
+  directory must exist.
+
+  This also modifies the interactive form to handle the case where
+  the dir doesn't already exist."
+    (interactive
+     (let* ((dir (file-name-as-directory
+                  (expand-file-name
+                   (read-directory-name "Create repository in: "))))
+            ;; Can't call `magit-get-top-dir' on nonexistent directory,
+            ;; so use parent if necessary.
+            (dir-or-existing-parent
+             (if (or (file-exists-p dir)
+                     (file-symlink-p dir))
+                 dir
+               (f-parent dir)))
+            (top (magit-get-top-dir dir-or-existing-parent)))
+       (if (and top
+                (not (yes-or-no-p
+                      (if (string-equal top dir)
+                          (format "Reinitialize existing repository %s? " dir)
+                        (format "%s is a repository.  Create another in %s? "
+                                top dir)))))
+           (user-error "Abort")
+         (list dir))))
+    ;; This is that part that's actually executed with the function
+    ;; itself.
+    (unless (or (file-exists-p directory)
+                (file-symlink-p directory))
+      (make-directory directory)))
 #+END_SRC
 
 ** markdown-mode
