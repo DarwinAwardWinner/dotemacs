@@ -1140,7 +1140,7 @@ control the diminishing of modes.
   (defun diminish-init ()
     (diminish-setup 'diminished-minor-modes diminished-minor-modes))
 
-  (eval-after-init "init"
+  (eval-after-init
     '(diminish-init))
 #+END_SRC
 
