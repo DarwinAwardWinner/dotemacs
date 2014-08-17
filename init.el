@@ -1,6 +1,10 @@
-;; Disable GC During init
+;; "Disable" GC During init and then restore it
 (add-hook 'after-init-hook 
-          (lambda () (setq gc-cons-threshold (default-value 'gc-cons-threshold))))
+          `(lambda ()
+             (setq gc-cons-threshold
+                   (car (get 'gc-cons-threshold 'standard-value)))
+             (garbage-collect)))
+
 (setq gc-cons-threshold (* gc-cons-threshold 100))
 
 ;; Bootstrapping of Cask & Pallet
