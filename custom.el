@@ -110,6 +110,8 @@
  '(git-gutter+-added ((t (:foreground "green4" :weight bold))))
  '(git-gutter+-deleted ((t (:foreground "red4" :weight bold))))
  '(git-gutter+-modified ((t (:foreground "magenta4" :weight bold))))
+ '(highlight-cl ((t (:inherit font-lock-function-name-face :underline "red"))))
+ '(highlight-cl-macro ((t (:inherit font-lock-function-name-face :underline "steel blue"))))
  '(highlight-defined-builtin-function-name-face ((t (:inherit font-lock-function-name-face))))
  '(highlight-defined-function-name-face ((t (:inherit font-lock-function-name-face :foreground "blue4"))))
  '(highlight-defined-macro-name-face ((t (:inherit highlight-defined-function-name-face :underline t))))
