@@ -279,6 +279,61 @@ loaded eagerly.
       :ensure t)
 #+END_SRC
 
+** header2
+This automatically inserts a header into any new elisp file.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package header2
+    :init (progn
+            (add-hook 'emacs-lisp-mode-hook #'auto-make-header))
+    :ensure t)
+#+END_SRC
+
+*** Prevent ~auto-make-header~ from setting the buffer modified flag
+This ensures that newly-created files will not be marked as modified
+even though they have had headers inserted.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice auto-make-header (around dont-set-buffer-modified activate)
+    "Don't set the buffer modified flag."
+    (preserve-buffer-modified-p
+      ad-do-it))
+#+END_SRC
+
+*** Function to insert ~provide~ statement at end of file
+This is used in ~make-header-hook~
+
+#+BEGIN_SRC emacs-lisp
+  (defun header-provide-statement ()
+    "Insert `provide' statement."
+    (save-excursion
+      (goto-char (point-max))
+      (insert
+       (format "\n%s"
+               (pp-to-string `(provide ',(intern (f-base (buffer-file-name)))))))))
+#+END_SRC
+
+*** Override ~header-eof~ to not insert a separator line
+
+#+BEGIN_SRC emacs-lisp
+  (defun header-eof ()
+    "Insert comment indicating end of file."
+    (goto-char (point-max))
+    (insert "\n")
+    (insert comment-start
+            (concat (and (= 1 (length comment-start)) header-prefix-string)
+                    (if (buffer-file-name)
+                        (file-name-nondirectory (buffer-file-name))
+                      (buffer-name))
+                    " ends here"
+                    (or (nonempty-comment-end) "\n"))))
+
+#+END_SRC
+
+*** Update headers on save
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'write-file-hooks #'auto-update-file-header)
 #+END_SRC
 
 ** highlight-cl
