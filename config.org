@@ -342,8 +342,22 @@ This is used in ~make-header-hook~
   (use-package highlight-cl
     :init (progn
             (add-hook 'emacs-lisp-mode-hook 'highlight-cl-add-font-lock-keywords)
-            (add-hook 'lisp-interaction-mode-hook 'highlight-cl-add-font-lock-keywords))
+            (add-hook 'lisp-interaction-mode-hook 'highlight-cl-add-font-lock-keywords)
+            (add-hook 'inferior-emacs-lisp-mode 'highlight-cl-add-font-lock-keywords))
     :ensure t)
+#+END_SRC
+
+** highlight-defined
+
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-defined
+      :init (progn
+              (defun turn-on-highlight-defined-mode ()
+                (highlight-defined-mode 1))
+              (add-hook 'emacs-lisp-mode-hook 'turn-on-highlight-defined-mode)
+              (add-hook 'lisp-interaction-mode-hook 'turn-on-highlight-defined-mode)
+              (add-hook 'inferior-emacs-lisp-mode 'turn-on-highlight-defined-mode))
+      :ensure t)
 #+END_SRC
 
 ** ido-speed-hack
