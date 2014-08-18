@@ -1,12 +1,3 @@
-;; "Disable" GC during init and then restore it
-(unless after-init-time
-  (let ((standard-gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value))))
-    (add-hook 'after-init-hook
-              `(lambda ()
-                 (setq gc-cons-threshold ,standard-gc-cons-threshold)
-                 (garbage-collect)))
-    (setq gc-cons-threshold (* standard-gc-cons-threshold 100))))
-
 ;; Bootstrapping of Cask & Pallet
 (defun bootstrap-cask ()
   "Ensure Cask is installed and loaded."
