@@ -30,6 +30,7 @@
  '(dired-omit-files "^\\.?#\\|^\\.$\\|\\.DS_Store$")
  '(dired-use-ls-dired (quote unspecified))
  '(echo-keystrokes 0.05)
+ '(el-get-is-lazy nil)
  '(eldoc-idle-delay 0.05)
  '(elfeed-feeds (quote ("http://www.rna-seqblog.com/feed/" "http://planet.emacsen.org/atom.xml" "http://feeds2.feedburner.com/webupd8" "http://owncloudtest.blogspot.com/feeds/posts/default" "http://feeds.feedburner.com/d0od" "http://blog.dustinkirkland.com/feeds/posts/default" "http://www.aaronsw.com/2002/feeds/pgessays.rss" "http://steve-yegge.blogspot.com/feeds/posts/default" "http://www.phdcomics.com/gradfeed.php" "http://blag.xkcd.com/feed/" "http://www.bioconductor.org/rss/new_packages.rss" "http://newsboyhat.co.uk/?feed=rss2" "http://www.modernperlbooks.com/mt/atom.xml" "http://what-if.xkcd.com/feed.atom" "http://www.oak-tree.us/blog/index.php/feed" "http://newsboyhat.livejournal.com/data/rss" "http://sarahsgeologicadventures.blogspot.com/feeds/posts/default")))
  '(enable-recursive-minibuffers t)
