@@ -6,6 +6,8 @@
  ;; If there is more than one, they won't work right.
  '(R-pager "cat")
  '(S-pager "cat")
+ '(abbrev-file-name "~/.emacs.d/persistence/abbrev_defs")
+ '(ac-comphist-file "/Users/ryan/.emacs.d/persistence/ac-comphist.dat")
  '(ack-and-a-half-executable "/Users/ryan/perl5/perlbrew/perls/perl-5.16.3/bin/ack")
  '(auto-dim-other-buffers-mode t)
  '(autopair-global-mode t)
