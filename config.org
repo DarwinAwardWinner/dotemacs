@@ -21,7 +21,7 @@ with the new config.
 
 ** First run
 The first time you start up Emacs after installing this configuration, it
-will install Cask, Pallet, then use those to install all necessary
+will install Cask & Pallet, then use those to install all necessary
 packages, as described below in the Bootstrappping section. This will
 take a while. Subsequent startups will not require this time and
 should be relatively fast.
@@ -29,12 +29,6 @@ should be relatively fast.
 * Bootstrappping
 The =init.el= file does all the bootstrapping necessary to load this
 file. The following describes what happens in the init.el file.
-** Disable GC during init
-This sets the GC threshold extremely high so that garbage collection
-will almost never occur during the initialization process. This
-significantly speeds up the process. Obviously this provides the
-greatest benefit if it is done as soon as possible during the init
-process.
 ** Bootstrapping Cask & Pallet
 This code ensures that Cask and Pallet are installed and properly set
 up, and that all packages specified in the =Cask= file are installed and
