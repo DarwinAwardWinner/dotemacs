@@ -1347,6 +1347,13 @@ This mode requires special handling because it doesn't use
     '(add-hook 'ess-help-mode-hook 'tempbuf-major-mode-hook))
 #+END_SRC
 
+** Additional extensions for latex-mode
+By default ".ltx" is assoiated with LaTeX files, but not ".latex".
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.latex\\'" . latex-mode))
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
