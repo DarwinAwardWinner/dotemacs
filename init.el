@@ -13,7 +13,8 @@
         (delete-file cask-install-file)))
     (or (require 'cask nil 'noerror)
         ;; Final load attempt will throw an error if it can't load.
-        (require 'cask "~/.cask/cask.el"))))
+        (require 'cask "~/.cask/cask.el"))
+    (message "Cask installed and set up.")))
 
 (defun cask-install-in-subprocess (&optional directory)
   "Run `cask install' command in DIRECTORY.
@@ -42,7 +43,9 @@ By default, DIRECTORY is set to `user-emacs-directory'."
       (let ((default-directory (or directory user-emacs-directory))
         (cask-bin (or (executable-find "cask") "~/.cask/bin/cask")))
 	(message "Running cask install...")
-	(call-process cask-bin nil nil nil "install")))))
+        (if (= 0 (call-process cask-bin nil nil nil "install"))
+            (message "Cask packages installed successfully.")
+          (error "Cask failed to install packages"))))
 
 ;; Ensure cask is installed
 (bootstrap-cask)
