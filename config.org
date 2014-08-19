@@ -1351,9 +1351,23 @@ This mode requires special handling because it doesn't use
 
 ** TODO volatile highlight
 
-** TODO Machine-specific settings
+** TODO reveal-in-finder
 
-*** TODO reveal-in-finder
+* Environment-specific settings
+This section uses the macros defined in ~system-specific-settings~ to
+set options that should vary depending on which system Emacs is
+running on.
+
+** Set up tool-bars
+Normally we want the toolbar and menubar disabled for maximum text
+space. But in OSX, disabling them causes various things to break, so
+we want to enabled them there.
+
+#+BEGIN_SRC emacs-lisp
+  (let ((mode-arg (if-system-type-match 'darwin 1 -1)))
+    (tool-bar-mode mode-arg)
+    (menu-bar-mode mode-arg))
+#+END_SRC
 
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in
