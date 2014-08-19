@@ -62,4 +62,3 @@
 (depends-on "undo-tree")
 (depends-on "use-package")
 (depends-on "ws-butler")
-(depends-on "ws-butler")
