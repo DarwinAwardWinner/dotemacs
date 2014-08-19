@@ -3,6 +3,7 @@
   "Ensure Cask is installed and loaded."
   (unless (or (require 'cask nil 'noerror)
               (require 'cask "~/.cask/cask.el" 'noerror)) 
+    (message "Need to install Cask...")
     (let ((cask-install-file
            (make-temp-file "install-cask" nil ".py")))
       (unwind-protect
