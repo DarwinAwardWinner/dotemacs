@@ -45,7 +45,7 @@ By default, DIRECTORY is set to `user-emacs-directory'."
 	(message "Running cask install...")
         (if (= 0 (call-process cask-bin nil nil nil "install"))
             (message "Cask packages installed successfully.")
-          (error "Cask failed to install packages"))))
+          (error "Cask failed to install packages"))))))
 
 ;; Ensure cask is installed
 (bootstrap-cask)
