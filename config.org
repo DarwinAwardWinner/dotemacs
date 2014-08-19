@@ -47,7 +47,11 @@ ensure that the window configuration remains unchanged (but the
 compile log buffer is left intact so any warnings or errros can still
 be investigated).
 
-* Fixing Default Directory
+* Preliminary setup
+This sets up a few functions that will be used later in the
+configuration, so they need to be defined up front.
+
+** Fixing Default Directory
   Regardless of which directory Emacs is started from, I want the
   initial non-file buffers such as =*scratch*= and =*Messages*= to
   have their ~default-directory~ set to my home directory. This code
@@ -73,10 +77,6 @@ be investigated).
                          default-directory (buffer-name buf))
                 (cd "~"))))))))
 #+END_SRC
-
-* Preliminary setup
-This sets up a few functions that will be used later in the
-configuration, so they need to be defined up front.
 
 ** Eval after init function
 
@@ -105,6 +105,12 @@ and restores it after evaluating body.
          (set-buffer-modified-p bmp))))
   (put 'preserve-buffer-modified-p 'lisp-indent-function
        (get 'progn 'lisp-indent-function))
+#+END_SRC
+
+** Ensure persistence directory exists
+
+#+BEGIN_SRC emacs-lisp
+  (make-directory (f-join user-emacs-directory "persistence") 'recursive)
 #+END_SRC
 
 * Package Configuration
@@ -230,6 +236,14 @@ Add binding for ~cperl-perldoc~.
 
 #+BEGIN_SRC emacs-lisp
   (keydef (cperl "C-c C-d") cperl-perldoc)
+#+END_SRC
+
+** el-get
+
+#+BEGIN_SRC emacs-lisp
+  (use-package el-get
+    :config (make-directory el-get-dir 'recursive)
+    :ensure t)
 #+END_SRC
 
 ** ess
