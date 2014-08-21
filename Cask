@@ -45,6 +45,7 @@
 (depends-on "magit-gh-pulls")
 (depends-on "markdown-mode")
 (depends-on "md-readme")
+(depends-on "noflet")
 (depends-on "org-plus-contrib")
 (depends-on "osx-pseudo-daemon")
 (depends-on "pallet")
