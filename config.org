@@ -1298,11 +1298,7 @@ control the diminishing of modes.
   (defcustom diminished-minor-modes '()
     "Minor modes to be diminished, and their diminished text, if any."
     :group 'diminish
-    :type '(alist :key-type (symbol :tag "Mode"
-                                    :match (lambda (w v)
-                                             (or (null v)
-                                                 (assq v minor-mode-alist)))
-                                    )
+    :type '(alist :key-type (symbol :tag "Mode")
                   :value-type (choice :tag "To What"
                                       (const :tag "Hide completely" "")
                                       (string :tag "Abbreviation")))
