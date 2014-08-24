@@ -16,6 +16,7 @@
  '(completion-styles (quote (basic partial-completion emacs22 substring initials)))
  '(cperl-break-one-line-blocks-when-indent nil)
  '(cperl-close-paren-offset -4)
+ '(cperl-highlight-variables-indiscriminately t)
  '(cperl-indent-left-aligned-comments t)
  '(cperl-indent-level 4)
  '(cperl-indent-parens-as-block t)
