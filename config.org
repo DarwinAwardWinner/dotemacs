@@ -683,7 +683,9 @@ This is the file where everything set via =M-x customize= goes.
   (load custom-file)
 #+END_SRC
 * Tweaks
-** Use GNU ls for ~insert-directory~ if possible
+** Fixes for packages
+** Environment tweaks
+*** Use GNU ls for ~insert-directory~ if possible
 On OS X (and probably other platforms), "ls" may not refer to GNU
 ls. If GNU ls is installed on these platforms, it is typically
 installed under the name "gls" instead. So if "gls" is available, we
@@ -693,22 +695,7 @@ prefer to use it.
   (if (executable-find "gls")
       (setq insert-directory-program "gls"))
 #+END_SRC
-** Use system trash bin
-   TODO This is OSX-specific. Make it portable and more robust.
-
-#+BEGIN_SRC emacs-lisp
-  (defvar trash-command "trash")
-
-  (defun system-move-file-to-trash (filename)
-    "Move file to OS X trash.
-
-  This assumes that a program called `trash' is in your $PATH and
-  that this program will, when passed a single file path as an
-  argument, move that file to the trash."
-    (call-process trash-command nil nil nil filename))
-#+END_SRC
-
-** Use external mailer for bug reports
+*** Use external mailer for bug reports
    This calls ~report-emacs-bug~, then ~report-emacs-insert-to-mailer~,
    then cleans up the bug buffers.
 
@@ -732,7 +719,7 @@ prefer to use it.
               (list "*Bug Help*" (current-buffer))))))
 #+END_SRC
 
-** Pull PATH and MANPATH from shell
+*** Pull PATH and MANPATH from shell
 
 #+BEGIN_SRC emacs-lisp
   ;; TODO: make a package out of this
@@ -758,6 +745,12 @@ prefer to use it.
   (pull-env-vars-from-shell '("PATH" "MANPATH"))
 #+END_SRC
 
+*** Tell Emacs where to find its C source code
+
+#+BEGIN_SRC emacs-lisp
+  (setq find-function-C-source-directory "~/src/emacs-24.3/src")
+#+END_SRC
+
 ** Fix OSX movement keys
 
 #+BEGIN_SRC emacs-lisp
@@ -779,12 +772,6 @@ prefer to use it.
     (global-set-key (kbd "M-<backspace>") nil)
     (global-set-key (kbd "M-<kp-delete>") nil)
     (global-set-key (kbd "M-`") 'other-frame))
-#+END_SRC
-
-** Tell Emacs where to find its C source code
-
-#+BEGIN_SRC emacs-lisp
-  (setq find-function-C-source-directory "~/src/emacs-24.3/src")
 #+END_SRC
 
 ** Allow typing a sexp and then replacing it with its value
@@ -1396,6 +1383,21 @@ we want to enabled them there.
     (tool-bar-mode mode-arg)
     (menu-bar-mode mode-arg)
     (scroll-bar-mode mode-arg))
+#+END_SRC
+
+** Use system trash bin
+
+#+BEGIN_SRC emacs-lisp
+  (when-system-type-match 'darwin
+    (defvar trash-command "trash")
+
+    (defun system-move-file-to-trash (filename)
+      "Move file to OS X trash.
+
+  This assumes that a program called `trash' is in your $PATH and
+  that this program will, when passed a single file path as an
+  argument, move that file to the trash."
+      (call-process trash-command nil nil nil filename)))
 #+END_SRC
 
 * Start emacs server
