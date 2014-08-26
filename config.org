@@ -1362,6 +1362,16 @@ By default ".ltx" is assoiated with LaTeX files, but not ".latex".
   (add-to-list 'auto-mode-alist '("\\.latex\\'" . latex-mode))
 #+END_SRC
 
+** Use conf-mode for git config files
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist
+               '("\\.gitconfig\\'" . conf-mode))
+  (add-to-list 'auto-mode-alist
+               (cons (concat (regexp-quote (f-join ".git" "config")) "\\'")
+                     'conf-mode))
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
