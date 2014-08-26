@@ -1400,6 +1400,22 @@ we want to enabled them there.
       (call-process trash-command nil nil nil filename)))
 #+END_SRC
 
+** Use GNU df (gdf) on OSX if available
+On OSX, the standard df command (BSD version, I think) is
+insufficient, and we want GNU df instead, which is typically installed
+as ~gdf~. And we may as well use gdf over df on any other system which
+provides both as well. This implementation uses ~/opt/local/bin/gdf~
+preferentially, since that is the version installed by Macports.
+
+#+BEGIN_SRC emacs-lisp
+  (let ((gdf-path
+         (if (file-executable-p "/opt/local/bin/gdf")
+             "/opt/local/bin/gdf"
+           (executable-find "gdf"))))
+    (when gdf-path
+      (setq directory-free-space-program gdf-path)))
+#+END_SRC
+
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in
 batch mode since there is no point in that case.
