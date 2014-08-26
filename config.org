@@ -466,6 +466,31 @@ buffer after initialization.
       (magit-status directory)))
 #+END_SRC
 
+*** Use hub instead of git sometimes
+It's nice to have the features of GitHub's ~hub~ command sometimes,
+but magit makes a lot of calls to git, so wrapping it with hub all the
+time adds significant overhead. So we use advice to tell just
+~magit-git-command~ to use hub if it is available.
+
+First let's figure out if hub is available.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar magit-hub-executable (when (executable-find "hub") "hub"))
+#+END_SRC
+
+Now we override ~magit-git-command~ to use hub unconditionally. This
+is the command for manually running a git command, so there's no worry
+about overhead from multiple calls to git. This allows things like
+~M-x magit-git-command browse~ to open the GitHub page for a repo.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice magit-git-command (around use-hub activate)
+    "Use `hub' instead of `git' if available."
+    (let ((magit-git-executable
+           (or magit-hub-executable magit-git-executable)))
+      ad-do-it))
+#+END_SRC
+
 ** markdown-mode
 
 #+BEGIN_SRC emacs-lisp
