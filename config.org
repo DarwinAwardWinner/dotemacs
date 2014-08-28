@@ -506,6 +506,13 @@ about overhead from multiple calls to git. This allows things like
     :ensure t)
 #+END_SRC
 
+** occur-context-resize
+
+#+BEGIN_SRC emacs-lisp
+  (use-package occur-context-resize
+    :init (add-hook 'occur-mode-hook 'occur-context-resize-mode))
+#+END_SRC
+
 ** org-mode
 
 *** Fix ~org-in-src-block-p~
@@ -958,7 +965,7 @@ does /not/ signal an error, it simply returns).
 The following additions ensure that the saved desktop file is always
 up-to-date.
 
-*** Add a desktop-save function that aborts if user input is required
+*** Add a desktop-save function that gives up if user input is required
 When running in hooks, it's not disasterous if we can't save the
 desktop for some reason, and we don't want to bother the user, so we
 wrap the normal saving function to force it to do nothing instead of
