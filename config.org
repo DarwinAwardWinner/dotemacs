@@ -1094,7 +1094,7 @@ common-win.el.
 
 #+BEGIN_SRC emacs-lisp
   (setq x-colors
-    (if (featurep 'ns) (ns-list-colors)
+    (if (featurep 'ns) (funcall #'ns-list-colors)
       (purecopy
        '("gray100" "grey100" "gray99" "grey99" "gray98" "grey98" "gray97"
          "grey97" "gray96" "grey96" "gray95" "grey95" "gray94" "grey94"
