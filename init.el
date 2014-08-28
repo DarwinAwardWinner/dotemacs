@@ -1,4 +1,4 @@
-;; Bootstrapping of Cask & Pallet
+;;; Bootstrapping of Cask & Pallet
 (defun bootstrap-cask ()
   "Ensure Cask is installed and loaded."
   (unless (or (require 'cask nil 'noerror)
@@ -17,7 +17,7 @@
         (require 'cask "~/.cask/cask.el"))
     (message "Cask installed and set up.")))
 
-(defun cask-install-in-subprocess (&optional directory)
+(defun cask-install-missing-in-subprocess (&optional directory)
   "Run `cask install' command in DIRECTORY.
 
 If the Cask file is modified outside emacs (e.g. updated by a
@@ -27,6 +27,10 @@ every init, however, because it only runs `cask install' if the
 Cask file contains packages that aren't yet installed. So in the
 common case where the Cask file has not been modified, this is a
 no-op.
+
+This function returns the list of missing packages that were
+installed. In particular, it returns non-nil if any missing
+packages were installed and nil otherwise.
 
 Note that we execute the shell command `cask install' rather than
 calling the `cask-install' function because the latter modifies
@@ -46,24 +50,26 @@ By default, DIRECTORY is set to `user-emacs-directory'."
 	(message "Running cask install...")
         (if (= 0 (call-process cask-bin nil nil nil "install"))
             (message "Cask packages installed successfully.")
-          (error "Cask failed to install packages"))))))
+          (error "Cask failed to install packages"))))
+    needed-packages))
 
 ;; Ensure cask is installed
 (bootstrap-cask)
 ;; Initialize cask
 (cask-initialize)
-;; Install packages from Cask file
-(cask-install-in-subprocess)
-(cask-initialize)
-;; The following line seems like it should be redundant with the
-;; previous line, but for some reason it is not. `cask-initialize'
-;; doesn't seem to initialize any packages that were just installed by
-;; `cask-install-in-subprocess'. This does.
+;; Install packages from Cask file and reinitialize if needed
+(when (cask-install-missing-in-subprocess)
+  (cask-initialize))
+;; The following line seems like it should be redundant, but for some
+;; reason it is not. `cask-initialize' doesn't seem to initialize any
+;; packages that were just installed by
+;; `cask-install-missing-in-subprocess', but this does.initialize
+;; those new packages.
 (package-initialize)
 (require 'pallet)
 
 ;; Need to require org after installing so we get the updated org
-;; pacakge, not the old builtin version.
+;; package, not the older builtin version.
 (require 'org)
 (save-window-excursion
   (org-babel-load-file (expand-file-name "config.org" user-emacs-directory) 'compile))
