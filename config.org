@@ -1404,6 +1404,75 @@ By default ".ltx" is assoiated with LaTeX files, but not ".latex".
                      'conf-mode))
 #+END_SRC
 
+** Fix ~report-emacs-bug-insert-to-mailer~
+For some unknown reason, on my system ~xdg-email~ does nothing (but
+still exits successfully) when started through ~start-process~. So we
+use ~call-process~ instead.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice report-emacs-bug-insert-to-mailer (around call-process activate)
+    "Use `call-process' instead of `start-process'.
+
+  For some reason \"xdg-email\" doesn't work from `start-process',
+  so we use `call-process' instead. This is fine because both the
+  OS X \"open\" and unix \"xdg-email\" commands exit
+  immediately."
+    (noflet ((start-process (name buffer program &rest program-args)
+                            (apply #'call-process program nil buffer nil program-args)))
+      ad-do-it))
+#+END_SRC
+
+** Define functions for initiating external mailer composition
+
+*** Function to send en email to external mailer
+#+BEGIN_SRC emacs-lisp
+  (defun insert-to-mailer (&optional arg-ignored)
+    "Send the message to your preferred mail client.
+
+  This requires either the OS X \"open\" command, or the
+  freedesktop \"xdg-email\" command to be available.
+
+  This function accepts a prefix argument for consistency with
+  `message-send', but the prefix argument has no effect."
+    (interactive "P")
+    (unless (derived-mode-p 'message-mode)
+      (error "Current buffer is not a mail message."))
+    (save-excursion
+      (goto-char (point-min))
+      (let* ((header (mail-header-extract-no-properties))
+             (mailto-url (make-mailto-url header))
+             (body (progn
+                     (re-search-forward "^--text follows this line--\n")
+                     (buffer-substring-no-properties (point) (point-max)))))
+        (call-process "xdg-email" nil nil nil "--body" body mailto-url))))
+
+  (defun insert-to-mailer-and-exit (&optional arg)
+    "Send message like `insert-to-mailer', then, if no errors, exit from mail buffer.
+
+  This function accepts a prefix argument for consistency with
+  `message-send-and-exit', but the prefix argument has no effect."
+    (interactive "P")
+    (let ((buf (current-buffer))
+          (actions message-exit-actions))
+      (when (and (insert-to-mailer arg)
+                 (buffer-name buf))
+        (message-bury buf)
+        (if message-kill-buffer-on-exit
+            (kill-buffer buf))
+        (message-do-actions actions)
+        t)))
+#+END_SRC
+
+*** Define mail-user-agent for external mailer
+
+#+BEGIN_SRC emacs-lisp
+  (define-mail-user-agent 'external-mailer-user-agent
+    (get 'message-user-agent 'composefunc)
+    #'insert-to-mailer-and-exit
+    (get 'message-user-agent 'abortfunc)
+    (get 'message-user-agent 'hookvar))
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
