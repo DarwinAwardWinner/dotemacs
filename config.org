@@ -515,6 +515,18 @@ about overhead from multiple calls to git. This allows things like
 
 ** org-mode
 
+** TODO ignoramus
+https://github.com/rolandwalker/ignoramus
+
+** TODO cl-lib-highlight
+https://github.com/skeeto/cl-lib-highlight
+
+** TODO rainbow-delimiters
+http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/rainbow-delimiters
+
+** TODO guide-key
+http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/guide-key
+
 *** Fix ~org-in-src-block-p~
     The default implementation of the ~org-in-src-block-p~ function is
     broken and always returns nil, so we reimplement it correctly
