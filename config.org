@@ -1503,7 +1503,6 @@ we want to enabled them there.
 
 #+BEGIN_SRC emacs-lisp
   (let ((mode-arg (if-system-type-match 'darwin 1 -1)))
-    (tool-bar-mode mode-arg)
     (menu-bar-mode mode-arg)
     (scroll-bar-mode mode-arg))
 #+END_SRC
