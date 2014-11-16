@@ -67,6 +67,9 @@
  '(ido-yes-or-no-mode t)
  '(indent-tabs-mode nil)
  '(initial-buffer-choice t)
+ '(initial-scratch-message
+   ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
+")
  '(kill-whole-line t)
  '(magit-completing-read-function (quote magit-ido-completing-read))
  '(magit-diff-refine-hunk t)
