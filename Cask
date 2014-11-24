@@ -69,7 +69,6 @@
 (depends-on "pointback")
 (depends-on "popup")
 (depends-on "pretty-symbols")
-(depends-on "projectile")
 (depends-on "py-isort")
 (depends-on "pyenv-mode")
 (depends-on "python-mode")
