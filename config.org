@@ -255,12 +255,19 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
     :config
     (progn
       (setq ess-default-style 'OWN)
-      (setq ess-own-style-list
-            (cons (cons 'ess-arg-function-offset-new-line '(4))
-                  (cl-remove-if
-                   (lambda (x)
-                     (eq (car x) 'ess-arg-function-offset-new-line))
-                   (cdr (assoc 'C++ ess-style-alist))))))
+      (customize-set-variable
+       'ess-own-style-list
+       ;; Based on (cdr (assoc 'C++ ess-style-alist))
+       '((ess-indent-level . 4)
+         (ess-first-continued-statement-offset . 4)
+         (ess-continued-statement-offset . 0)
+         (ess-brace-offset . -4)
+         (ess-arg-function-offset . 0)
+         (ess-arg-function-offset-new-line quote
+                                           (4))
+         (ess-expression-offset . 4)
+         (ess-else-offset . 0)
+         (ess-close-brace-offset . 0))))
     :ensure t)
 #+END_SRC
 
