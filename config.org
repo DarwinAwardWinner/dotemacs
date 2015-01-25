@@ -48,8 +48,9 @@ compile log buffer is left intact so any warnings or errros can still
 be investigated).
 
 * Preliminary setup
-This sets up a few functions that will be used later in the
-configuration, so they need to be defined up front.
+This sets up a few functions and other environment items that will be
+used later in the configuration, so they need to be defined/prepared
+up front.
 
 ** Fixing Default Directory
   Regardless of which directory Emacs is started from, I want the
@@ -111,6 +112,41 @@ and restores it after evaluating body.
 
 #+BEGIN_SRC emacs-lisp
   (make-directory (f-join user-emacs-directory "persistence") 'recursive)
+#+END_SRC
+
+** Set PATH and MANPATH from shell
+My shell configuration adds a lot of things to PATH dynamically
+(pyenv, perlbrew, etc.), so rather than emulate that in Emacs, we
+simply run a shell and tell it to print out the environment variables
+we care about. Then we set them in Emacs. For PATH, we also set the
+Elisp variable ~exec-path~, which is not auto-updated when you modify
+the environment variable.
+
+This step needs to be done early, because some later configuration
+items depend on having the full PATH available.
+
+#+BEGIN_SRC emacs-lisp
+  ;; TODO: make a package out of this
+  ;; Pull PATH and MANPATH from the shell
+  (defun parse-envvar (var-and-value)
+    (let ((match-pos (string-match-p "=" var-and-value)))
+      (when match-pos
+        (cons (substring var-and-value 0 match-pos)
+              (substring var-and-value (1+ match-pos))))))
+
+  (defun pull-env-vars-from-shell (vars)
+    (when (stringp vars)
+      (setq vars (list vars)))
+    (let* ((output (shell-command-to-string "bash --login -c env"))
+           (lines (split-string output nil t)))
+      (loop for line in lines
+            for (var . value) = (parse-envvar line)
+            if (member var vars)
+            do (setenv var value)
+            and if (string= var "PATH") do
+            (setq exec-path (split-string value path-separator t)))))
+
+  (pull-env-vars-from-shell '("PATH" "MANPATH"))
 #+END_SRC
 
 * Package Configuration
@@ -768,32 +804,6 @@ prefer to use it.
                   (let ((buffer-file-name nil))
                     (kill-buffer (current-buffer)))))
               (list "*Bug Help*" (current-buffer))))))
-#+END_SRC
-
-*** Pull PATH and MANPATH from shell
-
-#+BEGIN_SRC emacs-lisp
-  ;; TODO: make a package out of this
-  ;; Pull PATH and MANPATH from the shell
-  (defun parse-envvar (var-and-value)
-    (let ((match-pos (string-match-p "=" var-and-value)))
-      (when match-pos
-        (cons (substring var-and-value 0 match-pos)
-              (substring var-and-value (1+ match-pos))))))
-
-  (defun pull-env-vars-from-shell (vars)
-    (when (stringp vars)
-      (setq vars (list vars)))
-    (let* ((output (shell-command-to-string "bash --login -c env"))
-           (lines (split-string output nil t)))
-      (loop for line in lines
-            for (var . value) = (parse-envvar line)
-            if (member var vars)
-            do (setenv var value)
-            and if (string= var "PATH") do
-            (setq exec-path (split-string value path-separator t)))))
-
-  (pull-env-vars-from-shell '("PATH" "MANPATH"))
 #+END_SRC
 
 *** Tell Emacs where to find its C source code
