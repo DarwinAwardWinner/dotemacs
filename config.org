@@ -42,9 +42,9 @@ used to install a new package, and should not be edited manually.
 ** Load =config.org=
 Finally, init.el loads this file using ~org-babel-load-file~. Because
 it specifies the compile option, this may create a compile log
-window. So the whole thing is wrapper in ~save-window-excursion~ to
+window. So the whole thing is wrapped in ~save-window-excursion~ to
 ensure that the window configuration remains unchanged (but the
-compile log buffer is left intact so any warnings or errros can still
+compile log buffer is left intact so any warnings or errors can still
 be investigated).
 
 * Preliminary setup
