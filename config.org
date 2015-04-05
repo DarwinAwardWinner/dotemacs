@@ -344,7 +344,11 @@ This automatically inserts a header into any new elisp file.
                 "Add `lexical-binding: t' to header."
                 (when (eq major-mode 'emacs-lisp-mode)
                   (save-excursion
-                    (add-file-local-variable-prop-line "lexical-binding" t)))))
+                    (add-file-local-variable-prop-line "lexical-binding" t))))
+              (defun header-not-part-of-emacs ()
+                "Insert line declaring that this file is not part of Emacs."
+                (when (eq major-mode 'emacs-lisp-mode)
+                  (insert header-prefix-string "This file is NOT part of GNU Emacs.\n"))))
     :ensure t)
 #+END_SRC
 
