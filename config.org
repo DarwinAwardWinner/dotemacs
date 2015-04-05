@@ -1512,6 +1512,20 @@ use ~call-process~ instead.
     (get 'message-user-agent 'hookvar))
 #+END_SRC
 
+** Eliminate trailing semicolon in propline variable list
+
+Emacs functions that modify the local variables in the propline also
+add an extraneous trailing semicolon. This advice deletes it.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice modify-file-local-variable-prop-line (after cleanup-semicolon activate)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((replace-lax-whitespace t))
+        (replace-string "; -*-" " -*-" nil
+                        (point) (progn (end-of-line) (point))))))
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
