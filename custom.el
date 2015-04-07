@@ -131,7 +131,7 @@
  '(magit-status-buffer-switch-function (quote switch-to-buffer))
  '(make-header-hook
    (quote
-    (header-title header-blank header-file-name header-author header-copyright header-creation-date header-version header-pkg-requires header-url header-keywords header-compatibility header-blank header-lib-requires header-end-line header-commentary header-blank header-blank header-blank header-end-line header-free-software header-code header-provide-statement header-eof)))
+    (header-title header-completely-blank header-copyright header-completely-blank header-file-name header-author header-creation-date header-version header-pkg-requires header-url header-keywords header-completely-blank header-not-part-of-emacs header-completely-blank header-end-line header-commentary header-completely-blank header-blank header-completely-blank header-end-line header-free-software header-code header-provide-statement header-eof)))
  '(marmalade-server "http://marmalade-repo.org" t)
  '(marmalade-token "jxzMp9uu6+16QPYKyarL9glfVfekWdWta8EEdMSkKlE=")
  '(midnight-mode t nil (midnight))
