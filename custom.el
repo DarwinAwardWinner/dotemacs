@@ -93,9 +93,7 @@
      (enable exact "webjump")
      (enable regexp "\\`\\(find\\|load\\|locate\\)-library\\'")
      (disable prefix "org-")
-     (disable prefix "magit-")
-     (disable prefix "tmm-")
-     (enable regexp "\\`\\(load\\|enable\\|disable\\|describe\\|custom-theme-visit\\)-theme\\'"))))
+     (disable prefix "magit-"))))
  '(ido-ubiquitous-enable-old-style-default nil)
  '(ido-ubiquitous-function-overrides
    (quote
@@ -105,6 +103,7 @@
      (disable exact "gnus-emacs-completing-read")
      (disable exact "gnus-iswitchb-completing-read")
      (disable exact "grep-read-files")
+     (disable exact "magit-builtin-completing-read")
      (enable exact "bookmark-completing-read")
      (enable-old exact "webjump-read-choice")
      (enable-old exact "webjump-read-url-choice")
@@ -115,7 +114,8 @@
      (disable exact "org-icompleting-read")
      (enable exact "read-char-by-name")
      (disable exact "Info-read-node-name")
-     (disable exact "tmm-menubar"))))
+     (disable exact "tmm-menubar")
+     (enable exact "imenu--completion-buffer"))))
  '(ido-ubiquitous-mode t)
  '(ido-use-virtual-buffers t)
  '(ido-yes-or-no-mode t)
