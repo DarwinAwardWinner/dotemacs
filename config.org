@@ -1539,12 +1539,14 @@ Emacs functions that modify the local variables in the propline also
 add an extraneous trailing semicolon. This advice deletes it.
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice modify-file-local-variable-prop-line (after cleanup-semicolon activate)
-    (save-excursion
-      (goto-char (point-min))
-      (let ((replace-lax-whitespace t))
-        (replace-string "; -*-" " -*-" nil
-                        (point) (progn (end-of-line) (point))))))
+  (defadvice modify-file-local-variable-prop-line (around cleanup-semicolon activate)
+    (atomic-change-group
+      ad-do-it
+      (save-excursion
+        (goto-char (point-min))
+        (let ((replace-lax-whitespace t))
+          (replace-string "; -*-" " -*-" nil
+                          (point) (progn (end-of-line) (point)))))))
 #+END_SRC
 
 ** TODO Centered line mode
