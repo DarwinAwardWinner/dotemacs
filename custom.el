@@ -13,6 +13,7 @@
  '(autopair-global-mode t)
  '(backup-directory-alist (quote (("." . "~/.emacs.d/persistence/backups"))))
  '(bs-default-configuration "all")
+ '(clean-buffer-list-delay-general 7)
  '(completion-styles
    (quote
     (basic partial-completion emacs22 substring initials)))
