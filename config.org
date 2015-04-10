@@ -428,13 +428,6 @@ This is used in ~make-header-hook~
       :ensure t)
 #+END_SRC
 
-** ido-ubiquitous
-
-#+BEGIN_SRC emacs-lisp
-  (use-package ido-ubiquitous
-    :ensure t)
-#+END_SRC
-
 ** lexbind-mode
 
 #+BEGIN_SRC emacs-lisp
@@ -765,6 +758,25 @@ install. Both are loaded eagerly.
            :type github
            :pkgname "danskarda/ido-speed-hack"
            :features ido-speed-hack))
+#+END_SRC
+
+** ido-ubiquitous
+This uses the bleeding-edge branch of ido-ubiquitous and its companion
+package ido-completing-read+.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list
+   'el-get-sources
+   '(:name ido-ubiquitous
+           :type http
+           :url "https://github.com/DarwinAwardWinner/ido-ubiquitous/raw/bleeding-edge/ido-ubiquitous.el"
+           :features ido-ubiquitous))
+  (add-to-list
+   'el-get-sources
+   '(:name ido-completing-read+
+           :type http
+           :url "https://github.com/DarwinAwardWinner/ido-ubiquitous/raw/bleeding-edge/ido-completing-read+.el"
+           :features ido-completing-read+))
 #+END_SRC
 
 * el-get installation
