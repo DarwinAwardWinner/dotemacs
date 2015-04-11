@@ -94,7 +94,8 @@
      (enable exact "webjump")
      (enable regexp "\\`\\(find\\|load\\|locate\\)-library\\'")
      (disable prefix "org-")
-     (disable prefix "magit-"))))
+     (disable prefix "tmm-")
+     (enable regexp "\\`\\(load\\|enable\\|disable\\|describe\\|custom-theme-visit\\)-theme\\'"))))
  '(ido-ubiquitous-enable-old-style-default nil)
  '(ido-ubiquitous-function-overrides
    (quote
