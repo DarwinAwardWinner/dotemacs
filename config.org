@@ -1549,6 +1549,16 @@ add an extraneous trailing semicolon. This advice deletes it.
                           (point) (progn (end-of-line) (point)))))))
 #+END_SRC
 
+** Alias apache2-mode to apache-mode
+It looks like this mode was renamed, but my ~auto-mode-alist~ still
+has references to the old name. The most expedient solution is an
+obsolete alias.
+
+#+BEGIN_SRC emacs-lisp
+  (define-obsolete-variable-alias 'apache2-mode 'apache-mode)
+  (define-obsolete-function-alias 'apache2-mode 'apache-mode)
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
