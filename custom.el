@@ -146,6 +146,7 @@
  '(ns-command-modifier (quote meta))
  '(ns-function-modifier (quote control))
  '(org-adapt-indentation nil)
+ '(org-completion-use-ido t)
  '(org-support-shift-select t)
  '(pretty-symbol-categories (lambda relational nil))
  '(pretty-symbol-patterns
