@@ -860,27 +860,50 @@ prefer to use it.
   (setq find-function-C-source-directory "~/src/emacs-24.3/src")
 #+END_SRC
 
-** Fix OSX movement keys
+** Fix OSX movement keys (unswap some Command/Option shortcuts)
+I map Option -> Super and Command -> Meta in Emacs on OPX, which is
+the opposite of what it is by default, because I need meta to be
+directly below X. However, there is a handful of shortcuts involving
+Command/Option that I don't want swapped, so I need to swap their
+Super/Meta bindings to cancel out the swapping of Super and Meta
+themselves.
 
 #+BEGIN_SRC emacs-lisp
-  ;; Match standard OSX movement keys, etc. (compensating for swapping
-  ;; alt and command keys)
-  (when (or (featurep 'ns)
-            (eq system-type 'darwin))
-    (when (version<= "24.4.0" emacs-version)
-      (warn "Update the point movement key config in init.el"))
-    ;; Super is the Alt/option key
-    (global-set-key (kbd "s-<left>") 'left-word)
-    (global-set-key (kbd "s-<right>") 'right-word)
-    (global-set-key (kbd "s-<backspace>") 'backward-kill-word)
-    (global-set-key (kbd "s-<kp-delete>") 'kill-word)
-    (global-set-key (kbd "s-`") 'tmm-menubar)
-    ;; Meta is the command key
-    (global-set-key (kbd "M-<left>") 'move-beginning-of-line)
-    (global-set-key (kbd "M-<right>") 'move-end-of-line)
-    (global-set-key (kbd "M-<backspace>") nil)
-    (global-set-key (kbd "M-<kp-delete>") nil)
-    (global-set-key (kbd "M-`") 'other-frame))
+  ;; Use `eval-after-load' to ensure that this always happens after
+  ;; loading custom.el, since that sets the Command/Option modifiers.
+  (eval-after-init
+   '(when (or (featurep 'ns)
+              (eq system-type 'darwin))
+      ;; Only swap bindings if keys were actually swapped
+      (when (and (eq ns-command-modifier 'meta)
+                 (eq ns-option-modifier 'super))
+        ;; Super is the Alt/option key
+        (keydef "s-<left>" left-word)
+        (keydef "s-<right>" right-word)
+        (keydef "s-<backspace>" backward-kill-word)
+        (keydef "s-<kp-delete>" kill-word)
+        (keydef "s-`" tmm-menubar)
+        ;; Meta is the command key
+        (keydef "M-<left>" move-beginning-of-line)
+        (keydef "M-<right>" move-end-of-line)
+        (keydef "M-<backspace>" nil)
+        (keydef "M-<kp-delete>" nil)
+        (keydef "M-`" other-frame)
+        ;; Need to fix `org-meta(left|right)' as well. TODO: switch to
+        ;; noflet after this is merged:
+        ;; https://github.com/nicferrier/emacs-noflet/pull/17
+        (defadvice org-metaleft (around osx-command activate)
+          (flet ((backward-word (&rest args)))
+            (defun backward-word (&rest args)
+              (interactive)
+              (call-interactively #'move-beginning-of-line))
+            ad-do-it))
+        (defadvice org-metaright (around osx-command activate)
+          (flet ((forward-word (&rest args)))
+            (defun forward-word (&rest args)
+              (interactive)
+              (call-interactively #'move-end-of-line))
+            ad-do-it)))))
 #+END_SRC
 
 ** Allow typing a sexp and then replacing it with its value
