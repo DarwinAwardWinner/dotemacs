@@ -819,6 +819,8 @@ This is the file where everything set via =M-x customize= goes.
 #+END_SRC
 * Tweaks
 ** Fixes for packages
+(Currently none)
+
 ** Environment tweaks
 *** Use GNU ls for ~insert-directory~ if possible
 On OS X (and probably other platforms), "ls" may not refer to GNU
