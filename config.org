@@ -908,13 +908,6 @@ themselves.
             ad-do-it)))))
 #+END_SRC
 
-** PC-style Home & End keys on OSX
-
-#+BEGIN_SRC emacs-lisp
-  (keydef "<home>" move-beginning-of-line)
-  (keydef "<end>" move-end-of-line)
-#+END_SRC
-
 ** Allow typing a sexp and then replacing it with its value
 
 #+BEGIN_SRC emacs-lisp
