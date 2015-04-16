@@ -779,6 +779,23 @@ package ido-completing-read+.
            :features ido-completing-read+))
 #+END_SRC
 
+** ido-complete-space-or-hyphen
+My personal fork of ido-complete-space-or-hyphen. It converts the
+package into a full-fledged minor mode.
+
+TODO: Switch back to stock version after this is merged:
+https://github.com/doitian/ido-complete-space-or-hyphen/pull/2
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list
+     'el-get-sources
+     '(:name ido-complete-space-or-hyphen
+             :type github
+             :pkgname "DarwinAwardWinner/ido-complete-space-or-hyphen"
+             ;; Use load to make sure *this* version of ido is loaded.
+             :features ido-complete-space-or-hyphen))
+#+END_SRC
+
 * el-get installation
 After adding all necessary packages to ~el-get-sources~, now we can
 install and initialize them.

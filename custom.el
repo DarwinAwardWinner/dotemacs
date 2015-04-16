@@ -81,6 +81,7 @@
     ("~/\\.cask/" "~/\\.emacs\\.d/\\.cask/" "~/\\.emacs\\.d/elpa/" "~/\\.cpan/" "~/\\.cabal/" "~/perl5/perlbrew/" "~/\\.npm/" "~/\\.virtualenv/" "~/\\.virthualenv/" "~/\\.rvm/" "/[._]build/" "/\\.bzr/" "/\\.coverage/" "/\\.git/" "/\\.hg/" "/\\.rspec/" "/\\.sass-cache/" "/\\.svn/" "/_MTN/" "/_darcs/" "/CVS/" "/pm_to_blib/" "/RCS/" "/SCCS/" "/blib/" "/test_output/")))
  '(icomplete-mode t)
  '(ido-case-fold t)
+ '(ido-complete-space-or-hyphen-mode t)
  '(ido-confirm-unique-completion t)
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory (quote first))
