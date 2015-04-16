@@ -935,9 +935,9 @@ prefer to use it.
 ** Turn on eldoc mode in elisp modes
 
 #+BEGIN_SRC emacs-lisp
-  (dolist (hook '(lisp-interaction-mode-hook
-                  emacs-lisp-mode-hook))
-     (add-hook hook #'turn-on-eldoc-mode))
+  (loop for hook in
+        '(lisp-interaction-mode-hook emacs-lisp-mode-hook)
+        do (add-hook hook #'turn-on-eldoc-mode))
 #+END_SRC
 
 ** Fix ess-roxy behavior
