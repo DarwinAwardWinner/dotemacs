@@ -1599,13 +1599,17 @@ obsolete alias.
 
 ** Associate .zsh files with zshell in sh-mode
 Emacs sh-mode doesn't automatically associate ~*.zsh~ with zsh. This
-enables that.
+enables that. It also enables it for a few other zsh-related files.
 
 #+BEGIN_SRC emacs-lisp
+  ;; Files ending in .zsh
   (add-to-list 'auto-mode-alist '("\\.zsh\\'" . sh-mode))
+  ;; zsh startup files
+  (add-to-list 'auto-mode-alist '("\\.\\(zshrc\\|zshenv\\|zprofile\\|zlogin\\|zlogout\\)\\>" . sh-mode))
+  ;; Ensure that sh-mode uses zsh as shell for these files
   (add-hook 'sh-mode-hook
             (lambda ()
-              (if (string-match "\\.zsh$" buffer-file-name)
+              (if (string-match-p "\\.zsh\\(rc\\|env\\|\\'\\)" buffer-file-name)
                   (sh-set-shell "zsh"))))
 #+END_SRC
 
