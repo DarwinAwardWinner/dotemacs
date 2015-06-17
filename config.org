@@ -1597,6 +1597,18 @@ obsolete alias.
   (define-obsolete-function-alias 'apache2-mode 'apache-mode)
 #+END_SRC
 
+** Associate .zsh files with zshell in sh-mode
+Emacs sh-mode doesn't automatically associate ~*.zsh~ with zsh. This
+enables that.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.zsh\\'" . sh-mode))
+  (add-hook 'sh-mode-hook
+            (lambda ()
+              (if (string-match "\\.zsh$" buffer-file-name)
+                  (sh-set-shell "zsh"))))
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
