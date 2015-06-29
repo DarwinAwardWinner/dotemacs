@@ -1,3 +1,5 @@
+(require 'cl-lib)
+
 ;;; Bootstrapping of Cask & Pallet
 (defun bootstrap-cask ()
   "Ensure Cask is installed and loaded."
@@ -63,7 +65,7 @@ By default, DIRECTORY is set to `user-emacs-directory'."
 ;; The following line seems like it should be redundant, but for some
 ;; reason it is not. `cask-initialize' doesn't seem to initialize any
 ;; packages that were just installed by
-;; `cask-install-missing-in-subprocess', but this does.initialize
+;; `cask-install-missing-in-subprocess', but this does initialize
 ;; those new packages.
 (package-initialize)
 (require 'pallet)
