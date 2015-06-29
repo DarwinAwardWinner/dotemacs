@@ -93,7 +93,9 @@
      (enable regexp "\\`\\(find\\|load\\|locate\\)-library\\'")
      (disable prefix "org-")
      (disable prefix "tmm-")
-     (enable regexp "\\`\\(load\\|enable\\|disable\\|describe\\|custom-theme-visit\\)-theme\\'"))))
+     (enable regexp "\\`\\(load\\|enable\\|disable\\|describe\\|custom-theme-visit\\)-theme\\'")
+     (enable-old prefix "bbdb-")
+     (enable-old exact "where-is"))))
  '(ido-ubiquitous-enable-old-style-default nil)
  '(ido-ubiquitous-function-overrides
    (quote
@@ -115,7 +117,8 @@
      (enable exact "read-char-by-name")
      (disable exact "Info-read-node-name")
      (disable exact "tmm-menubar")
-     (enable exact "imenu--completion-buffer"))))
+     (enable exact "imenu--completion-buffer")
+     (enable-old exact "auto-insert"))))
  '(ido-ubiquitous-mode t)
  '(ido-use-virtual-buffers t)
  '(ido-yes-or-no-mode t)
