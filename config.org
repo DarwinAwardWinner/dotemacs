@@ -465,7 +465,7 @@ See https://github.com/DarwinAwardWinner/git-custom-commands/blob/master/bin/git
   (defadvice magit-run-git (before use-myinit activate)
     "use git-myinit instead of git-init"
     (when (and (equal (car args) "init")
-               (executable-find "git-myinit"))
+               (tramp-sh-handle-executable-find "git-myinit"))
       (setcar args "myinit")
       (message "Modified command: %S" args)))
 #+END_SRC
