@@ -63,9 +63,6 @@
  '(ess-indent-with-fancy-comments nil)
  '(ess-use-tracebug nil)
  '(esup-run-as-batch-p t)
- '(exec-path
-   (quote
-    ("~/bin" "/Applications/Emacs.app/Contents/MacOS/libexec" "/Applications/Emacs.app/Contents/MacOS/bin" "/opt/local/bin" "/usr/local/bin" "/usr/bin" "/bin" "/usr/sbin" "/sbin")))
  '(git-gutter+-diff-options (quote ("--patience")))
  '(git-gutter+-hide-gutter t)
  '(github-clone-url-slot :clone-url)
