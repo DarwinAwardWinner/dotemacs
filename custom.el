@@ -188,7 +188,8 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((eval when
+    ((\"lexical-binding\" . t)
+     (eval when
            (and
             (buffer-file-name)
             (file-regular-p
