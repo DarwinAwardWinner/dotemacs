@@ -95,7 +95,10 @@
      (disable prefix "tmm-")
      (enable regexp "\\`\\(load\\|enable\\|disable\\|describe\\|custom-theme-visit\\)-theme\\'")
      (enable-old prefix "bbdb-")
-     (enable-old exact "where-is"))))
+     (enable-old exact "where-is")
+     (enable prefix "xref-")
+     (disable exact "todo-add-category")
+     (enable exact "find-tag"))))
  '(ido-ubiquitous-enable-old-style-default nil)
  '(ido-ubiquitous-function-overrides
    (quote
