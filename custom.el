@@ -44,7 +44,7 @@
      (auto-dim-other-buffers-mode . "")
      (highlight-changes-mode . "")
      (magit-auto-revert-mode . "")
-     (git-gutter+-mode . "")
+     (git-gutter-mode . "")
      (ws-butler-mode . ""))))
  '(dired-auto-revert-buffer (quote dired-directory-changed-p))
  '(dired-omit-extensions
@@ -69,6 +69,7 @@
  '(global-adjust-parens-mode t)
  '(global-anzu-mode t)
  '(global-git-gutter+-mode t)
+ '(global-git-gutter-mode t)
  '(global-hardhat-mode t)
  '(global-hl-line-mode t)
  '(global-pointback-mode t)
