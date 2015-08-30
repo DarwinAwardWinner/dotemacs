@@ -997,6 +997,14 @@ This allows TRAMP to use sudo on remote hosts.
                '((regexp-quote (system-name)) nil nil))
 #+END_SRC
 
+** Tramp connection sharing
+Work around http://debbugs.gnu.org/cgi/bugreport.cgi?bug=21374 by
+using a shorter ControlPath.
+#+BEGIN_SRC emacs-lisp
+  (setq tramp-ssh-controlmaster-options
+        "-o ControlPath=~/.ssh/control/tramp-%%r@%%h:%%p -o ControlMaster=auto -o ControlPersist=no")
+#+END_SRC
+
 ** Use conf-mode for .gitignore files
 
 #+BEGIN_SRC emacs-lisp
