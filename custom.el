@@ -134,6 +134,7 @@
  '(kill-whole-line t)
  '(magit-completing-read-function (quote magit-ido-completing-read))
  '(magit-diff-refine-hunk t)
+ '(magit-popup-use-prefix-argument (quote default))
  '(magit-repo-dirs (quote ("/Users/ryan/Projects")))
  '(magit-status-buffer-switch-function (quote switch-to-buffer))
  '(make-header-hook
