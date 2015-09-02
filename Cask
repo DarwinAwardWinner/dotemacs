@@ -81,7 +81,6 @@
 (depends-on "sml-modeline")
 (depends-on "sr-speedbar")
 (depends-on "system-specific-settings")
-(depends-on "tempbuf")
 (depends-on "undo-tree")
 (depends-on "use-package")
 (depends-on "w3m")
