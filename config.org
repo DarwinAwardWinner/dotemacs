@@ -312,7 +312,15 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
                                            (4))
          (ess-expression-offset . 4)
          (ess-else-offset . 0)
-         (ess-close-brace-offset . 0))))
+         (ess-close-brace-offset . 0)))
+      (defadvice ess-smart-S-assign (around underscore-unless-space activate)
+        "Always insert underscores unless point is after a space.
+
+  This advice is only active if `ess-smart-S-assign-key' is \"_\"."
+        (if (and (looking-back "[^[:space:]]" 1)
+                 (string= ess-smart-S-assign-key "_"))
+            (insert ess-smart-S-assign-key)
+          ad-do-it)))
     :ensure t)
 #+END_SRC
 
