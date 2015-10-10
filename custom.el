@@ -69,7 +69,7 @@
  '(global-adjust-parens-mode t)
  '(global-anzu-mode t)
  '(global-git-gutter+-mode t)
- '(global-git-gutter-mode t)
+ '(global-git-gutter-mode nil)
  '(global-hardhat-mode t)
  '(global-hl-line-mode t)
  '(global-pointback-mode t)

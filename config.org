@@ -1057,7 +1057,7 @@ This allows TRAMP to use sudo on remote hosts.
   (add-to-list 'tramp-default-proxies-alist
                '(nil "\\`root\\'" "/ssh:%h:"))
   (add-to-list 'tramp-default-proxies-alist
-               '((regexp-quote (system-name)) nil nil))
+               (list (regexp-quote (system-name)) nil nil))
 #+END_SRC
 
 ** Tramp connection sharing
@@ -1643,6 +1643,18 @@ Emacs has a command to sort lines, but not to sort words in a region.
   See `sort-regexp-fields'."
     (interactive "*P\nr")
     (sort-regexp-fields reverse "\\w+" "\\&" beg end))
+#+END_SRC
+
+** Only enable git-gutter in local files
+Git-gutter doesn't play nice with TRAMP remotes
+
+#+BEGIN_SRC emacs-lisp
+  (defun git-gutter-find-file-hook ()
+    (git-gutter-mode
+     (if (file-remote-p (buffer-file-name))
+         0
+       1)))
+  (add-hook 'find-file-hook #'git-gutter-find-file-hook)
 #+END_SRC
 
 ** TODO Centered line mode
