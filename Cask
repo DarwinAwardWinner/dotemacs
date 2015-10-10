@@ -55,6 +55,7 @@
 (depends-on "macrostep")
 (depends-on "magit")
 (depends-on "magit-gh-pulls")
+(depends-on "magit-popup")
 (depends-on "markdown-mode")
 (depends-on "md-readme")
 (depends-on "noflet")
