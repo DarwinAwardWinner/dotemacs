@@ -1141,7 +1141,7 @@ wrap the normal saving function to force it to do nothing instead of
 asking for user input.
 
 #+BEGIN_SRC emacs-lisp
-  (defun desktop-save-in-desktop-dir-never-ask (&rest args)
+  (defun desktop-autosave-in-desktop-dir (&rest args)
     "Like `desktop-save-in-desktop-dir' but aborts if input is required.
 
   If `desktop-save-in-desktop-dir' tries to solicit user input,
@@ -1157,7 +1157,7 @@ asking for user input.
 *** Save desktop with every autosave
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'auto-save-hook 'desktop-save-in-desktop-dir-never-ask)
+  (add-hook 'auto-save-hook 'desktop-autosave-in-desktop-dir)
 #+END_SRC
 
 *** Save desktop after opening or closing a file
@@ -1183,7 +1183,7 @@ succession.
 
   (defun desktop-mode-save-if-stale ()
     (when desktop-mode-desktop-is-stale
-      (desktop-save-in-desktop-dir-never-ask)
+      (desktop-autosave-in-desktop-dir)
       (desktop-mode-set-current)))
 
   (run-with-idle-timer 0.1 t #'desktop-mode-save-if-stale)
