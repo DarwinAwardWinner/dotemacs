@@ -1189,6 +1189,39 @@ succession.
   (run-with-idle-timer 0.1 t #'desktop-mode-save-if-stale)
 #+END_SRC
 
+*** Auto-steal desktop if current owner is dead
+The ~desktop-owner~ function should only ever return the PID of an
+Emacs process that's currently running. This advice replaces the PID
+of a dead or non-Emacs process with nil, thus allowing the current
+Emacs to pry the desktop file from the cold dead hands of the previous
+one without asking permisssion.
+
+#+BEGIN_SRC emacs-lisp
+  (defun pid-command-line (pid)
+    "Return the command line for process with the specified PID.
+
+  If PID is not a currently running process, returns nil."
+    (ignore-errors
+        (car (process-lines "ps" "-p" (format "%s" pid) "-o" "args="))))
+
+  (defadvice desktop-owner (after pry-from-cold-dead-hands activate)
+    "Only return the PID of an Emacs process or nil.
+
+  If the return value is not the PID of a currently running Emacs
+  owned by the current user, it is replaced with nil on the
+  assumption that the previous owner died an untimely death, so
+  that the current emacs can cleanly claim its inheritence."
+    (ignore-errors
+      (let ((owner-cmd (pid-command-line ad-return-value)))
+        (unless
+            (and owner-cmd
+                 (string-match-p
+                  "emacs"
+                  (downcase (file-name-base owner-cmd))))
+          (setq ad-return-value nil)))))
+#+END_SRC
+
+
 ** Put enabled/disabled commands in =custom.el=
 By default, ~enable-command~ and ~disable-command~ append their
 declarations to =user-init-file=. But I want them appended to =custom.el=
