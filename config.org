@@ -19,16 +19,23 @@ If you have an old =.emacs= file or =.emacs.d= directory that you want
 to save, move them out of the way first so that they don't interfere
 with the new config.
 
-** First run
-The first time you start up Emacs after installing this configuration, it
-will install Cask & Pallet, then use those to install all necessary
-packages, as described below in the Bootstrappping section. This will
-take a while. Subsequent startups will not require this time and
-should be relatively fast.
+** First run slow startup
+The first time you start up Emacs after installing this configuration,
+it will install Cask and Pallet, and then use those to install all the
+dependencies of this config, as described below in the Bootstrappping
+section. This could take quite a while. Subsequent startups will not
+require this install time and should be relatively fast.
 
 * Bootstrappping
-The =init.el= file does all the bootstrapping necessary to load this
-file. The following describes what happens in the init.el file.
+The =init.el= file does all the bootstrapping necessary to load the
+configuration in this Org-mode file. It is required as a separate
+non-Org-mode file because this config does not use the version of
+Org-mode included with Emacs, so the proper version or Org mode must
+be installed /before/ loading this file. Otherwise, loading this file
+first would load the built-in version of Org-mode and prevent use of
+the newly-installed version until Emacs was restarted.
+
+This section describes what happens in the init.el file.
 ** Bootstrapping Cask & Pallet
 This code ensures that Cask and Pallet are installed and properly set
 up, and that all packages specified in the =Cask= file are installed and
