@@ -768,26 +768,6 @@ https://github.com/doitian/ido-complete-space-or-hyphen/pull/2
              :features ido-complete-space-or-hyphen))
 #+END_SRC
 
-** ido-speed-hack
-Ido-speed-hack comes along with a modified ido version, which we also
-install. Both are loaded eagerly.
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list
-   'el-get-sources
-   '(:name ido-mode-el
-           :type github
-           :pkgname "danskarda/ido-mode-el"
-           ;; Use load to make sure *this* version of ido is loaded.
-           :load "ido.el"))
-  (add-to-list
-   'el-get-sources
-   '(:name ido-speed-hack
-           :type github
-           :pkgname "danskarda/ido-speed-hack"
-           :features ido-speed-hack))
-#+END_SRC
-
 ** ido-ubiquitous
 This uses the bleeding-edge branch of ido-ubiquitous and its companion
 package ido-completing-read+.
