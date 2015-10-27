@@ -30,12 +30,12 @@ require this install time and should be relatively fast.
 The =init.el= file does all the bootstrapping necessary to load the
 configuration in this Org-mode file. It is required as a separate
 non-Org-mode file because this config does not use the version of
-Org-mode included with Emacs, so the proper version or Org mode must
+Org-mode included with Emacs, so the proper version of Org mode must
 be installed /before/ loading this file. Otherwise, loading this file
-first would load the built-in version of Org-mode and prevent use of
-the newly-installed version until Emacs was restarted.
+first would auto-load the built-in version of Org-mode and prevent use
+of the newly-installed version until Emacs was restarted.
 
-This section describes what happens in the init.el file.
+This section describes what happens in the =init.el= file.
 ** Bootstrapping Cask & Pallet
 This code ensures that Cask and Pallet are installed and properly set
 up, and that all packages specified in the =Cask= file are installed and
@@ -48,10 +48,10 @@ used to install a new package, and should not be edited manually.
 
 ** Load =config.org=
 Finally, init.el loads this file using ~org-babel-load-file~. Because
-it specifies the compile option, this may create a compile log
-window. So the whole thing is wrapped in ~save-window-excursion~ to
-ensure that the window configuration remains unchanged (but the
-compile log buffer is left intact so any warnings or errors can still
+it specifies the compile option, this may create a compile log window.
+So the whole thing is wrapped in ~save-window-excursion~ to ensure
+that the window configuration remains unchanged (but the compile log
+buffer is left in the background so any warnings or errors can still
 be investigated).
 
 * Preliminary setup
