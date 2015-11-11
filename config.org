@@ -1003,6 +1003,16 @@ themselves.
   (global-set-key (kbd "RET") #'newline-and-indent)
 #+END_SRC
 
+** Turn off ~electric-indent-mode~ in markdown buffers
+
+~electric-indent-mode~ has a bad interaction with ~markdown-mode~, so
+we disable it in markdown buffers only.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'markdown-mode-hook
+            (apply-partially #'electric-indent-local-mode 0))
+#+END_SRC
+
 ** Turn on eldoc mode in elisp modes
 
 #+BEGIN_SRC emacs-lisp
