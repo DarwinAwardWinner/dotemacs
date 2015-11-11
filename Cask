@@ -75,6 +75,7 @@
 (depends-on "pyenv-mode")
 (depends-on "python-environment")
 (depends-on "python-mode")
+(depends-on "restart-emacs")
 (depends-on "s")
 (depends-on "scratch-ext")
 (depends-on "shut-up")
