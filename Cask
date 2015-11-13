@@ -5,6 +5,7 @@
 (source org)
 
 (depends-on "adjust-parens")
+(depends-on "aggressive-indent")
 (depends-on "anzu")
 (depends-on "apache-mode")
 (depends-on "async")
