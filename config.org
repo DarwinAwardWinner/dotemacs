@@ -54,7 +54,7 @@ that the window configuration remains unchanged (but the compile log
 buffer is left in the background so any warnings or errors can still
 be investigated).
 
-* Preliminary setup
+* Preliminary environment setup
 This sets up a few functions and other environment items that will be
 used later in the configuration, so they need to be defined/prepared
 up front.
@@ -107,12 +107,11 @@ and restores it after evaluating body.
 #+BEGIN_SRC emacs-lisp
   (defmacro preserve-buffer-modified-p (&rest body)
     "Evaluate BODY, then restore buffer modified status."
+    (declare (indent 0))
     `(let ((bmp (buffer-modified-p)))
        (prog1
            (progn ,@body)
          (set-buffer-modified-p bmp))))
-  (put 'preserve-buffer-modified-p 'lisp-indent-function
-       (get 'progn 'lisp-indent-function))
 #+END_SRC
 
 ** Ensure persistence directory exists
@@ -156,7 +155,7 @@ items depend on having the full PATH available.
   (pull-env-vars-from-shell '("PATH" "MANPATH"))
 #+END_SRC
 
-* Package Configuration
+* Package configuration
 This section sets up some package-specific configuration options
 
 #+BEGIN_SRC emacs-lisp
@@ -861,7 +860,8 @@ This is the file where everything set via =M-x customize= goes.
 
 #+BEGIN_SRC emacs-lisp
   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-  (load custom-file)
+  (when (f-exists? custom-file)
+    (load custom-file))
 #+END_SRC
 * Tweaks
 ** Fixes for packages
@@ -1268,6 +1268,7 @@ would rather have it start in the same directory as the first file.
        (list oldf newf (diff-switches)))))
 #+END_SRC
 
+*** TODO Report this as a bug in Emacs
 ** Set up a function for reloading the init file
 
 #+BEGIN_SRC emacs-lisp
