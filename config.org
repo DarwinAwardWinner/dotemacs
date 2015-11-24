@@ -805,9 +805,9 @@ package ido-completing-read+.
                             "-mode")))))
 
              (defun tempbuf-major-mode-hook ()
-               "Turn on `tempbuf-mode' in current buffer if buffer's `major-mode' is in `tempbuf-temporary-major-modes'.
+               "Turn on `tempbuf-mode' if appropriate.
 
-     Else turn off `tempbuf-mode'."
+  See `tempbuf-temporary-major-modes'."
                (if (apply #'derived-mode-p tempbuf-temporary-major-modes)
                    (turn-on-tempbuf-mode)
                  (turn-off-tempbuf-mode)))
