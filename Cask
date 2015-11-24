@@ -1,6 +1,4 @@
-(source "e6h" "http://www.e6h.org/packages/")
 (source gnu)
-(source marmalade)
 (source melpa)
 (source org)
 
