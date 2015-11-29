@@ -305,6 +305,7 @@
  '(use-dialog-box nil)
  '(user-mail-address "rct@thompsonclan.org")
  '(vc-make-backup-files t)
+ '(visible-bell t)
  '(void-text-area-pointer (quote text))
  '(winner-mode t)
  '(ws-butler-global-mode t))
