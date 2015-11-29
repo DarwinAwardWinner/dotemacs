@@ -26,6 +26,7 @@
  '(cperl-indent-parens-as-block t)
  '(cperl-merge-trailing-else nil)
  '(delete-by-moving-to-trash t)
+ '(delete-old-versions t)
  '(delete-selection-mode t)
  '(desktop-path (quote ("~/.emacs.d/persistence" "~")))
  '(desktop-save-mode t)
@@ -133,6 +134,7 @@
  '(initial-scratch-message
    ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
 ")
+ '(kept-old-versions 5)
  '(kill-whole-line t)
  '(magit-completing-read-function (quote magit-ido-completing-read))
  '(magit-diff-refine-hunk t)
@@ -305,6 +307,7 @@
  '(use-dialog-box nil)
  '(user-mail-address "rct@thompsonclan.org")
  '(vc-make-backup-files t)
+ '(version-control t)
  '(visible-bell t)
  '(void-text-area-pointer (quote text))
  '(winner-mode t)
