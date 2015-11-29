@@ -792,7 +792,8 @@ package ido-completing-read+.
    '(:name ido-ubiquitous
            :type http
            :url "https://github.com/DarwinAwardWinner/ido-ubiquitous/raw/bleeding-edge/ido-ubiquitous.el"
-           :features ido-ubiquitous))
+           :features ido-ubiquitous
+           :depends ido-completing-read+))
   (add-to-list
    'el-get-sources
    '(:name ido-completing-read+
