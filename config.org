@@ -468,12 +468,12 @@ former is available.
 See https://github.com/DarwinAwardWinner/git-custom-commands/blob/master/bin/git-myinit
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice magit-run-git (before use-myinit activate)
-    "use git-myinit instead of git-init"
-    (when (and (equal (car args) "init")
-               (tramp-sh-handle-executable-find "git-myinit"))
-      (setcar args "myinit")
-      (message "Modified command: %S" args)))
+  ;; (defadvice magit-run-git (before use-myinit activate)
+  ;;   "use git-myinit instead of git-init"
+  ;;   (when (and (equal (car args) "init")
+  ;;              (tramp-sh-handle-executable-find "git-myinit"))
+  ;;     (setcar args "myinit")
+  ;;     (message "Modified command: %S" args)))
 #+END_SRC
 
 *** Magit init create directory
