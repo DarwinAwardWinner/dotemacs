@@ -1062,7 +1062,8 @@ we disable it in markdown buffers only.
          (insert (concat (ess-roxy-guess-str t) " "))))))
 #+END_SRC
 
-** Tramp remote sudo
+** TRAMP
+*** Tramp remote sudo
 This allows TRAMP to use sudo on remote hosts.
 
 #+BEGIN_SRC emacs-lisp
@@ -1073,7 +1074,7 @@ This allows TRAMP to use sudo on remote hosts.
                (list (regexp-quote (system-name)) nil nil))
 #+END_SRC
 
-** Tramp connection sharing
+*** Tramp connection sharing
 Work around http://debbugs.gnu.org/cgi/bugreport.cgi?bug=21374 by
 using a shorter ControlPath.
 #+BEGIN_SRC emacs-lisp
