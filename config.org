@@ -1236,6 +1236,25 @@ one without asking permisssion.
           (setq ad-return-value nil)))))
 #+END_SRC
 
+*** Prevent recursive invocations of ~desktop-save~
+If ~desktop-save~ needs to ask a question and Emacs is idle for a long
+time (multiple auto-save intervals), it is possible to get multiple
+nested calls to save the desktop. This is obviously undesirable. The
+below code turns any recursive call to ~desktop-save~ with the same
+=DIRNAME= into a no-op.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar desktop-save-recursion-guard-dirname nil)
+
+  (defadvice desktop-save (around prevent-recursion activate)
+    "Prevent recursive calls to `desktop-save'.
+
+  Recursive calls will only be prevented when they have the same
+  DIRNAME."
+    (if (string= dirname desktop-save-recursion-guard-dirname)
+        (message "Preventing recursive call to `desktop-save' for %S" dirname)
+      ad-do-it))
+#+END_SRC
 
 ** Put enabled/disabled commands in =custom.el=
 By default, ~enable-command~ and ~disable-command~ append their
