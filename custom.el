@@ -154,6 +154,11 @@
  '(org-adapt-indentation nil)
  '(org-completion-use-ido t)
  '(org-support-shift-select t)
+ '(org-todo-keyword-faces (quote (("REJECTED" . "darkred"))))
+ '(org-todo-keywords
+   (quote
+    ((sequence "TODO" "DONE")
+     (sequence "WORKING" "WRITING(r)" "SUBMITTED" "|" "REJECTED(j)" "ACCEPTED" "PUBLISHED"))))
  '(pretty-symbol-categories (lambda relational nil))
  '(pretty-symbol-patterns
    (quote
