@@ -214,14 +214,6 @@ configuration and should not be executed upon init):
     :ensure t)
 #+END_SRC
 
-** bar-cursor
-
-#+BEGIN_SRC emacs-lisp
-  (use-package bar-cursor
-    :init (bar-cursor-mode 1)
-    :ensure t)
-#+END_SRC
-
 ** browse-url
 
 #+BEGIN_SRC emacs-lisp
@@ -745,7 +737,9 @@ configuration and should not be executed upon init):
      '(:name bar-cursor
              :type http
              :url "http://www.northbound-train.com/emacs/bar-cursor.el"
-             :features bar-cursor))
+             :features bar-cursor
+             :lazy nil
+             :after (bar-cursor-mode 1)))
 #+END_SRC
 
 ** debian-changelog-mode
