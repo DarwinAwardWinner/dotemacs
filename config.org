@@ -1253,7 +1253,8 @@ below code turns any recursive call to ~desktop-save~ with the same
   DIRNAME."
     (if (string= dirname desktop-save-recursion-guard-dirname)
         (message "Preventing recursive call to `desktop-save' for %S" dirname)
-      ad-do-it))
+      (let ((desktop-save-recursion-guard-dirname dirname))
+        ad-do-it)))
 #+END_SRC
 
 ** Put enabled/disabled commands in =custom.el=
