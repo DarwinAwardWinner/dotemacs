@@ -99,7 +99,8 @@
      (enable-old exact "where-is")
      (enable prefix "xref-")
      (disable exact "todo-add-category")
-     (enable exact "find-tag"))))
+     (enable exact "find-tag")
+     (enable prefix "etags-select-"))))
  '(ido-ubiquitous-enable-old-style-default nil)
  '(ido-ubiquitous-function-overrides
    (quote
