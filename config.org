@@ -1740,6 +1740,13 @@ Git-gutter doesn't play nice with TRAMP remotes
   (add-hook 'find-file-hook #'git-gutter-find-file-hook)
 #+END_SRC
 
+** Make scripts executable on save
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-save-hook
+    'executable-make-buffer-file-executable-if-script-p)
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
