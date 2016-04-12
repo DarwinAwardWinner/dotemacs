@@ -11,6 +11,7 @@
 (depends-on "auto-complete")
 (depends-on "auto-dim-other-buffers")
 (depends-on "autopair")
+(depends-on "beacon")
 (depends-on "bind-key")
 (depends-on "cask")
 (depends-on "cl-lib-highlight")

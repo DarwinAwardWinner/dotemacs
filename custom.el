@@ -12,6 +12,12 @@
  '(auto-dim-other-buffers-mode t)
  '(autopair-global-mode t)
  '(backup-directory-alist (quote (("." . "~/.emacs.d/persistence/backups"))))
+ '(beacon-blink-delay 0.3)
+ '(beacon-blink-when-focused t)
+ '(beacon-blink-when-point-moves-horizontally 40)
+ '(beacon-blink-when-point-moves-vertically 2)
+ '(beacon-dont-blink-commands nil)
+ '(beacon-mode t)
  '(bs-default-configuration "all")
  '(clean-buffer-list-delay-general 7)
  '(completion-styles
