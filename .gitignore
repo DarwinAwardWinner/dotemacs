@@ -8,22 +8,22 @@
 
 # These generally ignore various temporary files that Emacs creates to
 # persist various data to disk.
-/persistence
 TAGS
 .\#*
 \#*
-tramp
-/session.*
-url/
-# site-lisp/el-get
-emms
-/ac-comphist.dat
-/.emacs.desktop*
-/var/
-/history
-/elpa/
-/abbrev_defs
+
+# My config puts lots of temporary files in this subdirectory
+/persistence
+# elpa cache
+/elpa
+# Various history files
 /bookmarks
-/eshell/
+/emms
+/eshell
+/history
+/ido.last
+/recentf
 /smex-items
-/todo/
+/tramp
+/url
+/var
