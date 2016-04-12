@@ -857,6 +857,18 @@ This mode requires special handling because it doesn't use
     '(add-hook 'ess-help-mode-hook 'tempbuf-major-mode-hook))
 #+END_SRC
 
+** smooth-scrolling
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list
+   'el-get-sources
+   '(:name smooth-scrolling
+           :type github
+           :pkgname "DarwinAwardWinner/smooth-scrolling"
+           :features smooth-scrolling))
+#+END_SRC
+
+
 * el-get installation
 After adding all necessary packages to ~el-get-sources~, now we can
 install and initialize them.
