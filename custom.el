@@ -93,21 +93,6 @@
  '(ido-enter-matching-directory (quote first))
  '(ido-everywhere t)
  '(ido-mode (quote both) nil (ido))
- '(ido-ubiquitous-command-overrides
-   (quote
-    ((disable exact "execute-extended-command")
-     (enable prefix "wl-")
-     (enable-old prefix "Info-")
-     (enable exact "webjump")
-     (enable regexp "\\`\\(find\\|load\\|locate\\)-library\\'")
-     (disable prefix "org-")
-     (disable prefix "tmm-")
-     (enable regexp "\\`\\(load\\|enable\\|disable\\|describe\\|custom-theme-visit\\)-theme\\'")
-     (enable-old prefix "bbdb-")
-     (enable-old exact "where-is")
-     (enable prefix "xref-")
-     (disable exact "todo-add-category")
-     (enable exact "find-tag"))))
  '(ido-ubiquitous-enable-old-style-default nil)
  '(ido-ubiquitous-mode t)
  '(ido-use-virtual-buffers t)
@@ -141,7 +126,10 @@
  '(org-adapt-indentation nil)
  '(org-completion-use-ido t)
  '(org-support-shift-select t)
- '(org-todo-keyword-faces (quote (("CANCELLED" . "darkred") ("REJECTED" . "darkred"))))
+ '(org-todo-keyword-faces
+   (quote
+    (("CANCELLED" . "darkred")
+     ("REJECTED" . "darkred"))))
  '(org-todo-keywords
    (quote
     ((sequence "TODO" "DONE" "CANCELLED")
@@ -313,7 +301,8 @@
  '(highlight-defined-function-name-face ((t (:inherit font-lock-function-name-face :foreground "blue4"))))
  '(highlight-defined-macro-name-face ((t (:inherit highlight-defined-function-name-face :underline t))))
  '(hl-line ((t (:background "azure"))))
- '(magit-item-highlight ((t nil))))
+ '(magit-item-highlight ((t nil)))
+ '(popup-face ((t (:inherit default :background "lightgray" :foreground "black")))))
 
 (put 'scroll-left 'disabled nil)
 (put 'upcase-region 'disabled nil)
