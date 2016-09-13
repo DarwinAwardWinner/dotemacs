@@ -20,6 +20,7 @@
 (depends-on "crm-custom")
 (depends-on "crontab-mode")
 (depends-on "ctable")
+(depends-on "cython-mode")
 (depends-on "dash")
 (depends-on "deferred")
 (depends-on "diminish")
