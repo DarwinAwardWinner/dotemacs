@@ -176,7 +176,8 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((\"lexical-binding\" . t)
+    ((ws-butler-mode)
+     (\"lexical-binding\" . t)
      (eval when
            (and
             (buffer-file-name)
