@@ -1747,6 +1747,17 @@ Git-gutter doesn't play nice with TRAMP remotes
     'executable-make-buffer-file-executable-if-script-p)
 #+END_SRC
 
+** Make electric-indent-mode and python-mode work together
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice newline (around py-electric-indent activate)
+    (if (and electric-indent-mode
+             (derived-mode-p 'python-mode))
+        (let ((electric-indent-mode nil))
+          (py-newline-and-indent))
+      ad-do-it))
+#+END_SRC
+
 ** TODO Centered line mode
 
 ** TODO volatile highlight
