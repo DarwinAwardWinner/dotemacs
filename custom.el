@@ -132,7 +132,7 @@
      ("REJECTED" . "darkred"))))
  '(org-todo-keywords
    (quote
-    ((sequence "TODO" "DONE" "CANCELLED")
+    ((sequence "TODO" "|" "DONE" "CANCELLED")
      (sequence "WORKING" "WRITING(r)" "SUBMITTED" "|" "REJECTED(j)" "ACCEPTED" "PUBLISHED"))))
  '(pretty-symbol-categories (lambda relational nil))
  '(pretty-symbol-patterns
