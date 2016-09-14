@@ -994,24 +994,6 @@ themselves.
   (global-set-key (kbd "C-c C-e") 'eval-replace-preceding-sexp)
 #+END_SRC
 
-** Tell ~fixup-whitespace~ not to delete indentation
-
-#+BEGIN_SRC emacs-lisp
-  (defadvice fixup-whitespace (around indent-line activate)
-    "Don't delete indentation; instead do correct indentation.
-
-  When `fixup-whitespace' is called with the point in the
-  indentation region of the line (i.e. before the first
-  non-whitespace character), indent the line instead of deleting
-  the indentation."
-    (if (<= (current-column)
-           (save-excursion
-             (back-to-indentation)
-             (current-column)))
-        (indent-for-tab-command)
-      ad-do-it))
-#+END_SRC
-
 ** Have ~indent-region~ indent containing defun if mark is inactive
 
 #+BEGIN_SRC emacs-lisp
