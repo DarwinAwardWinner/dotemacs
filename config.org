@@ -613,6 +613,13 @@ about overhead from multiple calls to git. This allows things like
     :ensure t)
 #+END_SRC
 
+** snakemake
+
+#+BEGIN_SRC emacs-lisp
+  (use-package snakemake-mode
+    :ensure t)
+#+END_SRC
+
 ** TODO guide-key
 http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/guide-key
 
@@ -867,7 +874,6 @@ This mode requires special handling because it doesn't use
            :pkgname "DarwinAwardWinner/smooth-scrolling"
            :features smooth-scrolling))
 #+END_SRC
-
 
 * el-get installation
 After adding all necessary packages to ~el-get-sources~, now we can
@@ -1729,15 +1735,33 @@ Git-gutter doesn't play nice with TRAMP remotes
     'executable-make-buffer-file-executable-if-script-p)
 #+END_SRC
 
-** Make electric-indent-mode and python-mode work together
+** Make electric-indent-mode and python-mode play nice
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice newline (around py-electric-indent activate)
-    (if (and electric-indent-mode
-             (derived-mode-p 'python-mode))
-        (let ((electric-indent-mode nil))
-          (py-newline-and-indent))
-      ad-do-it))
+  (defun python-newline-and-indent ()
+    "Custom python indentation function.
+
+    This works like normal, except that if point is in the
+    indentation of the current line, the newly created line will
+    not be indented any further than the current line. This fixes
+    the annoying tendency of python-mode to always indent to the
+    maximum possible indentation level on every new line."
+    (interactive)
+    (let* ((starting-column (current-column))
+           (starting-indentation (current-indentation))
+           (started-in-indentation (<= starting-column starting-indentation)))
+      (newline-and-indent)
+      (when (and started-in-indentation
+                 (> (current-indentation) starting-indentation))
+        (save-excursion
+          (back-to-indentation)
+          (delete-region (point) (progn (forward-line 0) (point)))
+          (indent-to-column starting-indentation))
+        (back-to-indentation))))
+  (define-key python-mode-map (kbd "RET") #'python-newline-and-indent)
+  (defun turn-off-electric-indent-local-mode ()
+      (electric-indent-local-mode 0))
+  (add-hook 'python-mode-hook #'turn-off-electric-indent-local-mode)
 #+END_SRC
 
 ** TODO Centered line mode
