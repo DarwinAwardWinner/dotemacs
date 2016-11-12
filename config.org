@@ -610,6 +610,16 @@ about overhead from multiple calls to git. This allows things like
     :mode ("\\.Rmd" . poly-markdown+r-mode))
 #+END_SRC
 
+** python-mode
+".pyi" is the file extension for the Python type shed type
+annotations. These files are valid (but incomplete) Python syntax, so
+regular ~python-mode~ is just fine.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package python
+    :mode ("\\.pyi" . python-mode))
+#+END_SRC
+
 ** smex
 
 #+BEGIN_SRC emacs-lisp
