@@ -155,6 +155,14 @@ items depend on having the full PATH available.
   (pull-env-vars-from-shell '("PATH" "MANPATH"))
 #+END_SRC
 
+** Load TRAMP early
+Loading ESS before TRAMP seems to prevent TRAMP from working, so we
+load TRAMP first.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'tramp)
+#+END_SRC
+
 * Package configuration
 This section sets up some package-specific configuration options
 
