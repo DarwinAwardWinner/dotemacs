@@ -138,6 +138,9 @@
    (quote
     ((sequence "TODO" "|" "DONE" "CANCELLED")
      (sequence "WORKING" "WRITING(r)" "SUBMITTED" "|" "REJECTED(j)" "ACCEPTED" "PUBLISHED"))))
+ '(package-selected-packages
+   (quote
+    (yaml-mode ws-butler use-package undo-tree systemd system-specific-settings sr-speedbar sml-modeline smex scratch-ext restart-emacs python-mode pyenv-mode py-isort pretty-symbols polymode pointback pkg-info php-mode pallet osx-pseudo-daemon org-plus-contrib occur-context-resize noflet md-readme markdown-mode magit-gh-pulls macrostep lexbind-mode keydef jedi ido-yes-or-no ido-load-library highlight-defined helm header2 haskell-mode hardhat gitignore-mode github-clone github-browse-file git-gutter-fringe esup ess-smart-underscore ess-R-object-popup ess-R-data-view el-get crontab-mode crm-custom cl-lib-highlight beacon autopair auto-dim-other-buffers apples-mode apache-mode anzu aggressive-indent adjust-parens)))
  '(pretty-symbol-categories (lambda relational nil))
  '(pretty-symbol-patterns
    (quote
