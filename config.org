@@ -318,7 +318,8 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
         (if (and (looking-back "[^[:space:]]" 1)
                  (string= ess-smart-S-assign-key "_"))
             (insert ess-smart-S-assign-key)
-          ad-do-it)))
+          ad-do-it))
+      (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode)))
     :ensure t)
 #+END_SRC
 
