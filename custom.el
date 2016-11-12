@@ -132,7 +132,8 @@
  '(org-support-shift-select t)
  '(org-todo-keyword-faces
    (quote
-    (("CANCELLED" . "darkred")
+    (("DONE" . "darkgreen")
+     ("CANCELLED" . "darkred")
      ("REJECTED" . "darkred"))))
  '(org-todo-keywords
    (quote
@@ -183,7 +184,8 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((ws-butler-mode)
+    ((eval ignore-errors
+           (ws-butler-mode 0))
      (\"lexical-binding\" . t)
      (eval when
            (and
