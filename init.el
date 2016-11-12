@@ -44,7 +44,10 @@ By default, DIRECTORY is set to `user-emacs-directory'."
   (let* ((package-list
           (mapcar #'cask-dependency-name
                   (cask--dependencies (cask-setup user-emacs-directory))))
-         (needed-packages (cl-remove-if #'package-installed-p package-list)))
+         (needed-packages (cl-remove-if #'package-installed-p package-list))
+	 (running-emacs (concat invocation-directory invocation-name))
+	 (process-environment
+	  (cons (format "EMACS=%s" running-emacs) process-environment)))
     (when needed-packages
       (message "Need to install packages: %S" needed-packages)
       (let ((default-directory (or directory user-emacs-directory))
