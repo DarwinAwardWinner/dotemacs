@@ -331,12 +331,6 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
     :ensure t)
 #+END_SRC
 
-** ess-site
-
-#+BEGIN_SRC emacs-lisp
-  (use-package ess-site)
-#+END_SRC
-
 ** esup
 
 #+BEGIN_SRC emacs-lisp
