@@ -1751,12 +1751,23 @@ Git-gutter doesn't play nice with TRAMP remotes
   (add-hook 'python-mode-hook #'turn-off-electric-indent-local-mode)
 #+END_SRC
 
-** TODO Centered line mode
+** ESS default directory fix
+
+When an R script is in a directory named "scripts", suggest the parent
+directory as the starting directory.
+g
+#+BEGIN_SRC emacs-lisp
+  (require 'f)
+  (defun my-ess-directory-function ()
+    (cond (ess-directory)
+          ((string= "scripts" (f-filename (f-full default-directory)))
+           (f-parent default-directory))
+          (t nil)))
+  (setq ess-directory-function #'my-ess-directory-function)
+#+END_SRC
 
 ** TODO volatile highlight
-
 ** TODO reveal-in-finder
-
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
