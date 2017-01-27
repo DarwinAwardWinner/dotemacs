@@ -585,6 +585,14 @@ about overhead from multiple calls to git. This allows things like
     :ensure t)
 #+END_SRC
 
+** polymode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package polymode
+    :ensure t
+    :mode ("\\.Rmd\\'" . poly-markdown+r-mode))
+#+END_SRC
+
 ** pretty-symbols
 
 #+BEGIN_SRC emacs-lisp
@@ -604,13 +612,6 @@ about overhead from multiple calls to git. This allows things like
          (pretty-symbols-mode 1)))
       (add-hook 'after-change-major-mode-hook #'pretty-symbols-enable-if-available))
     :ensure t)
-#+END_SRC
-
-** polymode
-
-#+BEGIN_SRC emacs-lisp
-  (use-package polymode
-    :mode ("\\.Rmd" . poly-markdown+r-mode))
 #+END_SRC
 
 ** python-mode
