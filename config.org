@@ -1137,7 +1137,7 @@ The following additions ensure that the saved desktop file is always
 up-to-date.
 
 *** Add a desktop-save function that gives up if user input is required
-When running in hooks, it's not disasterous if we can't save the
+When running in hooks, it's not disastrous if we can't save the
 desktop for some reason, and we don't want to bother the user, so we
 wrap the normal saving function to force it to do nothing instead of
 asking for user input.
