@@ -63,6 +63,7 @@
  '(dired-use-ls-dired (quote unspecified))
  '(echo-keystrokes 0.05)
  '(el-get-is-lazy nil)
+ '(eldoc-echo-area-use-multiline-p t)
  '(eldoc-idle-delay 0.05)
  '(elfeed-feeds
    (quote
