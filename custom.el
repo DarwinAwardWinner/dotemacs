@@ -34,6 +34,7 @@
  '(delete-by-moving-to-trash t)
  '(delete-old-versions t)
  '(delete-selection-mode t)
+ '(desktop-auto-save-timeout nil)
  '(desktop-path (quote ("~/.emacs.d/persistence" "~")))
  '(desktop-save-mode t)
  '(diff-switches "-U3")
