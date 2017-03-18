@@ -120,6 +120,13 @@ and restores it after evaluating body.
   (make-directory (f-join user-emacs-directory "persistence") 'recursive)
 #+END_SRC
 
+** Set up use-package
+This is used later in the config to configure packages, so we make
+sure that it's available now.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'use-package)
+#+END_SRC
 ** Set PATH and MANPATH from shell
 My shell configuration adds a lot of things to PATH dynamically
 (pyenv, perlbrew, etc.), so rather than emulate that in Emacs, we
@@ -132,27 +139,10 @@ This step needs to be done early, because some later configuration
 items depend on having the full PATH available.
 
 #+BEGIN_SRC emacs-lisp
-  ;; TODO: make a package out of this
-  ;; Pull PATH and MANPATH from the shell
-  (defun parse-envvar (var-and-value)
-    (let ((match-pos (string-match-p "=" var-and-value)))
-      (when match-pos
-        (cons (substring var-and-value 0 match-pos)
-              (substring var-and-value (1+ match-pos))))))
-
-  (defun pull-env-vars-from-shell (vars)
-    (when (stringp vars)
-      (setq vars (list vars)))
-    (let* ((output (shell-command-to-string "bash --login -c env"))
-           (lines (split-string output nil t)))
-      (loop for line in lines
-            for (var . value) = (parse-envvar line)
-            if (member var vars)
-            do (setenv var value)
-            and if (string= var "PATH") do
-            (setq exec-path (split-string value path-separator t)))))
-
-  (pull-env-vars-from-shell '("PATH" "MANPATH"))
+  (use-package exec-path-from-shell
+    :ensure t
+    :demand t
+    :config (exec-path-from-shell-initialize))
 #+END_SRC
 
 ** Load TRAMP early
@@ -165,10 +155,6 @@ load TRAMP first.
 
 * Package configuration
 This section sets up some package-specific configuration options
-
-#+BEGIN_SRC emacs-lisp
-  (require 'use-package)
-#+END_SRC
 
 Eval the following Elisp code to re-sort the below entries (this code
 line is not in a source block because it is not part of the actual
@@ -245,6 +231,15 @@ This binds Shift+click to open a link
   (use-package bs
     :bind ("C-x C-b" . bs-show)
     :ensure t)
+#+END_SRC
+
+** cask
+
+Use emacs-lisp-mode in Cask files.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package cask
+    :mode ("Cask\\'" . emacs-lisp-mode))
 #+END_SRC
 
 ** cl-lib
@@ -327,7 +322,16 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
                  (string= ess-smart-S-assign-key "_"))
             (insert ess-smart-S-assign-key)
           ad-do-it))
-      (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode)))
+      (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode))
+      ;; TODO: Put this function in a more appropriate location
+      (defun twiddle-mode (mode)
+        "If MODE is activated, then deactivate it and then activate it again.
+  If MODE is not active, do nothing."
+        (when (eval mode)
+          (funcall mode 0)
+          (funcall mode 1)))
+      (eval-after-load 'ess-custom
+        (add-hook 'R-mode-hook (apply-partially #'twiddle-mode 'font-lock-mode))))
     :ensure t)
 #+END_SRC
 
@@ -554,6 +558,20 @@ about overhead from multiple calls to git. This allows things like
       ad-do-it))
 #+END_SRC
 
+*** Auto-refresh the magit status buffer
+This is problematic on remote systems, so we only enable it locally.
+#+BEGIN_SRC emacs-lisp
+  (use-package magit-filenotify
+    :init (progn
+            (defun turn-on-magit-filenotify-mode-if-local ()
+              (magit-filenotify-mode
+               (if (file-remote-p default-directory)
+                   0
+                 1)))
+            (add-hook 'magit-status-mode-hook
+                      'turn-on-magit-filenotify-mode-if-local)))
+#+END_SRC
+
 ** markdown-mode
 
 #+BEGIN_SRC emacs-lisp
@@ -577,6 +595,74 @@ about overhead from multiple calls to git. This allows things like
 #+END_SRC
 
 ** org-mode
+The default implementation of the ~org-in-src-block-p~ function is
+broken and always returns nil, so we reimplement it correctly here. We
+also add a function to insert a new src block into an org-mode buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :ensure t
+    :config
+    (progn
+      (defun org-in-src-block-p (&optional inside)
+        "Whether point is in a code source block.
+       When INSIDE is non-nil, don't consider we are within a src block
+       when point is at #+BEGIN_SRC or #+END_SRC."
+        (save-match-data
+          (let* ((elem (org-element-at-point))
+                 (elem-type (car elem))
+                 (props (cadr elem))
+                 (end (plist-get props :end))
+                 (pb (plist-get props :post-blank))
+                 (content-end
+                  (save-excursion
+                    (goto-char end)
+                    (forward-line (- pb))
+                    (point)))
+                 (case-fold-search t))
+            (and
+             ;; Elem is a src block
+             (eq elem-type 'src-block)
+             ;; Make sure point is not on one of the blank lines after the
+             ;; element.
+             (< (point) content-end)
+             ;; If INSIDE is non-nil, then must not be at block delimiter
+             (not
+              (and
+               inside
+               (save-excursion
+                 (beginning-of-line)
+                 (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
+      (defun org-insert-src-block (src-code-type)
+        "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+        (interactive
+         (let ((src-code-types
+                '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                  "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
+                  "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
+                  "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
+                  "scheme" "sqlite")))
+           (list (ido-completing-read "Source code type: " src-code-types))))
+        (progn
+          (newline-and-indent)
+          (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+          (newline-and-indent)
+          (insert "#+END_SRC\n")
+          (forward-line -2)
+          (org-edit-src-code))))
+    ;; We don't set ensure here because the org-mode package has a
+    ;; different name. See the Cask file.
+    :ensure nil)
+#+END_SRC
+
+*** Org-bullets
+This provides pretty-looking bullets for org-mode.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t
+    :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+END_SRC
 
 ** osx-pseudo-daemon
 
@@ -643,95 +729,6 @@ regular ~python-mode~ is just fine.
 
 ** TODO guide-key
 http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/guide-key
-
-*** Fix ~org-in-src-block-p~
-    The default implementation of the ~org-in-src-block-p~ function is
-    broken and always returns nil, so we reimplement it correctly
-    here.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package org
-        :config
-        (defun org-in-src-block-p (&optional inside)
-          "Whether point is in a code source block.
-           When INSIDE is non-nil, don't consider we are within a src block
-           when point is at #+BEGIN_SRC or #+END_SRC."
-          (save-match-data
-            (let* ((elem (org-element-at-point))
-                   (elem-type (car elem))
-                   (props (cadr elem))
-                   (end (plist-get props :end))
-                   (pb (plist-get props :post-blank))
-                   (content-end
-                    (save-excursion
-                      (goto-char end)
-                      (forward-line (- pb))
-                      (point)))
-                   (case-fold-search t))
-              (and
-               ;; Elem is a src block
-               (eq elem-type 'src-block)
-               ;; Make sure point is not on one of the blank lines after the
-               ;; element.
-               (< (point) content-end)
-               ;; If INSIDE is non-nil, then must not be at block delimiter
-               (not
-                (and
-                 inside
-                 (save-excursion
-                   (beginning-of-line)
-                   (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
-        ;; We don't set ensure here because the org-mode package has a
-        ;; different name. See the Cask file.
-        :ensure nil)
-    #+END_SRC
-
-*** Function for inserting src blocks in Org Mode
-    The following function inserts a new src block into an org-mode buffer.
-
-    #+BEGIN_SRC emacs-lisp
-      (defun org-insert-src-block (src-code-type)
-        "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
-        (interactive
-         (let ((src-code-types
-                '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
-                  "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
-                  "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
-                  "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
-                  "scheme" "sqlite")))
-           (list (ido-completing-read "Source code type: " src-code-types))))
-        (progn
-          (newline-and-indent)
-          (insert (format "#+BEGIN_SRC %s\n" src-code-type))
-          (newline-and-indent)
-          (insert "#+END_SRC\n")
-          (forward-line -2)
-          (org-edit-src-code)))
-    #+END_SRC
-
-    The next function calls ~org-edit-src-code~ on the src block at
-    point, but creates one first if necessary using
-    ~org-insert-src-block~.
-
-#+BEGIN_SRC emacs-lisp
-  (defun org-insert-or-edit-src-block ()
-    (interactive)
-    (if (org-in-src-block-p)
-         (org-edit-src-code)
-      ;; We use `call-interactively' to trigger the language prompt
-      (call-interactively 'org-insert-src-block)))
-#+END_SRC
-
-    Lastly we define a key binding for this function. We also define
-    the same key combination, as well as the standard "C-c C-c", to
-    exit the source editing buffer. This way, the same key combination
-    can be used to enter and exit.
-
-#+BEGIN_SRC emacs-lisp
-  (keydef (org "C-c C-'") org-insert-or-edit-src-block)
-  (keydef (org-src "C-c C-'") org-edit-src-exit)
-  (keydef (org-src "C-c C-c") org-edit-src-exit)
-#+END_SRC
 
 ** TODO ignoramus
 https://github.com/rolandwalker/ignoramus

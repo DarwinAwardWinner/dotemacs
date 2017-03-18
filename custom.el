@@ -11,6 +11,7 @@
  '(ack-and-a-half-executable "/Users/ryan/perl5/perlbrew/perls/perl-5.16.3/bin/ack")
  '(auto-dim-other-buffers-mode t)
  '(autopair-global-mode t)
+ '(backup-by-copying t)
  '(backup-directory-alist (quote (("." . "~/.emacs.d/persistence/backups"))))
  '(beacon-blink-delay 0.3)
  '(beacon-blink-when-focused t)
@@ -88,6 +89,55 @@
  '(hardhat-fullpath-protected-regexps
    (quote
     ("~/\\.cask/" "~/\\.emacs\\.d/\\.cask/" "~/\\.emacs\\.d/elpa/" "~/\\.cpan/" "~/\\.cabal/" "~/perl5/perlbrew/" "~/\\.npm/" "~/\\.virtualenv/" "~/\\.virthualenv/" "~/\\.rvm/" "/[._]build/" "/\\.bzr/" "/\\.coverage/" "/\\.git/" "/\\.hg/" "/\\.rspec/" "/\\.sass-cache/" "/\\.svn/" "/_MTN/" "/_darcs/" "/CVS/" "/pm_to_blib/" "/RCS/" "/SCCS/" "/blib/" "/test_output/")))
+ '(hes-mode t)
+ '(hes-mode-alist
+   (quote
+    ((c-mode . "\\(\\\\\\([0-7]\\{1,3\\}\\|x[[:xdigit:]]+\\|u[[:xdigit:]]\\{4\\}\\|U[[:xdigit:]]\\{8\\}\\|[\"'?\\abfnrtv]\\)\\)")
+     (c++-mode . "\\(\\\\\\([0-7]\\{1,3\\}\\|x[[:xdigit:]]+\\|u[[:xdigit:]]\\{4\\}\\|U[[:xdigit:]]\\{8\\}\\|[\"'?\\abfnrtv]\\)\\)")
+     (objc-mode . "\\(\\\\\\([0-7]\\{1,3\\}\\|x[[:xdigit:]]+\\|u[[:xdigit:]]\\{4\\}\\|U[[:xdigit:]]\\{8\\}\\|[\"'?\\abfnrtv]\\)\\)")
+     (java-mode . "\\(\\\\\\([0-7]\\{1,3\\}\\|u[[:xdigit:]]\\{4\\}\\|[\"'\\bfnrt]\\)\\)")
+     (clojure-mode . "\\(\\\\\\([0-7]\\{1,3\\}\\|u[[:xdigit:]]\\{4\\}\\|[\"'\\bfnrt]\\)\\)")
+     (js-mode . "\\(\\\\\\([0-7]\\{1,3\\}\\|x[[:xdigit:]]\\{2\\}\\|u[[:xdigit:]]\\{4\\}\\|.\\)\\)")
+     (js2-mode . "\\(\\\\\\([0-7]\\{1,3\\}\\|x[[:xdigit:]]\\{2\\}\\|u[[:xdigit:]]\\{4\\}\\|.\\)\\)")
+     (ruby-mode
+      ("\\(\\\\\\([0-7]\\{1,3\\}\\|x[[:xdigit:]]\\{1,2\\}\\|u\\(?:[[:xdigit:]]\\{4\\}\\|{[[:xdigit:]]\\{1,6\\}\\(?:[[:space:]]+[[:xdigit:]]\\{1,6\\}\\)*}\\)\\|.\\)\\)"
+       (0
+        (let*
+            ((state
+              (syntax-ppss))
+             (term
+              (nth 3 state)))
+          (when
+              (or
+               (and
+                (eq term 39)
+                (member
+                 (match-string 2)
+                 (quote
+                  ("\\" "'"))))
+               (if
+                   (fboundp
+                    (quote ruby-syntax-expansion-allowed-p))
+                   (ruby-syntax-expansion-allowed-p state)
+                 (memq term
+                       (quote
+                        (34 47 10 96 t)))))
+            (font-lock-prepend-text-property
+             (match-beginning 1)
+             (match-end 1)
+             (quote face)
+             (quote hes-escape-backslash-face))
+            (font-lock-prepend-text-property
+             (match-beginning 2)
+             (match-end 2)
+             (quote face)
+             (quote hes-escape-sequence-face))
+            nil))
+        prepend)))
+     (emacs-lisp-mode . "\\(\\\\\\(u[[:xdigit:]]\\{4\\}\\|U00[[:xdigit:]]\\{6\\}\\|x[[:xdigit:]]+\\|[0-7]+\\|.\\)\\)")
+     (lisp-interaction-mode . "\\(\\\\\\(u[[:xdigit:]]\\{4\\}\\|U00[[:xdigit:]]\\{6\\}\\|x[[:xdigit:]]+\\|[0-7]+\\|.\\)\\)"))))
+ '(highlight-stages-global-mode t)
+ '(highlight-stages-highlight-priority 0)
  '(horizontal-scroll-bar-mode nil)
  '(icomplete-mode t)
  '(ido-auto-merge-delay-time 9999)
@@ -102,6 +152,10 @@
  '(ido-ubiquitous-mode t)
  '(ido-use-virtual-buffers t)
  '(ido-yes-or-no-mode t)
+ '(indent-guide-global-mode t)
+ '(indent-guide-inhibit-modes
+   (quote
+    (tabulated-list-mode special-mode dired-mode eww-mode eshell-mode Custom-mode ess-mode)))
  '(indent-tabs-mode nil)
  '(initial-buffer-choice t)
  '(initial-scratch-message
@@ -120,16 +174,20 @@
  '(markdown-asymmetric-header t)
  '(marmalade-server "http://marmalade-repo.org" t)
  '(marmalade-token "jxzMp9uu6+16QPYKyarL9glfVfekWdWta8EEdMSkKlE=")
+ '(mc/list-file "~/.emacs.d/persistence/.mc-lists.el")
  '(midnight-mode t nil (midnight))
  '(minibuffer-depth-indicate-mode t)
  '(minibuffer-electric-default-mode t)
  '(mouse-wheel-progressive-speed nil)
  '(mouse-wheel-scroll-amount (quote (5 ((shift) . 1) ((control)))))
+ '(nameless-affect-indentation-and-filling nil)
+ '(nameless-private-prefix t)
  '(ns-alternate-modifier (quote super))
  '(ns-auto-hide-menu-bar nil)
  '(ns-command-modifier (quote meta))
  '(ns-function-modifier (quote control))
  '(org-adapt-indentation nil)
+ '(org-bullets-bullet-list (quote ("◉" "✸" "✿")))
  '(org-completion-use-ido t)
  '(org-support-shift-select t)
  '(org-todo-keyword-faces
@@ -143,7 +201,8 @@
      (sequence "WORKING" "WRITING(r)" "SUBMITTED" "|" "REJECTED(j)" "ACCEPTED" "PUBLISHED"))))
  '(package-selected-packages
    (quote
-    (yaml-mode ws-butler use-package undo-tree systemd system-specific-settings sr-speedbar sml-modeline smex scratch-ext restart-emacs python-mode pyenv-mode py-isort pretty-symbols polymode pointback pkg-info php-mode pallet osx-pseudo-daemon org-plus-contrib occur-context-resize noflet md-readme markdown-mode magit-gh-pulls macrostep lexbind-mode keydef jedi ido-yes-or-no ido-load-library highlight-defined helm header2 haskell-mode hardhat gitignore-mode github-clone github-browse-file git-gutter-fringe esup ess-smart-underscore ess-R-object-popup ess-R-data-view el-get crontab-mode crm-custom cl-lib-highlight beacon autopair auto-dim-other-buffers apples-mode apache-mode anzu aggressive-indent adjust-parens)))
+    (exec-path-from-shell feature-mode ecukes org-bullets magit-find-file neotree fireplace guide-key swiper string-edit highlight-escape-sequences sx pdf-tools highlight-stages magit-filenotify magithub multiple-cursors nameless better-shell git-commit magit-popup snakemake-mode with-editor magit paradox transmission transpose-frame zone-nyan zone-rainbow zone-select zone-sl ztree ace-window adaptive-wrap avy req-package reveal-in-osx-finder yaml-mode ws-butler use-package undo-tree systemd system-specific-settings sr-speedbar sml-modeline smex scratch-ext restart-emacs python-mode pyenv-mode py-isort pretty-symbols polymode pointback pkg-info php-mode pallet osx-pseudo-daemon org-plus-contrib occur-context-resize noflet md-readme markdown-mode magit-gh-pulls macrostep lexbind-mode keydef jedi ido-yes-or-no ido-load-library highlight-defined helm header2 haskell-mode hardhat gitignore-mode github-clone github-browse-file git-gutter-fringe esup ess-smart-underscore ess-R-object-popup ess-R-data-view el-get crontab-mode crm-custom cl-lib-highlight beacon autopair auto-dim-other-buffers apples-mode apache-mode anzu aggressive-indent adjust-parens)))
+ '(paradox-github-token t)
  '(pretty-symbol-categories (lambda relational nil))
  '(pretty-symbol-patterns
    (quote
@@ -277,6 +336,8 @@
  '(sentence-end-double-space nil)
  '(show-paren-mode t)
  '(sml-modeline-mode t)
+ '(sx-cache-directory "~/.emacs.d/persistence/sx")
+ '(sx-default-site "stackoverflow")
  '(tempbuf-temporary-major-modes
    (quote
     (Custom-mode w3-mode Man-mode view-mode help-mode apropos-mode completion-list-mode dired-mode ibuffer-mode bookmark-bmenu-mode ess-help-mode compilation-mode vc-dir-mode vc-hg-log-view-mode occur-mode diff-mode magit-key-mode magit-log-edit-mode ess-help-mode)))
@@ -313,6 +374,7 @@
  '(highlight-defined-function-name-face ((t (:inherit font-lock-function-name-face :foreground "blue4"))))
  '(highlight-defined-macro-name-face ((t (:inherit highlight-defined-function-name-face :underline t))))
  '(hl-line ((t (:background "azure"))))
+ '(indent-guide-face ((t (:foreground "gray" :slant normal))))
  '(magit-item-highlight ((t nil)))
  '(popup-face ((t (:inherit default :background "lightgray" :foreground "black")))))
 
