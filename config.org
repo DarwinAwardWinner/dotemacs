@@ -601,7 +601,9 @@ also add a function to insert a new src block into an org-mode buffer.
 
 #+BEGIN_SRC emacs-lisp
   (use-package org
-    :ensure t
+    ;; We don't set ensure here because the org-mode package has a
+    ;; different name. See the Cask file.
+    :ensure nil
     :config
     (progn
       (defun org-in-src-block-p (&optional inside)
@@ -649,10 +651,7 @@ also add a function to insert a new src block into an org-mode buffer.
           (newline-and-indent)
           (insert "#+END_SRC\n")
           (forward-line -2)
-          (org-edit-src-code))))
-    ;; We don't set ensure here because the org-mode package has a
-    ;; different name. See the Cask file.
-    :ensure nil)
+          (org-edit-src-code)))))
 #+END_SRC
 
 *** Org-bullets
