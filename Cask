@@ -77,6 +77,7 @@
 (depends-on "md-readme")
 (depends-on "multiple-cursors")
 (depends-on "nameless")
+(depends-on "nginx-mode")
 (depends-on "noflet")
 (depends-on "occur-context-resize")
 (depends-on "org-plus-contrib")
