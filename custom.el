@@ -4,7 +4,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(R-pager "cat")
  '(S-pager "cat")
  '(abbrev-file-name "~/.emacs.d/persistence/abbrev_defs")
  '(ac-comphist-file "/Users/ryan/.emacs.d/persistence/ac-comphist.dat")
@@ -73,6 +72,7 @@
  '(enable-recursive-minibuffers t)
  '(ess-default-style (quote RRR))
  '(ess-indent-with-fancy-comments nil)
+ '(ess-r-pager "cat")
  '(ess-use-tracebug nil)
  '(esup-run-as-batch-p t)
  '(git-gutter+-diff-options (quote ("--patience")))
