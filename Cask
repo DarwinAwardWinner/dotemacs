@@ -20,6 +20,7 @@
 (depends-on "cask")
 (depends-on "cl-lib-highlight")
 (depends-on "concurrent")
+(depends-on "creole-mode")
 (depends-on "crm-custom")
 (depends-on "crontab-mode")
 (depends-on "ctable")
