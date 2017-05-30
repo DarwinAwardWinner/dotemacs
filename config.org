@@ -904,7 +904,7 @@ This mode requires special handling because it doesn't use
            :features smooth-scrolling))
 #+END_SRC
 
-* el-get installation
+* el-get package installation & loading
 After adding all necessary packages to ~el-get-sources~, now we can
 install and initialize them.
 
@@ -916,6 +916,16 @@ install and initialize them.
           do (message "El-get setting up %s" src-name)
           do (with-demoted-errors (el-get 'sync src-name))))
   (el-get-do-setup)
+#+END_SRC
+
+** Load the el-get version of ido-cr+
+el-get installs the bleeding edge version of ido-cr+, but package.el
+installs a possibly older version of ido-cr+ to satisfy dependencies.
+To get the el-get version, we need to unload and reload the package.
+
+#+BEGIN_SRC emacs-lisp
+  (unload-feature 'ido-completing-read+ t)
+  (require 'ido-completing-read+)
 #+END_SRC
 
 * Set up and load a separate custom file
