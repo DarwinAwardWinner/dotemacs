@@ -329,9 +329,7 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
   If MODE is not active, do nothing."
         (when (eval mode)
           (funcall mode 0)
-          (funcall mode 1)))
-      (eval-after-load 'ess-custom
-        (add-hook 'R-mode-hook (apply-partially #'twiddle-mode 'font-lock-mode))))
+          (funcall mode 1))))
     :ensure t)
 #+END_SRC
 
