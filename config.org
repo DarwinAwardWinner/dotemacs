@@ -182,7 +182,7 @@ configuration and should not be executed upon init):
 
 #+BEGIN_SRC emacs-lisp
   (use-package apache-mode
-    :mode ("/apache2/.*\\.conf\\'" . apache2-mode)
+    :mode ("/apache2/.*\\.conf\\'" . apache-mode)
     :init (progn
             (defun apache-magic-mode-detect ()
               (string-match-p "^\\s-*#.*\\bsyntax=apache\\b" (buffer-string)))
@@ -530,7 +530,7 @@ buffer after initialization.
   (defadvice magit-init (after show-status activate)
     "Show the status buffer after initialization if interactive."
     (when (called-interactively-p 'interactive)
-      (magit-status directory)))
+      (magit-status-internal directory)))
 #+END_SRC
 
 *** Use hub instead of git sometimes
@@ -1039,7 +1039,7 @@ themselves.
   (defun eval-replace-preceding-sexp ()
     "Replace the preceding sexp with its value."
     (interactive)
-    (let ((value (eval (preceding-sexp))))
+    (let ((value (eval (elisp--preceding-sexp))))
       (kill-sexp -1)
       (insert (format "%s" value))))
   (global-set-key (kbd "C-c C-e") 'eval-replace-preceding-sexp)
@@ -1079,7 +1079,7 @@ we disable it in markdown buffers only.
 #+BEGIN_SRC emacs-lisp
   (loop for hook in
         '(lisp-interaction-mode-hook emacs-lisp-mode-hook)
-        do (add-hook hook #'turn-on-eldoc-mode))
+        do (add-hook hook #'eldoc-mode))
 #+END_SRC
 
 ** TRAMP
