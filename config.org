@@ -291,6 +291,14 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
   (keydef (cperl "C-c C-d") cperl-perldoc)
 #+END_SRC
 
+** creole-mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package creole-mode
+    :ensure t
+    :mode (".creole\\'" . creole-mode))
+#+END_SRC
+
 ** el-get
 
 #+BEGIN_SRC emacs-lisp
