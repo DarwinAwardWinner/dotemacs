@@ -721,6 +721,13 @@ regular ~python-mode~ is just fine.
     :mode ("\\.pyi" . python-mode))
 #+END_SRC
 
+** SLIME
+
+#+BEGIN_SRC emacs-lisp
+  (use-package slime
+    :ensure t)
+#+END_SRC
+
 ** smex
 
 #+BEGIN_SRC emacs-lisp
