@@ -202,9 +202,12 @@ configuration and should not be executed upon init):
 
 #+BEGIN_SRC emacs-lisp
   (use-package autopair
-    :init (progn (autopair-global-mode 1)
-                 (setq autopair-skip-whitespace 'chomp)
-                 (setq autopair-skip-criteria 'always))
+    :config
+    (progn
+      (autopair-global-mode 1)
+      (setq autopair-skip-whitespace 'chomp)
+      (setq autopair-skip-criteria 'always))
+    :defer nil
     :ensure t)
 #+END_SRC
 
@@ -252,9 +255,11 @@ Use emacs-lisp-mode in Cask files.
 
 #+BEGIN_SRC emacs-lisp
   (use-package cl-lib-highlight
-    :init (progn
-            (cl-lib-highlight-initialize)
-            (cl-lib-highlight-warn-cl-initialize)))
+    :config
+    (progn
+      (cl-lib-highlight-initialize)
+      (cl-lib-highlight-warn-cl-initialize))
+    :defer nil)
 #+END_SRC
 
 ** cperl-mode
@@ -357,71 +362,54 @@ This automatically inserts a header into any new elisp file.
 
 #+BEGIN_SRC emacs-lisp
   (use-package header2
-    :init (progn
-            (add-hook 'emacs-lisp-mode-hook #'auto-make-header))
-    :config (progn
-              (defadvice make-header (after add-lexbind-variable activate)
-                "Add `lexical-binding: t' to header."
-                (when (eq major-mode 'emacs-lisp-mode)
-                  (save-excursion
-                    (add-file-local-variable-prop-line 'lexical-binding t))))
-              (defsubst header-not-part-of-emacs ()
-                "Insert line declaring that this file is not part of Emacs."
-                (when (eq major-mode 'emacs-lisp-mode)
-                  (insert header-prefix-string "This file is NOT part of GNU Emacs.\n")))
-              (defsubst header-completely-blank ()
-                "Insert an empty line to file header (not even `header-prefix-string')."
-                (insert "\n"))
-              (setq header-copyright-notice
-                    (format-time-string "Copyright (C) %Y Ryan C. Thompson\n")))
+    :config
+    (progn
+      (defadvice make-header (after add-lexbind-variable activate)
+        "Add `lexical-binding: t' to header."
+        (when (eq major-mode 'emacs-lisp-mode)
+          (save-excursion
+            (add-file-local-variable-prop-line 'lexical-binding t))))
+      (defsubst header-not-part-of-emacs ()
+        "Insert line declaring that this file is not part of Emacs."
+        (when (eq major-mode 'emacs-lisp-mode)
+          (insert header-prefix-string "This file is NOT part of GNU Emacs.\n")))
+      (defsubst header-completely-blank ()
+        "Insert an empty line to file header (not even `header-prefix-string')."
+        (insert "\n"))
+      (setq header-copyright-notice
+            (format-time-string "Copyright (C) %Y Ryan C. Thompson\n"))
+      ;; Set up headers when creating an elisp file
+      (add-hook 'emacs-lisp-mode-hook #'auto-make-header)
+      ;; Update headers on save
+      (add-hook 'write-file-hooks #'auto-update-file-header)
+      ;; Override `header-eof' to not insert a separator line
+      (defun header-eof ()
+        "Insert comment indicating end of file."
+        (goto-char (point-max))
+        (insert "\n")
+        (insert comment-start
+                (concat (and (= 1 (length comment-start)) header-prefix-string)
+                        (if (buffer-file-name)
+                            (file-name-nondirectory (buffer-file-name))
+                          (buffer-name))
+                        " ends here"
+                        (or (nonempty-comment-end) "\n"))))
+      ;; Function to insert `provide' statement at end of file; This is
+      ;; used in `make-header-hook'.
+      (defun header-provide-statement ()
+        "Insert `provide' statement."
+        (save-excursion
+          (goto-char (point-max))
+          (insert
+           (format "\n%s"
+                   (pp-to-string `(provide ',(intern (f-base (buffer-file-name)))))))))
+      ;; Prevent `auto-make-header' from setting the buffer modified flag
+      (defadvice auto-make-header (around dont-set-buffer-modified activate)
+        "Don't set the buffer modified flag."
+        (preserve-buffer-modified-p
+          ad-do-it)))
+    :defer nil
     :ensure t)
-#+END_SRC
-
-*** Prevent ~auto-make-header~ from setting the buffer modified flag
-This ensures that newly-created files will not be marked as modified
-even though they have had headers inserted.
-
-#+BEGIN_SRC emacs-lisp
-  (defadvice auto-make-header (around dont-set-buffer-modified activate)
-    "Don't set the buffer modified flag."
-    (preserve-buffer-modified-p
-      ad-do-it))
-#+END_SRC
-
-*** Function to insert ~provide~ statement at end of file
-This is used in ~make-header-hook~
-
-#+BEGIN_SRC emacs-lisp
-  (defun header-provide-statement ()
-    "Insert `provide' statement."
-    (save-excursion
-      (goto-char (point-max))
-      (insert
-       (format "\n%s"
-               (pp-to-string `(provide ',(intern (f-base (buffer-file-name)))))))))
-#+END_SRC
-
-*** Override ~header-eof~ to not insert a separator line
-
-#+BEGIN_SRC emacs-lisp
-  (defun header-eof ()
-    "Insert comment indicating end of file."
-    (goto-char (point-max))
-    (insert "\n")
-    (insert comment-start
-            (concat (and (= 1 (length comment-start)) header-prefix-string)
-                    (if (buffer-file-name)
-                        (file-name-nondirectory (buffer-file-name))
-                      (buffer-name))
-                    " ends here"
-                    (or (nonempty-comment-end) "\n"))))
-
-#+END_SRC
-
-*** Update headers on save
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'write-file-hooks #'auto-update-file-header)
 #+END_SRC
 
 ** highlight-defined
@@ -457,7 +445,7 @@ I find magit item highlighting distracting
     :init
     (progn
       ;; This needs to be set or else magit will warn about things.
-      (setq magit-last-seen-setup-instructions "1.4.0"))
+      (defvar magit-last-seen-setup-instructions "1.4.0"))
     :config
     (progn
       (defun disable-magit-highlight-in-buffer ()
