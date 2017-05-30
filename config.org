@@ -848,7 +848,8 @@ package ido-completing-read+.
      '(:name ido-describe-fns
              :type http
              :url "https://github.com/DarwinAwardWinner/ido-ubiquitous/raw/bleeding-edge/ido-describe-fns.el"
-             :features ido-describe-fns))
+             :features ido-describe-fns
+             :depends (ido-completing-read+ ido-ubiquitous)))
 #+END_SRC
 
 ** tempbuf
