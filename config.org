@@ -651,7 +651,19 @@ also add a function to insert a new src block into an org-mode buffer.
           (newline-and-indent)
           (insert "#+END_SRC\n")
           (forward-line -2)
-          (org-edit-src-code)))))
+          (org-edit-src-code)))
+      (defun org-insert-or-edit-src-block (src-code-type &optional interactive-call)
+        "Insert a source code block in org-mode or edit an existing one."
+        (interactive (list nil t))
+        (if (org-in-src-block-p)
+            (org-edit-src-code)
+          (if interactive-call
+              (call-interactively 'org-insert-src-block)
+            (org-insert-src-block src-code-type)))))
+    :bind (:map org-mode-map
+           ("C-c C-'" . org-insert-or-edit-src-block)
+           :map org-src-mode-map
+           ("C-c C-'" . org-edit-src-exit)))
 #+END_SRC
 
 *** Org-bullets
