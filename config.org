@@ -663,7 +663,8 @@ also add a function to insert a new src block into an org-mode buffer.
     :bind (:map org-mode-map
            ("C-c C-'" . org-insert-or-edit-src-block)
            :map org-src-mode-map
-           ("C-c C-'" . org-edit-src-exit)))
+           ("C-c C-'" . org-edit-src-exit)
+           ("C-C C-C" . org-edit-src-exit)))
 #+END_SRC
 
 *** Org-bullets
