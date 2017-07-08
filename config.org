@@ -972,7 +972,7 @@ prefer to use it.
 *** Tell Emacs where to find its C source code
 
 #+BEGIN_SRC emacs-lisp
-  (setq find-function-C-source-directory "~/src/emacs-24.3/src")
+  (setq find-function-C-source-directory "~/Projects/emacs/src")
 #+END_SRC
 
 ** Fix OSX movement keys (unswap some Command/Option shortcuts)
