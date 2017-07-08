@@ -820,31 +820,16 @@ https://github.com/doitian/ido-complete-space-or-hyphen/pull/2
              :features ido-complete-space-or-hyphen))
 #+END_SRC
 
-** ido-ubiquitous
-This uses the bleeding-edge branch of ido-ubiquitous and its companion
-package ido-completing-read+.
+** ido-completing-read+
+This uses the bleeding-edge branch of ido-completing-read+.
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list
-   'el-get-sources
-   '(:name ido-ubiquitous
-           :type http
-           :url "https://github.com/DarwinAwardWinner/ido-ubiquitous/raw/bleeding-edge/ido-ubiquitous.el"
-           :features ido-ubiquitous
-           :depends ido-completing-read+))
   (add-to-list
    'el-get-sources
    '(:name ido-completing-read+
            :type http
            :url "https://github.com/DarwinAwardWinner/ido-ubiquitous/raw/bleeding-edge/ido-completing-read+.el"
            :features ido-completing-read+))
-  (add-to-list
-     'el-get-sources
-     '(:name ido-describe-fns
-             :type http
-             :url "https://github.com/DarwinAwardWinner/ido-ubiquitous/raw/bleeding-edge/ido-describe-fns.el"
-             :features ido-describe-fns
-             :depends (ido-completing-read+ ido-ubiquitous)))
 #+END_SRC
 
 ** tempbuf
