@@ -905,10 +905,10 @@ install and initialize them.
 #+BEGIN_SRC emacs-lisp
   (defun el-get-do-setup ()
     (interactive)
-    (loop for src in el-get-sources
-          for src-name = (el-get-source-name src)
-          do (message "El-get setting up %s" src-name)
-          do (with-demoted-errors (el-get 'sync src-name))))
+    (cl-loop for src in el-get-sources
+             for src-name = (el-get-source-name src)
+             do (message "El-get setting up %s" src-name)
+             do (with-demoted-errors (el-get 'sync src-name))))
   (el-get-do-setup)
 #+END_SRC
 
