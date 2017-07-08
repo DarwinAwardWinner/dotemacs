@@ -116,6 +116,9 @@ and restores it after evaluating body.
 
 ** Ensure persistence directory exists
 
+For any code that wants to save some state to disk (e.g. undo-tree), I
+make sure it saves its state somewhere in this directory.
+
 #+BEGIN_SRC emacs-lisp
   (make-directory (f-join user-emacs-directory "persistence") 'recursive)
 #+END_SRC
