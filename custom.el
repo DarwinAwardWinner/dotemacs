@@ -85,7 +85,6 @@
  '(global-hardhat-mode t)
  '(global-hl-line-mode t)
  '(global-pointback-mode t)
- '(global-prettify-symbols-mode t)
  '(global-undo-tree-mode t)
  '(hardhat-fullpath-protected-regexps
    (quote
