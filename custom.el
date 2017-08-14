@@ -387,6 +387,7 @@
  '(version-control t)
  '(visible-bell nil)
  '(void-text-area-pointer (quote text))
+ '(which-function-mode t)
  '(winner-mode t)
  '(ws-butler-global-mode t))
 (custom-set-faces
