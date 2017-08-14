@@ -244,8 +244,9 @@ This binds Shift+click to open a link
 Use emacs-lisp-mode in Cask files.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package cask
-    :mode ("Cask\\'" . emacs-lisp-mode))
+  (use-package cask)
+  (use-package cask-mode
+    :ensure t)
 #+END_SRC
 
 ** cl-lib
