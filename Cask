@@ -109,7 +109,6 @@
 (depends-on "seq")
 (depends-on "shut-up")
 (depends-on "slime")
-(depends-on "smex")
 (depends-on "sml-modeline")
 (depends-on "snakemake-mode")
 (depends-on "spinner")

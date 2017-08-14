@@ -726,16 +726,6 @@ regular ~python-mode~ is just fine.
     :ensure t)
 #+END_SRC
 
-** smex
-
-#+BEGIN_SRC emacs-lisp
-  (use-package smex
-    :bind (("M-x" . smex)
-           ("M-X" . smex-major-mode-commands)
-           ("C-c C-c M-x" . execute-extended-command))
-    :ensure t)
-#+END_SRC
-
 ** snakemake
 
 #+BEGIN_SRC emacs-lisp
@@ -770,6 +760,20 @@ line is not in a source block because it is not part of the actual
 configuration and should not be executed upon init):
 
 =CODE (mapc (apply-partially #'org-sort-entries nil) (nreverse '(?O ?a))) CODE=
+
+** amx
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list
+   'el-get-sources
+   '(:name amx
+           :type http
+           ;; Amx breaks when byte-compiled
+           :compile nil
+           :url "file:///Users/ryan/Projects/amx/amx.el"
+           ;; :url "https://github.com/DarwinAwardWinner/amx/raw/master/amx.el"
+           :features amx))
+#+END_SRC
 
 ** bar-cursor
 #+BEGIN_SRC emacs-lisp
