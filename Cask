@@ -75,7 +75,6 @@
 (depends-on "magit-find-file")
 (depends-on "magit-gh-pulls")
 (depends-on "magit-popup")
-(depends-on "magithub")
 (depends-on "markdown-mode")
 (depends-on "marshal")
 (depends-on "md-readme")
