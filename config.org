@@ -1,4 +1,4 @@
-* Introductory Notes
+* TODO Introductory Notes
 This is my Emacs configuration. Most of it is stored as Emacs Lisp
 source blocks in in this Org-mode file.
 
@@ -21,10 +21,19 @@ with the new config.
 
 ** First run slow startup
 The first time you start up Emacs after installing this configuration,
-it will install Cask and Pallet, and then use those to install all the
-dependencies of this config, as described below in the Bootstrappping
-section. This could take quite a while. Subsequent startups will not
-require this install time and should be relatively fast.
+the code in ~init.el~ will install org-mode and then use that to run
+the Emacs lisp code in this file, which will in turn install the many
+packages used by this config. This could take quite a while.
+Subsequent startups will skip the install process and should be
+relatively fast.
+
+* Enable Lexical Binding
+In order to enable lexical binding in the config, this must be the
+first line of Emacs Lisp:
+
+#+BEGIN_SRC emacs-lisp
+  ;; -*- lexical-binding: t -*-
+#+END_SRC
 
 * Bootstrappping
 The =init.el= file does all the bootstrapping necessary to load the
@@ -35,58 +44,92 @@ be installed /before/ loading this file. Otherwise, loading this file
 first would auto-load the built-in version of Org-mode and prevent use
 of the newly-installed version until Emacs was restarted.
 
-This section describes what happens in the =init.el= file.
-** Bootstrapping Cask & Pallet
-This code ensures that Cask and Pallet are installed and properly set
-up, and that all packages specified in the =Cask= file are installed and
-initialized. One of those packages is org, which is naturally required
-to load this file.
+* Initial Quelpa setup
 
-See the =Cask= file for the list of packages that will be
-installed. This is modified by Pallet whenever ~package-install~ is
-used to install a new package, and should not be edited manually.
+This config uses [[https://github.com/quelpa/quelpa-use-package][quelpa-use-package]] to implement declarative package
+configuration with [[https://github.com/quelpa/quelpa][Quelpa]] and [[https://github.com/jwiegley/use-package][use-package]]. This section installs those
+packages so that they can be used to set up all other packages.
 
-** Load =config.org=
-Finally, init.el loads this file using ~org-babel-load-file~. Because
-it specifies the compile option, this may create a compile log window.
-So the whole thing is wrapped in ~save-window-excursion~ to ensure
-that the window configuration remains unchanged (but the compile log
-buffer is left in the background so any warnings or errors can still
-be investigated).
+** Install Quelpa
+First, we try to load Quelpa, and install it if it isn't already
+installed. This uses the standard [[https://github.com/quelpa/quelpa#installation][Quelpa bootstrapping code]].
+
+#+BEGIN_SRC emacs-lisp
+  (eval-and-compile
+    (if (require 'quelpa nil t)
+        (quelpa-self-upgrade)
+      (with-temp-buffer
+        (url-insert-file-contents
+         "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
+        (eval-buffer))))
+  (require 'quelpa)
+#+END_SRC
+
+** (Don't) Prefer MELPA stable
+Next, we tell Quelpa to use the stable version of each package by
+default.
+
+#+BEGIN_SRC emacs-lisp
+  (setq quelpa-stable-p nil)
+#+END_SRC
+
+** Install quelpa-use-package
+Finally we use Quelpa to install ~quelpa-use-package~, which allows
+~use-package~ to install packages using Quelpa.
+
+#+BEGIN_SRC emacs-lisp
+  (quelpa
+   '(quelpa-use-package
+     :fetcher github
+     :repo "quelpa/quelpa-use-package")
+   :stable nil)
+  (require 'quelpa-use-package)
+#+END_SRC
 
 * Preliminary environment setup
-This sets up a few functions and other environment items that will be
-used later in the configuration, so they need to be defined/prepared
-up front.
+This section sets up a functions and other aspects of the environment
+that will be needed later in the configuration, so they need to be
+defined/prepared up front.
+
+** Install and load basic libraries
+This installs the ~s~ and ~f~ packages for string and filename
+manipulation.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package f :quelpa)
+  (use-package s :quelpa)
+#+END_SRC
 
 ** Fixing Default Directory
-  Regardless of which directory Emacs is started from, I want the
-  initial non-file buffers such as =*scratch*= and =*Messages*= to
-  have their ~default-directory~ set to my home directory. This code
-  goes through all non-file buffers whose default directories are the
-  emacs starting directory or the root directory, and changes their
-  default directories to my home directory.
+Regardless of which directory Emacs is started from, I want the
+initial non-file buffers such as =*scratch*= and =*Messages*= to have
+their ~default-directory~ set to my home directory. This code goes
+through all non-file buffers whose default directories are the emacs
+starting directory or the root directory, and changes their default
+directories to my home directory.
 
-  This code only runs during init. If the config is reloaded later
-  after init, this will not run again.
+This code only runs during init. If the config is reloaded later after
+init, this will not run again.
 
 #+BEGIN_SRC emacs-lisp
   (unless after-init-time
-    (let ((orig-default-directory default-directory))
+    (let ((startup-dir default-directory))
       (unless (f-same? default-directory "~")
         (dolist (buf (buffer-list))
           (ignore-errors
             (with-current-buffer buf
               (when (and (null (buffer-file-name buf))
                          (not (bound-and-true-p dired-directory))
-                         (or (f-same? default-directory orig-default-directory)
+                         (or (f-same? default-directory startup-dir)
                              (f-root? default-directory)))
                 (message "Changing default dir from %s to ~/ in %s"
                          default-directory (buffer-name buf))
                 (cd "~"))))))))
 #+END_SRC
 
-** Eval after init function
+** Define eval after init function
+We define a function to defer evaluation until the end of
+initialization.
 
 #+BEGIN_SRC emacs-lisp
   (defun eval-after-init (form)
@@ -100,13 +143,16 @@ up front.
       (add-to-list 'after-init-hook `(lambda () ,form))))
 #+END_SRC
 
-** Macro to protect buffer modified status
+** Define macro to protect buffer modified status
 This defines a macro that saves the modified status of current buffer
 and restores it after evaluating body.
 
 #+BEGIN_SRC emacs-lisp
   (defmacro preserve-buffer-modified-p (&rest body)
-    "Evaluate BODY, then restore buffer modified status."
+    "Evaluate BODY, then restore buffer modified status.
+
+  This can be used to edit the contents of a buffer while telling
+  Emacs that the buffer is still not modified."
     (declare (indent 0))
     `(let ((bmp (buffer-modified-p)))
        (prog1
@@ -117,19 +163,12 @@ and restores it after evaluating body.
 ** Ensure persistence directory exists
 
 For any code that wants to save some state to disk (e.g. undo-tree), I
-make sure it saves its state somewhere in this directory.
+configure it to save its state somewhere in this directory.
 
 #+BEGIN_SRC emacs-lisp
   (make-directory (f-join user-emacs-directory "persistence") 'recursive)
 #+END_SRC
 
-** Set up use-package
-This is used later in the config to configure packages, so we make
-sure that it's available now.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'use-package)
-#+END_SRC
 ** Set PATH and MANPATH from shell
 My shell configuration adds a lot of things to PATH dynamically
 (pyenv, perlbrew, etc.), so rather than emulate that in Emacs, we
@@ -143,36 +182,45 @@ items depend on having the full PATH available.
 
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
-    :ensure t
+    :quelpa
     :demand t
     :config (exec-path-from-shell-initialize))
 #+END_SRC
 
-** Load TRAMP early
-Loading ESS before TRAMP seems to prevent TRAMP from working, so we
-load TRAMP first.
+** Set up and load a separate custom file
+This is the file where everything set via =M-x customize= goes.
 
 #+BEGIN_SRC emacs-lisp
-  (require 'tramp)
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (when (f-exists? custom-file)
+    (load custom-file))
 #+END_SRC
 
+** Install req-package
+~req-package~ is an extension of ~use-package~ that automatically
+loads all packages in the correct order, based on dependencies
+declared in the config. So if the setup code for one package depends
+on having another package loaded, ~req-package~ can handle that.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package req-package :quelpa)
+#+END_SRC
 * Package configuration
-This section sets up some package-specific configuration options
+This section declares all the packages required by the config and sets
+up variables, key bindings, and such for some of them.
 
 Eval the following Elisp code to re-sort the below entries (this code
 line is not in a source block because it is not part of the actual
 configuration and should not be executed upon init):
 
 =CODE (mapc (apply-partially #'org-sort-entries nil) (nreverse '(?O ?a))) CODE=
-
 ** adjust-parens
 
 #+BEGIN_SRC emacs-lisp
   (use-package adjust-parens
+    :demand t
     :commands adjust-parens-mode
     :init (progn
-            ;; This line is required to silence a compiler warning
-            (declare-function adjust-parens-mode (locate-library "adjust-parens"))
             (defun turn-on-adjust-parens-mode ()
               (adjust-parens-mode 1))
             (dolist (hook '(lisp-interaction-mode-hook
@@ -181,84 +229,124 @@ configuration and should not be executed upon init):
     :ensure t)
 #+END_SRC
 
-** apache-mode
+** amx
+amx is an enhanced M-x.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package apache-mode
+  (req-package amx
+    :quelpa)
+#+END_SRC
+
+** anzu
+Anzu mode displays the total number of matches and which one is
+currently highlighted while doing an isearch.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package anzu :quelpa)
+#+END_SRC
+** apache-mode
+This loads apache-mode and sets it up to detect the vim
+"syntax=apache" declaration.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package apache-mode
     :mode ("/apache2/.*\\.conf\\'" . apache-mode)
     :init (progn
             (defun apache-magic-mode-detect ()
               (string-match-p "^\\s-*#.*\\bsyntax=apache\\b" (buffer-string)))
             (add-to-list 'magic-mode-alist '(apache-magic-mode-detect . apache-mode)))
-    :ensure t)
+    :quelpa)
 #+END_SRC
 
 ** auto-complete
+Auto-complete mode provides IDE-style popup completions while editing.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package auto-complete
+  (req-package auto-complete
     :init (global-auto-complete-mode 1)
-    :ensure t)
+    :quelpa)
+#+END_SRC
+
+** auto-dim-other-buffers
+This package slightly dims the background of inactive windows so as to
+highlight which window is currently active.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package auto-dim-other-buffers :quelpa)
 #+END_SRC
 
 ** autopair
 
 #+BEGIN_SRC emacs-lisp
-  (use-package autopair
+  (req-package autopair
     :config
     (progn
       (autopair-global-mode 1)
       (setq autopair-skip-whitespace 'chomp)
       (setq autopair-skip-criteria 'always))
     :defer nil
-    :ensure t)
+    :quelpa)
 #+END_SRC
 
-** browse-url
+** bar-cursor
+This changes the cursor from a 1-character block to a bar in between
+characters.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package browse-url
-    :bind ("<s-mouse-1>" . browse-url-at-mouse)
-    :ensure t)
+  (req-package bar-cursor
+    :quelpa)
 #+END_SRC
 
+** beacon
+Beacon mode causes the "spotlight" to shine on the cursor whenever the
+window scrolls, in order to highlight the new position of the cursor.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package beacon :quelpa)
+#+END_SRC
+
+** bind-key
+
+#+BEGIN_SRC emacs-lisp
+  (req-package bind-key :quelpa)
+#+END_SRC
 ** browse-url
 This binds Shift+click to open a link
 
 #+BEGIN_SRC emacs-lisp
-  (use-package browse-url
-    :bind ("<s-mouse-1>" . browse-url-at-mouse))
-
+  (req-package browse-url
+    :bind ("<s-mouse-1>" . browse-url-at-mouse)
+    :quelpa)
 #+END_SRC
 
 ** bs (Buffer Show)
 
 #+BEGIN_SRC emacs-lisp
-  (use-package bs
+  (req-package bs
     :bind ("C-x C-b" . bs-show)
-    :ensure t)
+    :quelpa)
 #+END_SRC
 
 ** cask
 
-Use emacs-lisp-mode in Cask files.
-
 #+BEGIN_SRC emacs-lisp
-  (use-package cask)
-  (use-package cask-mode
-    :ensure t)
+  (req-package cask :quelpa)
+  (req-package cask-mode :quelpa)
 #+END_SRC
 
 ** cl-lib
 
 #+BEGIN_SRC emacs-lisp
-  (use-package cl-lib)
+  (req-package cl-lib)
 #+END_SRC
 
 ** cl-lib-highlight
+This package higlights cl-lib functions and macros, and also higlights
+old-styls cl functions and macros in orange as a reminder not to use
+them.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package cl-lib-highlight
+  (req-package cl-lib-highlight
     :config
     (progn
       (cl-lib-highlight-initialize)
@@ -269,10 +357,11 @@ Use emacs-lisp-mode in Cask files.
 ** cperl-mode
 Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
 ~interpreter-mode-alist~. Also associate the ".t" extension with perl
-(perl test files).
+(perl test files). Last, define a keyboard shortcut for
+~cperl-perldoc~.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package cperl-mode
+  (req-package cperl-mode
     :init
     (progn
       (mapc
@@ -285,36 +374,33 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
          (when (eq (cdr x) 'perl-mode)
            (setcdr x 'cperl-mode)))
        interpreter-mode-alist))
-    :mode ("\\.[tT]\\'" . cperl-mode)
-    :ensure t)
-#+END_SRC
-
-*** Add binding for ~cperl-perldoc~.
-
-#+BEGIN_SRC emacs-lisp
-  (keydef (cperl "C-c C-d") cperl-perldoc)
+    :bind (:map cperl-mode-map
+                ("C-c C-d". cperl-perldoc))
+    :mode ("\\.[tT]\\'" . cperl-mode))
 #+END_SRC
 
 ** creole-mode
 
 #+BEGIN_SRC emacs-lisp
-  (use-package creole-mode
-    :ensure t
+  (req-package creole-mode
+    :quelpa
     :mode (".creole\\'" . creole-mode))
 #+END_SRC
 
-** el-get
+** diminish
 
 #+BEGIN_SRC emacs-lisp
-  (use-package el-get
-    :config (make-directory el-get-dir 'recursive)
-    :ensure t)
+  (req-package diminish :quelpa)
 #+END_SRC
 
 ** ess
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ess
+  (req-package ess
+    :init
+    ;; Ensure that TRAMP is loaded before ESS, since loading ESS before
+    ;; TRAMP causes problems
+    (require 'tramp)
     :config
     (progn
       (setq ess-default-style 'OWN)
@@ -347,33 +433,51 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
         (when (eval mode)
           (funcall mode 0)
           (funcall mode 1))))
-    :ensure t)
+    :quelpa)
 #+END_SRC
 
 ** esup
 
 #+BEGIN_SRC emacs-lisp
-  (use-package esup
+  (req-package esup
     :defer t
-    :ensure t)
+    :quelpa)
 #+END_SRC
 
 ** git-gutter
-Loading these packages is necessary to activate them, so they are
-loaded eagerly.
+This package puts change indicators in the buffer fringe to indicate
+what parts of the file have been added, deleted, or modified since the
+last Git commit.
 
 #+BEGIN_SRC emacs-lisp
-    (use-package git-gutter
-      :ensure t)
-    (use-package git-gutter-fringe
-      :ensure t)
+    (req-package git-gutter
+      :quelpa)
+    (req-package git-gutter-fringe
+      :quelpa)
+#+END_SRC
+
+** git-wip
+Git-wip saves a hidden commit after each file is saved, thus saving a
+full history of all your edits since the last real commit. We need a
+special config to install the ~git-wip~ command-line script along with
+the Emacs Lisp file, and to tell Emacs where to find the script.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package git-wip-mode
+    :quelpa (git-wip-mode
+             :fetcher github :repo bartman/git-wip
+             :files ("emacs/git-wip-mode.el" "git-wip"))
+    :config
+    (setq git-wip-path
+          (f-join (f-dirname (locate-library "git-wip-mode"))
+                  "git-wip")))
 #+END_SRC
 
 ** header2
 This automatically inserts a header into any new elisp file.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package header2
+  (req-package header2
     :config
     (progn
       (defadvice make-header (after add-lexbind-variable activate)
@@ -420,176 +524,161 @@ This automatically inserts a header into any new elisp file.
         "Don't set the buffer modified flag."
         (preserve-buffer-modified-p
           ad-do-it)))
-    :defer nil
-    :ensure t)
+    :demand t
+    :quelpa)
 #+END_SRC
 
 ** highlight-defined
+This mode highlights all defined Emacs Lisp symbols instead of just
+built-in ones.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package highlight-defined
-      :init (progn
-              (defun turn-on-highlight-defined-mode ()
-                (highlight-defined-mode 1))
-              (add-hook 'emacs-lisp-mode-hook 'turn-on-highlight-defined-mode)
-              (add-hook 'lisp-interaction-mode-hook 'turn-on-highlight-defined-mode)
-              (eval-after-load 'ielm
-                (add-hook 'inferior-emacs-lisp-mode-hook 'turn-on-highlight-defined-mode)))
-      :ensure t)
+  (req-package highlight-defined
+    :init (progn
+            (defun turn-on-highlight-defined-mode ()
+              (highlight-defined-mode 1))
+            (add-hook 'emacs-lisp-mode-hook 'turn-on-highlight-defined-mode)
+            (add-hook 'lisp-interaction-mode-hook 'turn-on-highlight-defined-mode)
+            (eval-after-load 'ielm
+              (add-hook 'inferior-emacs-lisp-mode-hook 'turn-on-highlight-defined-mode)))
+    :quelpa)
+#+END_SRC
+
+** highlight-stages
+
+#+BEGIN_SRC emacs-lisp
+  (req-package highlight-stages :quelpa)
+#+END_SRC
+
+** ido-complete-space-or-hyphen
+My personal fork of ido-complete-space-or-hyphen. It converts the
+package into a full-fledged minor mode.
+
+TODO: Switch back to stock version after this is merged:
+https://github.com/doitian/ido-complete-space-or-hyphen/pull/2
+
+#+BEGIN_SRC emacs-lisp
+  (req-package ido-complete-space-or-hyphen
+    :quelpa (ido-complete-space-or-hyphen
+             :fetcher github
+             :repo DarwinAwardWinner/ido-complete-space-or-hyphen))
+#+END_SRC
+
+** ido-completing-read+
+This uses my bleeding-edge branch of ido-completing-read+.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package ido-completing-read+
+    :quelpa (ido-completing-read+
+             :fetcher github
+             :repo DarwinAwardWinner/ido-completing-read-plus))
+#+END_SRC
+
+** ido-yes-or-no
+
+#+BEGIN_SRC emacs-lisp
+  (req-package ido-yes-or-no :quelpa)
 #+END_SRC
 
 ** lexbind-mode
+This indicates in the mode-line for each Emacs Lisp file whether
+lexical binding is enabled for that file.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package lexbind-mode
+  (req-package lexbind-mode
     :init (add-hook 'emacs-lisp-mode-hook (apply-partially #'lexbind-mode 1))
-    :ensure t)
+    :quelpa)
+#+END_SRC
+
+** mac-pseudo-daemon
+This package allows Emacs to emulate the Mac OS behavior of staying
+open after the last window is closed, by creating a new window and
+hiding it until Emacs is reactivated.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package mac-pseudo-daemon
+    :quelpa)
 #+END_SRC
 
 ** magit
-This section contains settings related to magit.
+This sets up magit, the Emacs Git interface.
 
-*** Disable magit highlight
-I find magit item highlighting distracting
+*** Magit itself
+The defvar suppresses Magit upgrade instructions. The magit-init
+advice causes Magit to display the status buffer for an new repository
+immediately after a ~git init~ (but only when called interactively).
+
+It's nice to have the added features of GitHub's ~hub~ command, but
+magit makes a lot of calls to git, and so redirectig it to hub all the
+time slows it down considerably. So we use advice to tell only
+~magit-git-command~ to use hub if it is available. This allows the
+user to interactively invoke hub commands without slowing down Magit
+in normal operation.
 #+BEGIN_SRC emacs-lisp
-  (use-package magit
+  (req-package magit
     :bind (("C-c g" . magit-status))
     :init
-    (progn
-      ;; This needs to be set or else magit will warn about things.
-      (defvar magit-last-seen-setup-instructions "1.4.0"))
+    ;; This needs to be set or else magit will warn about things.
+    (defvar magit-last-seen-setup-instructions "1.4.0")
     :config
-    (progn
-      (defun disable-magit-highlight-in-buffer ()
-        (face-remap-add-relative 'magit-item-highlight '()))
-      (add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer))
-    :ensure t)
+    (define-advice magit-init (:after (&rest args) show-status)
+      "Show the status buffer after initialization if interactive."
+      (when (called-interactively-p 'interactive)
+        (magit-status-internal directory)))
+    ;; Redirect "git" command to "hub" for interactive use only
+    (defvar magit-hub-executable (when (executable-find "hub") "hub"))
+    (define-advice magit-git-command (:around (orig-fun &rest args) use-hub)
+      "Use `hub' instead of `git' if available."
+      (let ((magit-git-executable
+             (or magit-hub-executable magit-git-executable)))
+        (apply orig-fun args)))
+    :quelpa)
 #+END_SRC
-
-*** Magit myinit
-This code makes magit call ~git myinit~ instead of ~git init~ when the
-former is available.
-
-See https://github.com/DarwinAwardWinner/git-custom-commands/blob/master/bin/git-myinit
+*** magit-filenotify
+This package allows magit to refresh the status buffer whenever a file
+is modified. This mode causes problems on remote (TRAMP) files, so we
+only enable it for local files.
 
 #+BEGIN_SRC emacs-lisp
-  ;; (defadvice magit-run-git (before use-myinit activate)
-  ;;   "use git-myinit instead of git-init"
-  ;;   (when (and (equal (car args) "init")
-  ;;              (tramp-sh-handle-executable-find "git-myinit"))
-  ;;     (setcar args "myinit")
-  ;;     (message "Modified command: %S" args)))
-#+END_SRC
-
-*** Magit init create directory
-I want ~magit-init~ to create a direcotry if it doesn't exist.
-
-#+BEGIN_SRC emacs-lisp
-  ;; (defadvice magit-init (before create-nonexistent-directory activate)
-  ;;   "If DIRECTORY does not exist, create it.
-
-  ;; This will not create the directory recursively, so the parent
-  ;; directory must exist.
-
-  ;; This also modifies the interactive form to handle the case where
-  ;; the dir doesn't already exist."
-  ;;   (interactive
-  ;;    (let* ((dir (file-name-as-directory
-  ;;                 (expand-file-name
-  ;;                  (read-directory-name "Create repository in: "))))
-  ;;           ;; Can't call `magit-get-top-dir' on nonexistent directory,
-  ;;           ;; so use parent if necessary.
-  ;;           (dir-or-existing-parent
-  ;;            (if (or (file-exists-p dir)
-  ;;                    (file-symlink-p dir))
-  ;;                dir
-  ;;              (f-parent dir)))
-  ;;           (top (magit-get-top-dir dir-or-existing-parent)))
-  ;;      (if (and top
-  ;;               (not (yes-or-no-p
-  ;;                     (if (string-equal top dir)
-  ;;                         (format "Reinitialize existing repository %s? " dir)
-  ;;                       (format "%s is a repository.  Create another in %s? "
-  ;;                               top dir)))))
-  ;;          (user-error "Abort")
-  ;;        (list dir))))
-  ;;   ;; This is that part that's actually executed with the function
-  ;;   ;; itself.
-  ;;   (unless (or (file-exists-p directory)
-  ;;               (file-symlink-p directory))
-  ;;     (make-directory directory)))
-#+END_SRC
-
-*** Magit init show status when interactive
-When ~magit-init~ is running interactively, it should show the status
-buffer after initialization.
-
-#+BEGIN_SRC emacs-lisp
-  (defadvice magit-init (after show-status activate)
-    "Show the status buffer after initialization if interactive."
-    (when (called-interactively-p 'interactive)
-      (magit-status-internal directory)))
-#+END_SRC
-
-*** Use hub instead of git sometimes
-It's nice to have the features of GitHub's ~hub~ command sometimes,
-but magit makes a lot of calls to git, so wrapping it with hub all the
-time adds significant overhead. So we use advice to tell just
-~magit-git-command~ to use hub if it is available.
-
-First let's figure out if hub is available.
-
-#+BEGIN_SRC emacs-lisp
-  (defvar magit-hub-executable (when (executable-find "hub") "hub"))
-#+END_SRC
-
-Now we override ~magit-git-command~ to use hub unconditionally. This
-is the command for manually running a git command, so there's no worry
-about overhead from multiple calls to git. This allows things like
-~M-x magit-git-command browse~ to open the GitHub page for a repo.
-
-#+BEGIN_SRC emacs-lisp
-  (defadvice magit-git-command (around use-hub activate)
-    "Use `hub' instead of `git' if available."
-    (let ((magit-git-executable
-           (or magit-hub-executable magit-git-executable)))
-      ad-do-it))
-#+END_SRC
-
-*** Auto-refresh the magit status buffer
-This is problematic on remote systems, so we only enable it locally.
-#+BEGIN_SRC emacs-lisp
-  (use-package magit-filenotify
-    :init (progn
-            (defun turn-on-magit-filenotify-mode-if-local ()
-              (magit-filenotify-mode
-               (if (file-remote-p default-directory)
-                   0
-                 1)))
-            (add-hook 'magit-status-mode-hook
-                      'turn-on-magit-filenotify-mode-if-local)))
+  (req-package magit-filenotify
+    :require magit
+    :init
+    (defun turn-on-magit-filenotify-mode-if-local ()
+      (magit-filenotify-mode
+       (if (file-remote-p default-directory)
+           0
+         1)))
+    (add-hook 'magit-status-mode-hook
+              'turn-on-magit-filenotify-mode-if-local))
 #+END_SRC
 
 ** markdown-mode
+This mode is for editing Markdown files.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package markdown-mode
+  (req-package markdown-mode
     :mode ("\\.\\(md\\|mkdn\\)$" . markdown-mode)
-    :ensure t)
+    :quelpa)
 #+END_SRC
 
 ** noflet
+Noflet provides an enhanced version of ~flet~, and more importantly,
+provides proper indentation support for flet-like macros.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package noflet
-    :ensure t)
+  (req-package noflet
+    :quelpa)
 #+END_SRC
 
 ** occur-context-resize
+This package allows the user to dynamically change the number of
+context lines around matches in an ~occur-mode~ buffer using the plus
+and minus keys (and 0 key to reset)
 
 #+BEGIN_SRC emacs-lisp
-  (use-package occur-context-resize
-    :init (add-hook 'occur-mode-hook 'occur-context-resize-mode))
+  (req-package occur-context-resize
+    :init (add-hook 'occur-mode-hook 'occur-context-resize-mode)
+    :quelpa)
 #+END_SRC
 
 ** org-mode
@@ -597,102 +686,112 @@ The default implementation of the ~org-in-src-block-p~ function is
 broken and always returns nil, so we reimplement it correctly here. We
 also add a function to insert a new src block into an org-mode buffer.
 
+Note that there's no ~:ensure t~ or ~:quelpa~ here, since org-mode
+must already be installed if this code is running.
+
 #+BEGIN_SRC emacs-lisp
-  (use-package org
-    ;; We don't set ensure here because the org-mode package has a
-    ;; different name. See the Cask file.
-    :ensure nil
+  (req-package org
     :config
-    (progn
-      (defun org-in-src-block-p (&optional inside)
-        "Whether point is in a code source block.
+    (defun org-in-src-block-p (&optional inside)
+      "Whether point is in a code source block.
        When INSIDE is non-nil, don't consider we are within a src block
        when point is at #+BEGIN_SRC or #+END_SRC."
-        (save-match-data
-          (let* ((elem (org-element-at-point))
-                 (elem-type (car elem))
-                 (props (cadr elem))
-                 (end (plist-get props :end))
-                 (pb (plist-get props :post-blank))
-                 (content-end
-                  (save-excursion
-                    (goto-char end)
-                    (forward-line (- pb))
-                    (point)))
-                 (case-fold-search t))
+      (save-match-data
+        (let* ((elem (org-element-at-point))
+               (elem-type (car elem))
+               (props (cadr elem))
+               (end (plist-get props :end))
+               (pb (plist-get props :post-blank))
+               (content-end
+                (save-excursion
+                  (goto-char end)
+                  (forward-line (- pb))
+                  (point)))
+               (case-fold-search t))
+          (and
+           ;; Elem is a src block
+           (eq elem-type 'src-block)
+           ;; Make sure point is not on one of the blank lines after the
+           ;; element.
+           (< (point) content-end)
+           ;; If INSIDE is non-nil, then must not be at block delimiter
+           (not
             (and
-             ;; Elem is a src block
-             (eq elem-type 'src-block)
-             ;; Make sure point is not on one of the blank lines after the
-             ;; element.
-             (< (point) content-end)
-             ;; If INSIDE is non-nil, then must not be at block delimiter
-             (not
-              (and
-               inside
-               (save-excursion
-                 (beginning-of-line)
-                 (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
-      (defun org-insert-src-block (src-code-type)
-        "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
-        (interactive
-         (let ((src-code-types
-                '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
-                  "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
-                  "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
-                  "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
-                  "scheme" "sqlite")))
-           (list (ido-completing-read "Source code type: " src-code-types))))
-        (progn
-          (newline-and-indent)
-          (insert (format "#+BEGIN_SRC %s\n" src-code-type))
-          (newline-and-indent)
-          (insert "#+END_SRC\n")
-          (forward-line -2)
-          (org-edit-src-code)))
-      (defun org-insert-or-edit-src-block (src-code-type &optional interactive-call)
-        "Insert a source code block in org-mode or edit an existing one."
-        (interactive (list nil t))
-        (if (org-in-src-block-p)
-            (org-edit-src-code)
-          (if interactive-call
-              (call-interactively 'org-insert-src-block)
-            (org-insert-src-block src-code-type)))))
+             inside
+             (save-excursion
+               (beginning-of-line)
+               (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
+    (defun org-insert-src-block (src-code-type)
+      "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+      (interactive
+       (let ((src-code-types
+              '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
+                "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
+                "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
+                "scheme" "sqlite")))
+         (list (ido-completing-read "Source code type: " src-code-types))))
+      (progn
+        (newline-and-indent)
+        (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+        (newline-and-indent)
+        (insert "#+END_SRC\n")
+        (forward-line -2)
+        (org-edit-src-code)))
+    (defun org-insert-or-edit-src-block (src-code-type &optional interactive-call)
+      "Insert a source code block in org-mode or edit an existing one."
+      (interactive (list nil t))
+      (if (org-in-src-block-p)
+          (org-edit-src-code)
+        (if interactive-call
+            (call-interactively 'org-insert-src-block)
+          (org-insert-src-block src-code-type))))
     :bind (:map org-mode-map
-           ("C-c C-'" . org-insert-or-edit-src-block)
-           :map org-src-mode-map
-           ("C-c C-'" . org-edit-src-exit)
-           ("C-C C-C" . org-edit-src-exit)))
+                ("C-c C-'" . org-insert-or-edit-src-block)
+                :map org-src-mode-map
+                ("C-c C-'" . org-edit-src-exit)
+                ("C-c C-c" . org-edit-src-exit)))
 #+END_SRC
 
 *** Org-bullets
 This provides pretty-looking bullets for org-mode.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :ensure t
+  (req-package org-bullets
+    :quelpa
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+END_SRC
 
-** osx-pseudo-daemon
+** paradox
 
 #+BEGIN_SRC emacs-lisp
-  (use-package osx-pseudo-daemon
-    :ensure t)
+  (req-package paradox :quelpa)
+#+END_SRC
+
+** pointback
+
+#+BEGIN_SRC emacs-lisp
+  (req-package pointback :quelpa)
 #+END_SRC
 
 ** polymode
+This mode allows editing files with multiple major modes, such as
+Rmarkdown files, where some parts of the file are Markdown and others
+are R code.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package polymode
-    :ensure t
+  (req-package polymode
+    :quelpa
     :mode ("\\.Rmd\\'" . poly-markdown+r-mode))
 #+END_SRC
 
 ** pretty-symbols
+This package allows replacing certain words with symbols, for example
+replacing "lambda" with λ in Lisp code. The replacement is purely
+visual, and the files are saved with the original words.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package pretty-symbols
+  (req-package pretty-symbols
     :config
     (progn
       (defun pretty-symbols-enable-if-available ()
@@ -707,31 +806,121 @@ This provides pretty-looking bullets for org-mode.
                                 pretty-symbol-patterns)))
          (pretty-symbols-mode 1)))
       (add-hook 'after-change-major-mode-hook #'pretty-symbols-enable-if-available))
-    :ensure t)
+    :quelpa)
 #+END_SRC
 
 ** python-mode
-".pyi" is the file extension for the Python type shed type
+".pyi" is the file extension for the Python typeshed's type
 annotations. These files are valid (but incomplete) Python syntax, so
 regular ~python-mode~ is just fine.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package python
+  (req-package python
     :mode ("\\.pyi" . python-mode))
 #+END_SRC
 
 ** SLIME
 
 #+BEGIN_SRC emacs-lisp
-  (use-package slime
-    :ensure t)
+  (req-package slime
+    :quelpa)
+#+END_SRC
+
+** sml-modeline
+
+#+BEGIN_SRC emacs-lisp
+  (req-package sml-modeline
+    :quelpa (sml-modeline
+             :fetcher github
+             :repo emacsmirror/sml-modeline))
+#+END_SRC
+
+** smooth-scrolling
+
+#+BEGIN_SRC emacs-lisp
+  (req-package smooth-scrolling
+    :quelpa
+    (smooth-scrolling
+     :fetcher github
+     :repo "DarwinAwardWinner/smooth-scrolling"))
 #+END_SRC
 
 ** snakemake
 
 #+BEGIN_SRC emacs-lisp
-  (use-package snakemake-mode
-    :ensure t)
+  (req-package snakemake-mode
+    :quelpa)
+#+END_SRC
+
+** system-specific-settings
+
+#+BEGIN_SRC emacs-lisp
+  (req-package system-specific-settings :quelpa)
+#+END_SRC
+
+** tempbuf
+#+BEGIN_SRC emacs-lisp
+  (req-package tempbuf
+    :quelpa (tempbuf
+             :fetcher github
+             :repo emacsattic/tempbuf)
+    :config
+    (defun mode-symbol (sym)
+      "Append \"-mode\" to SYM unless it already ends in it."
+      (let ((symname (symbol-name sym)))
+        (intern
+         (concat symname
+                 (unless (s-suffix? "-mode" symname)
+                   "-mode")))))
+
+    (defun tempbuf-major-mode-hook ()
+      "Turn on `tempbuf-mode' in current buffer if buffer's `major-mode' is in `tempbuf-temporary-major-modes'.
+
+  Else turn off `tempbuf-mode'."
+      (if (apply #'derived-mode-p tempbuf-temporary-major-modes)
+          (turn-on-tempbuf-mode)
+        (turn-off-tempbuf-mode)))
+
+    (defun tempbuf-setup-temporary-major-modes (symbol newval)
+      (set-default symbol (mapcar 'mode-symbol newval))
+      ;; Set tempbuf-mode correctly in existing buffers.
+      (mapc (lambda (buf)
+              (with-current-buffer buf
+                (tempbuf-major-mode-hook)))
+            (buffer-list)))
+
+    (defcustom tempbuf-temporary-major-modes nil
+      "Major modes in which `tempbuf-mode' should be activated.
+
+  This will cause buffers of these modes to be automatically killed
+  if they are inactive for a short while."
+      :group 'tempbuf
+      :set 'tempbuf-setup-temporary-major-modes
+      :type '(repeat (symbol :tag "Mode")))
+
+    (add-hook 'after-change-major-mode-hook 'tempbuf-major-mode-hook)
+    ;; This mode requires special handling because it somehow avoids
+    ;; using `after-change-major-mode-hook', I think.
+    (eval-after-load 'ess-custom
+      '(add-hook 'ess-help-mode-hook 'tempbuf-major-mode-hook)))
+#+END_SRC
+
+** undo-tree
+
+#+BEGIN_SRC emacs-lisp
+  (req-package undo-tree :quelpa)
+#+END_SRC
+
+** ws-butler
+
+#+BEGIN_SRC emacs-lisp
+  (req-package ws-butler :quelpa)
+#+END_SRC
+
+** yaml-mode
+
+#+BEGIN_SRC emacs-lisp
+  (req-package yaml-mode :quelpa)
 #+END_SRC
 
 ** TODO guide-key
@@ -740,205 +929,32 @@ http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/guide-key
 ** TODO ignoramus
 https://github.com/rolandwalker/ignoramus
 
+** TODO keydef
+This package seems to be orphaned. It should be replaced with
+bind-key. But first all usage must be converted.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package keydef :quelpa)
+#+END_SRC
+
 ** TODO rainbow-delimiters
 http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/rainbow-delimiters
 
-* el-get package configuration
-Some packages are not available through ~package-install~. These are
-installed and maintained through el-get.
-
-This code loads el-get and sets it up to load all the packages listed
-below. We run the el-get setup at the end of init so that it will run
-after all the below packages have been added to ~el-get-sources~.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package el-get
-    :ensure t)
-#+END_SRC
-
-Eval the following Elisp code to re-sort the below entries (this code
-line is not in a source block because it is not part of the actual
-configuration and should not be executed upon init):
-
-=CODE (mapc (apply-partially #'org-sort-entries nil) (nreverse '(?O ?a))) CODE=
-
-** amx
+* Install and load all configured packages
+The ~req-package~ forms above only declare the set of packages to be
+installed and loaded. They don't actually do anything until the line
+of code below is run. At this time, ~req-package~ resolves any
+dependencies between packages and then installs and loads them in the
+correct order to satisfy those dependencies.
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list
-   'el-get-sources
-   '(:name amx
-           :type http
-           ;; Amx breaks when byte-compiled
-           :compile nil
-           :url "file:///Users/ryan/Projects/amx/amx.el"
-           ;; :url "https://github.com/DarwinAwardWinner/amx/raw/master/amx.el"
-           :features amx))
-#+END_SRC
-
-** bar-cursor
-#+BEGIN_SRC emacs-lisp
-  (add-to-list
-     'el-get-sources
-     '(:name bar-cursor
-             :type http
-             :url "http://www.northbound-train.com/emacs/bar-cursor.el"
-             :features bar-cursor
-             :lazy nil
-             :after (bar-cursor-mode 1)))
-#+END_SRC
-
-** debian-changelog-mode
-
-#+BEGIN_SRC emacs-lisp
-    (add-to-list
-       'el-get-sources
-       '(:name debian-changelog-mode
-               :type http
-               :url "https://raw.githubusercontent.com/errge/emacs-goodies-el/master/usr/share/emacs/site-lisp/dpkg-dev-el/debian-changelog-mode.el"
-               :features debian-changelog-mode))
-#+END_SRC
-
-** git-wip
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list
-   'el-get-sources
-   '(:name git-wip
-           :type github
-           :pkgname "DarwinAwardWinner/git-wip"
-           :load-path "emacs"
-           :features git-wip-mode))
-#+END_SRC
-
-** ido-complete-space-or-hyphen
-My personal fork of ido-complete-space-or-hyphen. It converts the
-package into a full-fledged minor mode.
-
-TODO: Switch back to stock version after this is merged:
-https://github.com/doitian/ido-complete-space-or-hyphen/pull/2
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list
-     'el-get-sources
-     '(:name ido-complete-space-or-hyphen
-             :type github
-             :pkgname "DarwinAwardWinner/ido-complete-space-or-hyphen"
-             ;; Use load to make sure *this* version of ido is loaded.
-             :features ido-complete-space-or-hyphen))
-#+END_SRC
-
-** ido-completing-read+
-This uses the bleeding-edge branch of ido-completing-read+.
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list
-   'el-get-sources
-   '(:name ido-completing-read+
-           :type http
-           :url "https://github.com/DarwinAwardWinner/ido-ubiquitous/raw/bleeding-edge/ido-completing-read+.el"
-           :features ido-completing-read+))
-#+END_SRC
-
-** tempbuf
-#+BEGIN_SRC emacs-lisp
-  (add-to-list
-   'el-get-sources
-   '(:name tempbuf
-           :type emacswiki
-           :lazy nil
-           :features tempbuf
-           :after
-           (progn
-             (defun mode-symbol (sym)
-               "Append \"-mode\" to SYM unless it already ends in it."
-               (let ((symname (symbol-name sym)))
-                 (intern
-                  (concat symname
-                          (unless (s-suffix? "-mode" symname)
-                            "-mode")))))
-
-             (defun tempbuf-major-mode-hook ()
-               "Turn on `tempbuf-mode' in current buffer if buffer's `major-mode' is in `tempbuf-temporary-major-modes'.
-
-     Else turn off `tempbuf-mode'."
-               (if (apply #'derived-mode-p tempbuf-temporary-major-modes)
-                   (turn-on-tempbuf-mode)
-                 (turn-off-tempbuf-mode)))
-
-             (defun tempbuf-setup-temporary-major-modes (symbol newval)
-               (set-default symbol (mapcar 'mode-symbol newval))
-               ;; Set tempbuf-mode correctly in existing buffers.
-               (mapc (lambda (buf)
-                       (with-current-buffer buf
-                         (tempbuf-major-mode-hook)))
-                     (buffer-list)))
-
-             (defcustom tempbuf-temporary-major-modes nil
-               "Major modes in which `tempbuf-mode' should be activated.
-
-     This will cause buffers of these modes to be automatically killed
-     if they are inactive for a short while."
-               :group 'tempbuf
-               :set 'tempbuf-setup-temporary-major-modes
-               :type '(repeat (symbol :tag "Mode")))
-
-             (add-hook 'after-change-major-mode-hook 'tempbuf-major-mode-hook))))
-#+END_SRC
-
-*** Tempbuf mode in ess-help buffers
-This mode requires special handling because it doesn't use
-~after-change-major-mode-hook~, I think.
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load 'ess-custom
-    '(add-hook 'ess-help-mode-hook 'tempbuf-major-mode-hook))
-#+END_SRC
-
-** smooth-scrolling
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list
-   'el-get-sources
-   '(:name smooth-scrolling
-           :type github
-           :pkgname "DarwinAwardWinner/smooth-scrolling"
-           :features smooth-scrolling))
-#+END_SRC
-
-* el-get package installation & loading
-After adding all necessary packages to ~el-get-sources~, now we can
-install and initialize them.
-
-#+BEGIN_SRC emacs-lisp
-  (defun el-get-do-setup ()
-    (interactive)
-    (cl-loop for src in el-get-sources
-             for src-name = (el-get-source-name src)
-             do (message "El-get setting up %s" src-name)
-             do (with-demoted-errors (el-get 'sync src-name))))
-  (el-get-do-setup)
-#+END_SRC
-
-** Load the el-get version of ido-cr+
-el-get installs the bleeding edge version of ido-cr+, but package.el
-installs a possibly older version of ido-cr+ to satisfy dependencies.
-To get the el-get version, we need to unload and reload the package.
-
-#+BEGIN_SRC emacs-lisp
-  (unload-feature 'ido-completing-read+ t)
-  (require 'ido-completing-read+)
-#+END_SRC
-
-* Set up and load a separate custom file
-This is the file where everything set via =M-x customize= goes.
-
-#+BEGIN_SRC emacs-lisp
-  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-  (when (f-exists? custom-file)
-    (load custom-file))
+  (req-package-finish)
 #+END_SRC
 * Tweaks
+This section contains a set of tweaks to Emacs behavior that are not
+specific to a single package and cannot be accomplished by customizing
+variables.
+
 ** Fixes for packages
 (Currently none)
 
@@ -978,23 +994,26 @@ prefer to use it.
 #+END_SRC
 
 *** Tell Emacs where to find its C source code
+This is where I keep Emacs, but you'll probably need to edit this if
+you want look at the definitions of Emacs primitive functions.
 
 #+BEGIN_SRC emacs-lisp
   (setq find-function-C-source-directory "~/Projects/emacs/src")
 #+END_SRC
 
 ** Fix OSX movement keys (unswap some Command/Option shortcuts)
-I map Option -> Super and Command -> Meta in Emacs on OPX, which is
-the opposite of what it is by default, because I need meta to be
-directly below X. However, there is a handful of shortcuts involving
-Command/Option that I don't want swapped, so I need to swap their
-Super/Meta bindings to cancel out the swapping of Super and Meta
+I map Option -> Super and Command -> Meta in Emacs on Mac OS, which is
+the opposite of what it is by default, because I need Emacs' meta key
+to be directly below X. However, there are a handful of shortcuts
+involving Command/Option that I don't want swapped, so I need to swap
+their Super/Meta bindings to cancel out the swapping of Super and Meta
 themselves.
 
 #+BEGIN_SRC emacs-lisp
   ;; Use `eval-after-load' to ensure that this always happens after
   ;; loading custom.el, since that sets the Command/Option modifiers.
   (eval-after-init
+   ;; Only swap on Mac OS
    '(when (or (featurep 'ns)
               (eq system-type 'darwin))
       ;; Only swap bindings if keys were actually swapped
@@ -1012,24 +1031,28 @@ themselves.
         (keydef "M-<backspace>" nil)
         (keydef "M-<kp-delete>" nil)
         (keydef "M-`" other-frame)
+        (require 'cl)
         ;; Need to fix `org-meta(left|right)' as well. TODO: switch to
         ;; noflet after this is merged:
         ;; https://github.com/nicferrier/emacs-noflet/pull/17
-        (defadvice org-metaleft (around osx-command activate)
+        (define-advice org-metaleft (:around (orig-fun &rest args) osx-command)
           (flet ((backward-word (&rest args)))
             (defun backward-word (&rest args)
               (interactive)
               (call-interactively #'move-beginning-of-line))
-            ad-do-it))
-        (defadvice org-metaright (around osx-command activate)
+            (apply orig-fun args)))
+        (define-advice org-metaright (:around (orig-fun &rest args) osx-command)
           (flet ((forward-word (&rest args)))
             (defun forward-word (&rest args)
               (interactive)
               (call-interactively #'move-end-of-line))
-            ad-do-it)))))
+            (apply orig-fun args))))))
 #+END_SRC
 
 ** Allow typing a sexp and then replacing it with its value
+If this command is run after an Emacs Lisp expression in any buffer,
+the expression will be deleted and then replaced with the value that
+it evaluates to.
 
 #+BEGIN_SRC emacs-lisp
   (defun eval-replace-preceding-sexp ()
@@ -1847,9 +1870,9 @@ set options that should vary depending on which system Emacs is
 running on.
 
 ** Set up tool-bars
-Normally we want the toolbar and menubar disabled for maximum text
-space. But in OSX, disabling them causes various things to break, so
-we want to enabled them there.
+Normally we want the scroll bar and menu bar disabled for maximum text
+space. But in Mac OS, disabling them causes various things to break,
+so we want to enabled them there.
 
 #+BEGIN_SRC emacs-lisp
   (let ((mode-arg (if-system-type-match 'darwin 1 -1)))
