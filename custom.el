@@ -168,6 +168,7 @@
 ")
  '(kept-old-versions 5)
  '(kill-whole-line t)
+ '(mac-pseudo-daemon-mode t)
  '(magit-completing-read-function (quote magit-ido-completing-read))
  '(magit-diff-refine-hunk t)
  '(magit-popup-use-prefix-argument (quote default))
