@@ -649,7 +649,8 @@ only enable it for local files.
            0
          1)))
     (add-hook 'magit-status-mode-hook
-              'turn-on-magit-filenotify-mode-if-local))
+              'turn-on-magit-filenotify-mode-if-local)
+    :quelpa)
 #+END_SRC
 
 ** markdown-mode
