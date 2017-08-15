@@ -327,6 +327,18 @@ This binds Shift+click to open a link
     :quelpa)
 #+END_SRC
 
+** buttercup
+Buttercup is a testing framework that I use to test several of my
+Emacs Lisp packages.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package buttercup
+    :quelpa (buttercup
+             :fetcher github
+             :repo "DarwinAwardWinner/emacs-buttercup"
+             :branch "expect-closures"))
+#+END_SRC
+
 ** cask
 
 #+BEGIN_SRC emacs-lisp
