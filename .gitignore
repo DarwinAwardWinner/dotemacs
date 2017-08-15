@@ -16,6 +16,8 @@ TAGS
 /persistence
 # elpa cache
 /elpa
+# quelpa build dir
+/quelpa
 # Various history files
 /bookmarks
 /emms
