@@ -1,4 +1,4 @@
-* TODO Introductory Notes
+* Introductory Notes
 This is my Emacs configuration. Most of it is stored as Emacs Lisp
 source blocks in in this Org-mode file.
 
