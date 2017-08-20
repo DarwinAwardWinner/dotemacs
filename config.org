@@ -1868,6 +1868,23 @@ directory as the starting directory.
   (setq ess-directory-function #'my-ess-directory-function)
 #+END_SRC
 
+** Call ~req-package-finish~ when evaluating ~req-package~ forms interactively
+When I use "C-x C-e" on a ~req-package~ declaration, I usually want
+the package to be installed immediately without having to call
+~req-package-finish~ manually. This advice does that.
+
+#+BEGIN_SRC emacs-lisp
+  (define-advice eval-last-sexp (:around (orig-fun &rest args) req-package-eagerly)
+    "Call `req-package-finish' afterward if evaluating a `req-package' form."
+    (let ((is-req-package
+           (eq (car (elisp--preceding-sexp))
+               'req-package)))
+      (prog1 (apply orig-fun args)
+        (ignore-errors
+          (when is-req-package
+            (req-package-finish))))))
+#+END_SRC
+
 ** Enable Fira Code font ligatures
 These are disabled for now due to the error documented here:
 
