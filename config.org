@@ -524,14 +524,15 @@ http://editorconfig.org/
          (ess-expression-offset . 4)
          (ess-else-offset . 0)
          (ess-close-brace-offset . 0)))
-      (defadvice ess-smart-S-assign (around underscore-unless-space activate)
+      (define-advice ess-smart-S-assign
+          (:around (orig-fun &rest args) underscore-unless-space)
         "Always insert underscores unless point is after a space.
 
   This advice is only active if `ess-smart-S-assign-key' is \"_\"."
         (if (and (looking-back "[^[:space:]]" 1)
                  (string= ess-smart-S-assign-key "_"))
             (insert ess-smart-S-assign-key)
-          ad-do-it))
+          (apply orig-fun args)))
       (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode))
       ;; TODO: Put this function in a more appropriate location
       (defun twiddle-mode (mode)
@@ -587,7 +588,7 @@ This automatically inserts a header into any new elisp file.
   (req-package header2
     :config
     (progn
-      (defadvice make-header (after add-lexbind-variable activate)
+      (define-advice make-header (:after (&rest args) add-lexbind-variable)
         "Add `lexical-binding: t' to header."
         (when (eq major-mode 'emacs-lisp-mode)
           (save-excursion
@@ -627,10 +628,11 @@ This automatically inserts a header into any new elisp file.
            (format "\n%s"
                    (pp-to-string `(provide ',(intern (f-base (buffer-file-name)))))))))
       ;; Prevent `auto-make-header' from setting the buffer modified flag
-      (defadvice auto-make-header (around dont-set-buffer-modified activate)
+      (define-advice auto-make-header
+          (:around (orig-fun &rest args) dont-set-buffer-modified)
         "Don't set the buffer modified flag."
         (preserve-buffer-modified-p
-          ad-do-it)))
+          (apply orig-fun args))))
     :demand t
     :quelpa)
 #+END_SRC
@@ -1210,14 +1212,15 @@ themselves.
 ** Have ~indent-region~ indent containing defun if mark is inactive
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice indent-region (around indent-defun activate)
+  (define-advice indent-region
+      (:around (orig-fun &rest args) indent-defun)
     "Indent containing defun if mark is not active."
     (if (and transient-mark-mode
              (not mark-active))
         (save-excursion
           (mark-defun)
           (call-interactively #'indent-region))
-      ad-do-it))
+      (apply orig-fun args)))
 #+END_SRC
 
 ** Always indent after newline
@@ -1395,7 +1398,7 @@ one without asking permisssion.
     (ignore-errors
         (car (process-lines "ps" "-p" (format "%s" pid) "-o" "args="))))
 
-  (defadvice desktop-owner (after pry-from-cold-dead-hands activate)
+  (define-advice desktop-owner (:filter-return (retval) pry-from-cold-dead-hands)
     "Only return the PID of an Emacs process or nil.
 
   If the return value is not the PID of a currently running Emacs
@@ -1403,13 +1406,13 @@ one without asking permisssion.
   assumption that the previous owner died an untimely death, so
   that the current emacs can cleanly claim its inheritence."
     (ignore-errors
-      (let ((owner-cmd (pid-command-line ad-return-value)))
-        (unless
-            (and owner-cmd
-                 (string-match-p
-                  "emacs"
-                  (downcase (file-name-base owner-cmd))))
-          (setq ad-return-value nil)))))
+      (let ((owner-cmd (pid-command-line retval)))
+        (unless (and owner-cmd
+                     (string-match-p
+                      "emacs"
+                      (downcase (file-name-base owner-cmd))))
+          (setq retval nil))))
+    retval)
 #+END_SRC
 
 *** Prevent recursive invocations of ~desktop-save~
@@ -1422,7 +1425,7 @@ below code turns any recursive call to ~desktop-save~ with the same
 #+BEGIN_SRC emacs-lisp
   (defvar desktop-save-recursion-guard-dirname nil)
 
-  (defadvice desktop-save (around prevent-recursion activate)
+  (define-advice desktop-save (:around (orig-fun dirname &rest args) prevent-recursion)
     "Prevent recursive calls to `desktop-save'.
 
   Recursive calls will only be prevented when they have the same
@@ -1430,7 +1433,7 @@ below code turns any recursive call to ~desktop-save~ with the same
     (if (string= dirname desktop-save-recursion-guard-dirname)
         (message "Preventing recursive call to `desktop-save' for %S" dirname)
       (let ((desktop-save-recursion-guard-dirname dirname))
-        ad-do-it)))
+        (apply orig-fun dirname args))))
 #+END_SRC
 
 ** Put enabled/disabled commands in =custom.el=
@@ -1439,10 +1442,10 @@ declarations to =user-init-file=. But I want them appended to =custom.el=
 instead.
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice en/disable-command (:around put-in-custom-file activate)
+  (define-advice en/disable-command (:around (orig-fun &rest args) put-in-custom-file)
     "Put declarations in `custom-file'."
     (let ((user-init-file custom-file))
-      ad-do-it))
+      (apply orig-fun args)))
 #+END_SRC
 
 ** Fix ~diff~ behavior when backup file is not in same directory
@@ -1452,7 +1455,7 @@ would rather have it start in the same directory as the first file.
 
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice diff (before same-dir-for-both-files activate)
+  (define-advice diff (:before same-dir-for-both-files activate)
     "Only prompt with backup file in same directory.
 
   When called interactively, `diff' normally offers to compare
@@ -1678,7 +1681,8 @@ still exits successfully) when started through ~start-process~. So we
 use ~call-process~ instead.
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice report-emacs-bug-insert-to-mailer (around call-process activate)
+  (define-advice report-emacs-bug-insert-to-mailer
+      (:around (orig-fun &rest args) use-call-process)
     "Use `call-process' instead of `start-process'.
 
   For some reason \"xdg-email\" doesn't work from `start-process',
@@ -1687,7 +1691,7 @@ use ~call-process~ instead.
   immediately."
     (noflet ((start-process (name buffer program &rest program-args)
                             (apply #'call-process program nil buffer nil program-args)))
-      ad-do-it))
+      (apply orig-fun args)))
 #+END_SRC
 
 ** Define functions for initiating external mailer composition
@@ -1761,9 +1765,11 @@ Emacs functions that modify the local variables in the propline also
 add an extraneous trailing semicolon. This advice deletes it.
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice modify-file-local-variable-prop-line (around cleanup-semicolon activate)
+  (define-advice modify-file-local-variable-prop-line
+      (:around (orig-fun &rest args) cleanup-semicolon)
+    "Delete the trailing semicolon."
     (atomic-change-group
-      ad-do-it
+      (apply orig-fun args)
       (save-excursion
         (goto-char (point-min))
         (let ((replace-lax-whitespace t))
