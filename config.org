@@ -401,10 +401,103 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
     :mode (".creole\\'" . creole-mode))
 #+END_SRC
 
-** diminish
+** crux
+This provides some useful utility functions, many of which are more
+advanced versions of existing commands.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package diminish :quelpa)
+  (req-package crux
+    :quelpa
+    :bind (("C-k" . crux-smart-kill-line)
+           ("C-c C-e" . crux-eval-and-replace)
+           ("C-x 4 t" . crux-transpose-windows)
+           ([remap move-beginning-of-line] . crux-move-beginning-of-line)))
+#+END_SRC
+
+** diminish
+This hides or shortens the names of minor modes in the modeline.
+
+The below code sets up a custom variable ~diminished-minor-modes~ to
+control the diminishing of modes.
+#+BEGIN_SRC emacs-lisp
+  (req-package diminish
+    :quelpa
+    :demand t
+    :config
+    (defun diminish-undo (mode)
+      "Restore mode-line display of diminished mode MODE to its minor-mode value.
+  Do nothing if the arg is a minor mode that hasn't been diminished.
+
+  Interactively, enter (with completion) the name of any diminished mode (a
+  mode that was formerly a minor mode on which you invoked M-x diminish).
+  To restore all diminished modes to minor status, answer `all'.
+  The response to the prompt shouldn't be quoted.  However, in Lisp code,
+  the arg must be quoted as a symbol, as in (diminish-undo 'all)."
+      (interactive
+       (if diminished-mode-alist
+           (list (read (completing-read
+                        "Restore what diminished mode: "
+                        (cons (list "all")
+                              (mapcar (lambda (x) (list (symbol-name (car x))))
+                                      diminished-mode-alist))
+                        nil t nil 'diminish-history-symbols)))
+         (error "No minor modes are currently diminished.")))
+      (if (eq mode 'all)
+          (cl-loop for dmode in diminished-mode-alist
+                   for mode-name = (car dmode)
+                   do (diminish-undo mode-name))
+        (let ((minor      (assq mode      minor-mode-alist))
+              (diminished (assq mode diminished-mode-alist)))
+          (or minor
+              (error "%S is not currently registered as a minor mode" mode))
+          (when diminished
+            (setq diminished-mode-alist (remove diminished diminished-mode-alist))
+            (setcdr minor (cdr diminished))))))
+
+    (defun diminish-setup (symbol newlist)
+      ;; Replace symbols with one-element lists, so that each element of
+      ;; NEWLIST is a valid arglist for `diminish'.
+      (setq newlist
+            (mapcar (lambda (x) (if (listp x) x (list x)))
+                    newlist))
+      (set-default symbol newlist)
+      ;; Un-diminish all modes
+      (diminish-undo 'all)
+      ;; Diminish each mode the new list
+      (mapc (lambda (x)
+              (unless (listp x)
+                (setq x (list x)))
+              (when (assq (car x) minor-mode-alist)
+                (message "Diminishing %S" x)
+                (diminish (car x) (cdr x))))
+            newlist))
+
+    (defcustom diminished-minor-modes '()
+      "Minor modes to be diminished, and their diminished text, if any."
+      :group 'diminish
+      :type '(alist :key-type (symbol :tag "Mode")
+                    :value-type (choice :tag "To What"
+                                        (const :tag "Hide completely" "")
+                                        (string :tag "Abbreviation")))
+      :set 'diminish-setup)
+
+    (defun diminish-init ()
+      (diminish-setup 'diminished-minor-modes diminished-minor-modes))
+
+    (eval-after-init
+     '(diminish-init)))
+#+END_SRC
+
+** editorconfig
+This allows Emacs to support EditorConfig files. See
+http://editorconfig.org/
+
+#+BEGIN_SRC emacs-lisp
+  (req-package editorconfig
+    :quelpa
+    :demand t
+    :config
+    (editorconfig-mode 1))
 #+END_SRC
 
 ** ess
@@ -594,6 +687,18 @@ This uses my bleeding-edge branch of ido-completing-read+.
   (req-package ido-yes-or-no :quelpa)
 #+END_SRC
 
+** iqa
+This package provides shortcuts to quickly open the user's init file for editing.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package iqa
+    :quelpa
+    :demand t
+    :config
+    (iqa-setup-default)
+    (setq iqa-user-init-file (f-join user-emacs-directory "config.org")))
+#+END_SRC
+
 ** lexbind-mode
 This indicates in the mode-line for each Emacs Lisp file whether
 lexical binding is enabled for that file.
@@ -706,6 +811,7 @@ must already be installed if this code is running.
 
 #+BEGIN_SRC emacs-lisp
   (req-package org
+    :commands org-clocking-buffer
     :config
     (defun org-in-src-block-p (&optional inside)
       "Whether point is in a code source block.
@@ -834,6 +940,14 @@ regular ~python-mode~ is just fine.
     :mode ("\\.pyi" . python-mode))
 #+END_SRC
 
+** shrink-whitespace
+
+#+BEGIN_SRC emacs-lisp
+  (req-package shrink-whitespace
+    :quelpa
+    :commands shrink-whitespace)
+#+END_SRC
+
 ** SLIME
 
 #+BEGIN_SRC emacs-lisp
@@ -924,6 +1038,30 @@ regular ~python-mode~ is just fine.
 
 #+BEGIN_SRC emacs-lisp
   (req-package undo-tree :quelpa)
+#+END_SRC
+
+** volatile-highlight
+
+#+BEGIN_SRC emacs-lisp
+  (req-package volatile-highlights
+    :quelpa
+    :config
+    (put 'vhl/define-extension 'lisp-indent-function 1)
+    (vhl/define-extension 'adjust-parens
+      'lisp-indent-adjust-parens
+      'lisp-dedent-adjust-parens)
+    (vhl/install-extension 'adjust-parens)
+    (vhl/define-extension 'undo-tree
+      'undo-tree-yank 'undo-tree-move)
+    (vhl/install-extension 'undo-tree))
+#+END_SRC
+
+** which-key
+
+#+BEGIN_SRC emacs-lisp
+  (req-package which-key
+    :quelpa
+    :defer t)
 #+END_SRC
 
 ** ws-butler
@@ -1062,21 +1200,6 @@ themselves.
               (interactive)
               (call-interactively #'move-end-of-line))
             (apply orig-fun args))))))
-#+END_SRC
-
-** Allow typing a sexp and then replacing it with its value
-If this command is run after an Emacs Lisp expression in any buffer,
-the expression will be deleted and then replaced with the value that
-it evaluates to.
-
-#+BEGIN_SRC emacs-lisp
-  (defun eval-replace-preceding-sexp ()
-    "Replace the preceding sexp with its value."
-    (interactive)
-    (let ((value (eval (elisp--preceding-sexp))))
-      (kill-sexp -1)
-      (insert (format "%s" value))))
-  (global-set-key (kbd "C-c C-e") 'eval-replace-preceding-sexp)
 #+END_SRC
 
 ** Have ~indent-region~ indent containing defun if mark is inactive
@@ -1311,7 +1434,7 @@ declarations to =user-init-file=. But I want them appended to =custom.el=
 instead.
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice en/disable-command (around put-in-custom-file activate)
+  (defadvice en/disable-command (:around put-in-custom-file activate)
     "Put declarations in `custom-file'."
     (let ((user-init-file custom-file))
       ad-do-it))
@@ -1355,24 +1478,6 @@ would rather have it start in the same directory as the first file.
 #+END_SRC
 
 *** TODO Report this as a bug in Emacs
-** Set up a function for reloading the init file
-
-#+BEGIN_SRC emacs-lisp
-  (defun reinit ()
-    (interactive)
-    (save-window-excursion
-      (load user-init-file)))
-#+END_SRC
-
-** Set up a function for editing this file
-
-#+BEGIN_SRC emacs-lisp
-  (defvar emacs-config-org-file (f-join user-emacs-directory "config.org"))
-  (defun edit-emacs-config ()
-    (interactive)
-    (find-file emacs-config-org-file))
-#+END_SRC
-
 ** Fix value of ~x-colors~
 For some reason the ~x-colors~ variable has started to get the wrong
 value, so I've copied the code to set it correctly out of
@@ -1545,80 +1650,7 @@ common-win.el.
          "dim grey" "DimGray" "DimGrey" "black"))))
 #+END_SRC
 
-** Diminish
-This hides or shortens the names of minor modes in the modeline.
-
-The below code sets up a custom variable ~diminished-minor-modes~ to
-control the diminishing of modes.
-#+BEGIN_SRC emacs-lisp
-  (use-package diminish
-    :ensure t)
-
-  (defun diminish-undo (mode)
-    "Restore mode-line display of diminished mode MODE to its minor-mode value.
-  Do nothing if the arg is a minor mode that hasn't been diminished.
-
-  Interactively, enter (with completion) the name of any diminished mode (a
-  mode that was formerly a minor mode on which you invoked M-x diminish).
-  To restore all diminished modes to minor status, answer `all'.
-  The response to the prompt shouldn't be quoted.  However, in Lisp code,
-  the arg must be quoted as a symbol, as in (diminish-undo 'all)."
-    (interactive
-     (if diminished-mode-alist
-         (list (read (completing-read
-                      "Restore what diminished mode: "
-                      (cons (list "all")
-                            (mapcar (lambda (x) (list (symbol-name (car x))))
-                                    diminished-mode-alist))
-                      nil t nil 'diminish-history-symbols)))
-       (error "No minor modes are currently diminished.")))
-    (if (eq mode 'all)
-        (cl-loop for dmode in diminished-mode-alist
-                 for mode-name = (car dmode)
-                 do (diminish-undo mode-name))
-      (let ((minor      (assq mode      minor-mode-alist))
-            (diminished (assq mode diminished-mode-alist)))
-        (or minor
-            (error "%S is not currently registered as a minor mode" mode))
-        (when diminished
-          (setq diminished-mode-alist (remove diminished diminished-mode-alist))
-          (setcdr minor (cdr diminished))))))
-
-  (defun diminish-setup (symbol newlist)
-    ;; Replace symbols with one-element lists, so that each element of
-    ;; NEWLIST is a valid arglist for `diminish'.
-    (setq newlist
-          (mapcar (lambda (x) (if (listp x) x (list x)))
-                  newlist))
-    (set-default symbol newlist)
-    ;; Un-diminish all modes
-    (diminish-undo 'all)
-    ;; Diminish each mode the new list
-    (mapc (lambda (x)
-            (unless (listp x)
-              (setq x (list x)))
-            (when (assq (car x) minor-mode-alist)
-              (message "Diminishing %S" x)
-              (diminish (car x) (cdr x))))
-          newlist))
-
-  (defcustom diminished-minor-modes '()
-    "Minor modes to be diminished, and their diminished text, if any."
-    :group 'diminish
-    :type '(alist :key-type (symbol :tag "Mode")
-                  :value-type (choice :tag "To What"
-                                      (const :tag "Hide completely" "")
-                                      (string :tag "Abbreviation")))
-    :set 'diminish-setup)
-
-  (defun diminish-init ()
-    (diminish-setup 'diminished-minor-modes diminished-minor-modes))
-
-  (eval-after-init
-    '(diminish-init))
-#+END_SRC
-
-** Additional extensions for latex-mode
+** Associate "*.latex" with latex-mode
 By default ".ltx" is assoiated with LaTeX files, but not ".latex".
 
 #+BEGIN_SRC emacs-lisp
@@ -1734,16 +1766,6 @@ add an extraneous trailing semicolon. This advice deletes it.
                           (point) (progn (end-of-line) (point)))))))
 #+END_SRC
 
-** Alias apache2-mode to apache-mode
-It looks like this mode was renamed, but my ~auto-mode-alist~ still
-has references to the old name. The most expedient solution is an
-obsolete alias.
-
-#+BEGIN_SRC emacs-lisp
-  (define-obsolete-variable-alias 'apache2-mode 'apache-mode)
-  (define-obsolete-function-alias 'apache2-mode 'apache-mode)
-#+END_SRC
-
 ** Associate .zsh files with zshell in sh-mode
 Emacs sh-mode doesn't automatically associate ~*.zsh~ with zsh. This
 enables that. It also enables it for a few other zsh-related files.
@@ -1789,6 +1811,8 @@ Git-gutter doesn't play nice with TRAMP remotes
 #+END_SRC
 
 ** Make scripts executable on save
+If a file begins with a shebang (i.e. "#!"), make it executable after
+saving it.
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'after-save-hook
@@ -1828,7 +1852,7 @@ Git-gutter doesn't play nice with TRAMP remotes
 
 When an R script is in a directory named "scripts", suggest the parent
 directory as the starting directory.
-g
+
 #+BEGIN_SRC emacs-lisp
   (require 'f)
   (defun my-ess-directory-function ()
@@ -1877,7 +1901,6 @@ These are disabled for now due to the error documented here:
   ;;                           `([,(cdr char-regexp) 0 font-shape-gstring]))))
 #+END_SRC
 
-** TODO volatile highlight
 ** TODO reveal-in-finder
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to

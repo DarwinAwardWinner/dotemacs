@@ -5,6 +5,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(S-pager "cat")
+ '(Vhl/highlight-zero-width-ranges t)
  '(abbrev-file-name "~/.emacs.d/persistence/abbrev_defs")
  '(ac-comphist-file "/Users/ryan/.emacs.d/persistence/ac-comphist.dat")
  '(ack-and-a-half-executable "/Users/ryan/perl5/perlbrew/perls/perl-5.16.3/bin/ack")
@@ -14,6 +15,7 @@
  '(autopair-global-mode t)
  '(backup-by-copying t)
  '(backup-directory-alist (quote (("." . "~/.emacs.d/persistence/backups"))))
+ '(bar-cursor-mode t)
  '(beacon-blink-delay 0.3)
  '(beacon-blink-when-focused t)
  '(beacon-blink-when-point-moves-horizontally 40)
@@ -59,7 +61,8 @@
      (highlight-changes-mode . "")
      (magit-auto-revert-mode . "")
      (git-gutter-mode . "")
-     (ws-butler-mode . ""))))
+     (ws-butler-mode . "")
+     (editorconfig-mode . ""))))
  '(dired-auto-revert-buffer (quote dired-directory-changed-p))
  '(dired-listing-switches "-aBhl  --group-directories-first")
  '(dired-omit-extensions
@@ -168,7 +171,6 @@
 ")
  '(kept-old-versions 5)
  '(kill-whole-line t)
- '(mac-pseudo-daemon-mode t)
  '(magit-completing-read-function (quote magit-ido-completing-read))
  '(magit-diff-refine-hunk t)
  '(magit-popup-use-prefix-argument (quote default))
@@ -207,7 +209,8 @@
      (sequence "WORKING" "WRITING(r)" "SUBMITTED" "|" "REJECTED(j)" "ACCEPTED" "PUBLISHED"))))
  '(package-selected-packages
    (quote
-    (tempbuf smooth-scrolling hydra async mac-pseudo-daemon ido-completing-read+ ido-complete-space-or-hyphen git-wip-mode fringe-helper git-gutter ess julia-mode cask shut-up epl bar-cursor auto-complete popup amx python org cl-lib ht log4e memoize cask-mode edit-indirect magithub travis pcre2el s a help-fns+ buttercup with-simulated-input package-lint undercover counsel isearch+ ivy-hydra slime creole-mode nginx-mode exec-path-from-shell feature-mode ecukes org-bullets magit-find-file neotree fireplace guide-key swiper string-edit highlight-escape-sequences sx pdf-tools highlight-stages magit-filenotify multiple-cursors nameless better-shell git-commit magit-popup snakemake-mode with-editor magit paradox transmission transpose-frame zone-nyan zone-rainbow zone-select zone-sl ztree ace-window adaptive-wrap avy req-package reveal-in-osx-finder yaml-mode ws-butler use-package undo-tree systemd system-specific-settings sr-speedbar sml-modeline scratch-ext restart-emacs python-mode pyenv-mode py-isort pretty-symbols polymode pointback pkg-info php-mode pallet osx-pseudo-daemon org-plus-contrib occur-context-resize noflet md-readme markdown-mode magit-gh-pulls macrostep lexbind-mode keydef jedi ido-yes-or-no ido-load-library highlight-defined helm header2 haskell-mode hardhat gitignore-mode github-clone github-browse-file git-gutter-fringe esup ess-smart-underscore ess-R-object-popup ess-R-data-view el-get crontab-mode crm-custom cl-lib-highlight beacon autopair auto-dim-other-buffers apples-mode apache-mode anzu aggressive-indent adjust-parens)))
+    (shrink-whitespace which-key iqa crux volatile-highlights editorconfig tempbuf smooth-scrolling hydra async mac-pseudo-daemon ido-complete-space-or-hyphen git-wip-mode fringe-helper git-gutter ess julia-mode cask shut-up epl bar-cursor auto-complete popup amx python org cl-lib ht log4e memoize cask-mode edit-indirect magithub travis pcre2el s a help-fns+ buttercup with-simulated-input package-lint undercover counsel isearch+ ivy-hydra slime creole-mode nginx-mode exec-path-from-shell feature-mode ecukes org-bullets magit-find-file neotree fireplace guide-key swiper string-edit highlight-escape-sequences sx pdf-tools highlight-stages magit-filenotify multiple-cursors nameless better-shell git-commit magit-popup snakemake-mode with-editor magit paradox transmission transpose-frame zone-nyan zone-rainbow zone-select zone-sl ztree ace-window adaptive-wrap avy req-package reveal-in-osx-finder yaml-mode ws-butler use-package undo-tree systemd system-specific-settings sr-speedbar sml-modeline scratch-ext restart-emacs python-mode pyenv-mode py-isort pretty-symbols polymode pointback pkg-info php-mode pallet osx-pseudo-daemon org-plus-contrib occur-context-resize noflet md-readme markdown-mode magit-gh-pulls macrostep lexbind-mode keydef jedi ido-yes-or-no ido-load-library highlight-defined helm header2 haskell-mode hardhat gitignore-mode github-clone github-browse-file git-gutter-fringe esup ess-smart-underscore ess-R-object-popup ess-R-data-view el-get crontab-mode crm-custom cl-lib-highlight beacon autopair auto-dim-other-buffers apples-mode apache-mode anzu aggressive-indent adjust-parens)))
+ '(paradox-execute-asynchronously t)
  '(paradox-github-token t)
  '(pretty-symbol-categories (lambda relational nil))
  '(pretty-symbol-patterns
@@ -392,7 +395,9 @@
  '(version-control t)
  '(visible-bell nil)
  '(void-text-area-pointer (quote text))
+ '(volatile-highlights-mode t)
  '(which-function-mode t)
+ '(which-key-mode t)
  '(winner-mode t)
  '(ws-butler-global-mode t))
 (custom-set-faces
