@@ -10,6 +10,7 @@
 ;; Ensure latest org-mode is installed from
 ;; http://orgmode.org/elpa.html
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 (defun package-ensure (pkg &optional dont-select)
   "Ensure PKG is installed, refreshing if necessary."
