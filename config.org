@@ -940,6 +940,21 @@ regular ~python-mode~ is just fine.
     :mode ("\\.pyi" . python-mode))
 #+END_SRC
 
+** rainbow-delimiters
+
+#+BEGIN_SRC emacs-lisp
+  (req-package rainbow-delimiters
+    :quelpa
+    :init
+    (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable))
+#+END_SRC
+
+** reveal-in-osx-finder
+#+BEGIN_SRC emacs-lisp
+  (req-package reveal-in-osx-finder
+    :quelpa)
+#+END_SRC
+
 ** shrink-whitespace
 
 #+BEGIN_SRC emacs-lisp
@@ -1082,15 +1097,6 @@ regular ~python-mode~ is just fine.
 #+BEGIN_SRC emacs-lisp
   (req-package yaml-mode :quelpa)
 #+END_SRC
-
-** TODO guide-key
-http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/guide-key
-
-** TODO ignoramus
-https://github.com/rolandwalker/ignoramus
-
-** TODO rainbow-delimiters
-http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/rainbow-delimiters
 
 * Install and load all configured packages
 The ~req-package~ forms above only declare the set of packages to be
@@ -1900,7 +1906,6 @@ These are disabled for now due to the error documented here:
   ;;                           `([,(cdr char-regexp) 0 font-shape-gstring]))))
 #+END_SRC
 
-** TODO reveal-in-finder
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
