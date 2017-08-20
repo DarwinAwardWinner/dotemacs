@@ -215,9 +215,11 @@ configuration and should not be executed upon init):
 
 =CODE (mapc (apply-partially #'org-sort-entries nil) (nreverse '(?O ?a))) CODE=
 ** adjust-parens
+This allows TAB and S-TAB to increase and decrease the nesting depth
+(and corresponding indentation) of the current lisp expression.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package adjust-parens
+  (req-package adjust-parens
     :demand t
     :commands adjust-parens-mode
     :init (progn
