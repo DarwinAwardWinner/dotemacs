@@ -1089,14 +1089,6 @@ http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/guide-key
 ** TODO ignoramus
 https://github.com/rolandwalker/ignoramus
 
-** TODO keydef
-This package seems to be orphaned. It should be replaced with
-bind-key. But first all usage must be converted.
-
-#+BEGIN_SRC emacs-lisp
-  (req-package keydef :quelpa)
-#+END_SRC
-
 ** TODO rainbow-delimiters
 http://melpa.milkbox.net/?utm_source=dlvr.it&utm_medium=twitter#/rainbow-delimiters
 
@@ -1180,17 +1172,17 @@ themselves.
       (when (and (eq ns-command-modifier 'meta)
                  (eq ns-option-modifier 'super))
         ;; Super is the Alt/option key
-        (keydef "s-<left>" left-word)
-        (keydef "s-<right>" right-word)
-        (keydef "s-<backspace>" backward-kill-word)
-        (keydef "s-<kp-delete>" kill-word)
-        (keydef "s-`" tmm-menubar)
+        (bind-key "s-<left>" 'left-word)
+        (bind-key "s-<right>" 'right-word)
+        (bind-key "s-<backspace>" 'backward-kill-word)
+        (bind-key "s-<kp-delete>" 'kill-word)
+        (bind-key "s-`" 'tmm-menubar)
         ;; Meta is the command key
-        (keydef "M-<left>" move-beginning-of-line)
-        (keydef "M-<right>" move-end-of-line)
-        (keydef "M-<backspace>" nil)
-        (keydef "M-<kp-delete>" nil)
-        (keydef "M-`" other-frame)
+        (bind-key "M-<left>" 'move-beginning-of-line)
+        (bind-key "M-<right>" 'move-end-of-line)
+        (bind-key "M-<backspace>" 'ignore)
+        (bind-key "M-<kp-delete>" 'ignore)
+        (bind-key "M-`" 'other-frame)
         (require 'cl)
         ;; Need to fix `org-meta(left|right)' as well. TODO: switch to
         ;; noflet after this is merged:
@@ -1225,7 +1217,7 @@ themselves.
 ** Always indent after newline
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "RET") #'newline-and-indent)
+  (bind-key "RET" #'newline-and-indent)
 #+END_SRC
 
 ** Turn off ~electric-indent-mode~ in markdown buffers
