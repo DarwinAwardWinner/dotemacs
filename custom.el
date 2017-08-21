@@ -153,6 +153,9 @@
  '(ido-case-fold t)
  '(ido-complete-space-or-hyphen-mode t)
  '(ido-confirm-unique-completion t)
+ '(ido-cr+-function-blacklist
+   (quote
+    (read-file-name-internal read-buffer todo-add-category gnus-emacs-completing-read gnus-iswitchb-completing-read grep-read-files magit-builtin-completing-read ess-completing-read Info-read-node-name tmm-prompt dired-do-rename)))
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory (quote first))
  '(ido-everywhere t)
