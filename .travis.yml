@@ -10,7 +10,8 @@ env:
 
 matrix:
   allow_failures:
-  - env: EMACS_VERSION=remacs-git-snapshot
+    - env: EMACS_VERSION=remacs-git-snapshot
+    - env: EMACS_VERSION=emacs-git-snapshot
 
 before_script:
   # Install evm
