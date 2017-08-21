@@ -1,0 +1,27 @@
+language: generic
+dist: trusty
+sudo: false
+
+env:
+  matrix:
+    - EMACS_VERSION=emacs-25.2
+    - EMACS_VERSION=emacs-git-snapshot
+    - EMACS_VERSION=remacs-git-snapshot
+
+matrix:
+  allow_failures:
+  - env: EMACS_VERSION=remacs-git-snapshot
+
+before_script:
+  # Install evm
+  - git clone https://github.com/rejeep/evm.git ~/.evm
+  - export PATH="$HOME/.evm/bin:$PATH"
+  - evm config path /tmp
+  - evm list
+  # use this version of emacs for tests
+  - evm install "${EMACS_VERSION}-travis" --use --skip
+  - evm list
+  - emacs --version
+
+script:
+  - ./test-config.sh -batch
