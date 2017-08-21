@@ -1259,6 +1259,14 @@ This allows TRAMP to use sudo on remote hosts.
                (list (regexp-quote (system-name)) nil nil))
 #+END_SRC
 
+*** Tramp remote backup files
+This ensures that backup files for remote files are created on the
+same host as the file.
+
+#+BEGIN_SRC emacs-lisp
+  (setq tramp-backup-directory-alist backup-directory-alist)
+#+END_SRC
+
 ** Use conf-mode for .gitignore files
 
 #+BEGIN_SRC emacs-lisp
