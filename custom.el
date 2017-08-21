@@ -22,6 +22,7 @@
  '(beacon-blink-when-point-moves-vertically 2)
  '(beacon-dont-blink-commands nil)
  '(beacon-mode t)
+ '(bookmark-default-file "~/.emacs.d/persistence/bookmarks")
  '(bs-default-configuration "all")
  '(clean-buffer-list-delay-general 7)
  '(completion-styles
@@ -156,6 +157,7 @@
  '(ido-enter-matching-directory (quote first))
  '(ido-everywhere t)
  '(ido-mode (quote both) nil (ido))
+ '(ido-save-directory-list-file "~/.emacs.d/persistence/ido.last")
  '(ido-ubiquitous-enable-old-style-default nil)
  '(ido-ubiquitous-mode t)
  '(ido-use-virtual-buffers t)
@@ -251,6 +253,7 @@
     (:eval
      (format " Proj[%s]"
              (projectile-project-name)))))
+ '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
@@ -369,6 +372,7 @@
      (whitespace-style face tabs spaces trailing lines space-before-tab::space newline indentation::space empty space-after-tab::space space-mark tab-mark newline-mark))))
  '(save-place-file "~/.emacs.d/persistence/.emacs-places")
  '(save-place-mode t nil (saveplace))
+ '(savehist-file "~/.emacs.d/persistence/history")
  '(savehist-mode t)
  '(send-mail-function (quote mailclient-send-it))
  '(sentence-end-double-space nil)
@@ -381,6 +385,7 @@
     (Custom-mode w3-mode Man-mode view-mode help-mode apropos-mode completion-list-mode dired-mode ibuffer-mode bookmark-bmenu-mode ess-help-mode compilation-mode vc-dir-mode vc-hg-log-view-mode occur-mode diff-mode magit-key-mode magit-log-edit-mode ess-help-mode)))
  '(tool-bar-mode nil)
  '(tramp-default-method "sftp")
+ '(tramp-persistency-file-name "/Users/ryan/.emacs.d/persistence/tramp")
  '(tramp-remote-path
    (quote
     (tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin")))
