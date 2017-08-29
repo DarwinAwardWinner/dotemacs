@@ -754,6 +754,13 @@ in normal operation.
              (or magit-hub-executable magit-git-executable)))
         (apply orig-fun args)))
     :quelpa)
+
+  ;; Magit is apparently missing an autoload for `magit-process-file',
+  ;; which is called by a function in `post-command-hook', resulting in
+  ;; an unusable emacs unless the autoload is added manually.
+  (req-package magit-process
+    :require magit
+    :commands (magit-process-file))
 #+END_SRC
 *** magit-filenotify
 This package allows magit to refresh the status buffer whenever a file
