@@ -1077,7 +1077,10 @@ regular ~python-mode~ is just fine.
     (vhl/install-extension 'adjust-parens)
     (vhl/define-extension 'undo-tree
       'undo-tree-yank 'undo-tree-move)
-    (vhl/install-extension 'undo-tree))
+    (vhl/install-extension 'undo-tree)
+    ;; Clear volatile highlights after 1 second
+    (setq vhl/idle-clear-timer
+          (run-with-idle-timer 1 t #'vhl/clear-all)))
 #+END_SRC
 
 ** which-key
