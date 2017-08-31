@@ -1081,6 +1081,10 @@ regular ~python-mode~ is just fine.
     ;; Clear volatile highlights after 1 second
     (setq vhl/idle-clear-timer
           (run-with-idle-timer 1 t #'vhl/clear-all)))
+
+  (define-advice vhl/add-range (:before-while (&rest args) disable-in-read-only-buffers)
+    "Don't do volatile highlights in read-only buffers"
+    (not buffer-read-only))
 #+END_SRC
 
 ** which-key
