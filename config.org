@@ -1470,7 +1470,7 @@ would rather have it start in the same directory as the first file.
 
 
 #+BEGIN_SRC emacs-lisp
-  (define-advice diff (:before same-dir-for-both-files activate)
+  (define-advice diff (:before (&rest args) same-dir-for-both-files)
     "Only prompt with backup file in same directory.
 
   When called interactively, `diff' normally offers to compare
