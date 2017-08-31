@@ -63,7 +63,12 @@
      (magit-auto-revert-mode . "")
      (git-gutter-mode . "")
      (ws-butler-mode . "")
-     (editorconfig-mode . ""))))
+     (editorconfig-mode . "")
+     (magit-filenotify-mode . "")
+     (which-key-mode . "")
+     (highlight-stages-mode . "")
+     (bar-cursor-mode . "")
+     (beacon-mode . ""))))
  '(dired-auto-revert-buffer (quote dired-directory-changed-p))
  '(dired-listing-switches "-aBhl  --group-directories-first")
  '(dired-omit-extensions
