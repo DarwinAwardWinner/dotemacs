@@ -509,38 +509,39 @@ http://editorconfig.org/
     ;; TRAMP causes problems
     (require 'tramp)
     :config
-    (progn
-      (setq ess-default-style 'OWN)
-      (customize-set-variable
-       'ess-own-style-list
-       ;; Based on (cdr (assoc 'C++ ess-style-alist))
-       '((ess-indent-level . 4)
-         (ess-first-continued-statement-offset . 4)
-         (ess-continued-statement-offset . 0)
-         (ess-brace-offset . -4)
-         (ess-arg-function-offset . 0)
-         (ess-arg-function-offset-new-line quote
-                                           (4))
-         (ess-expression-offset . 4)
-         (ess-else-offset . 0)
-         (ess-close-brace-offset . 0)))
-      (define-advice ess-smart-S-assign
-          (:around (orig-fun &rest args) underscore-unless-space)
-        "Always insert underscores unless point is after a space.
+    (setq ess-default-style 'OWN)
+    (customize-set-variable
+     'ess-own-style-list
+     ;; Based on (cdr (assoc 'C++ ess-style-alist))
+     '((ess-indent-offset . 4)
+       (ess-offset-arguments . open-delim)
+       (ess-offset-arguments-newline . prev-line)
+       (ess-offset-block . prev-call)
+       (ess-offset-continued . straight)
+       (ess-align-nested-calls "ifelse")
+       (ess-align-arguments-in-calls "function[ 	]*(")
+       (ess-align-continuations-in-calls . t)
+       (ess-align-blocks control-flow)
+       (ess-indent-from-lhs arguments)
+       (ess-indent-from-chain-start . t)
+       (ess-indent-with-fancy-comments)))
+    (define-advice ess-smart-S-assign
+        (:around (orig-fun &rest args) underscore-unless-space)
+      "Always insert underscores unless point is after a space.
 
   This advice is only active if `ess-smart-S-assign-key' is \"_\"."
-        (if (and (looking-back "[^[:space:]]" 1)
-                 (string= ess-smart-S-assign-key "_"))
-            (insert ess-smart-S-assign-key)
-          (apply orig-fun args)))
-      (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode))
-      ;; TODO: Put this function in a more appropriate location
-      (defun twiddle-mode (mode)
-        "If MODE is activated, then deactivate it and then activate it again.
+      (if (and (looking-back "[^[:space:]]" 1)
+               (string= ess-smart-S-assign-key "_"))
+          (insert ess-smart-S-assign-key)
+        (apply orig-fun args)))
+    (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode))
+    ;; TODO: Put this function in a more appropriate location
+    (defun twiddle-mode (mode)
+      "If MODE is activated, then deactivate it and then activate it again.
   If MODE is not active, do nothing."
-        (when (eval mode)
-          (funcall mode 0)
-          (funcall mode 1))))
+      (when (eval mode)
+        (funcall mode 0)
+        (funcall mode 1)))
     :quelpa)
 #+END_SRC
 
