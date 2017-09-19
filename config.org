@@ -782,6 +782,15 @@ only enable it for local files.
     :quelpa)
 #+END_SRC
 
+** edit-indirect
+This is an optional dependency of markdown-mode.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package edit-indirect
+    :defer t)
+
+#+END_SRC
+
 ** markdown-mode
 This mode is for editing Markdown files.
 
