@@ -165,6 +165,7 @@
  '(ido-enter-matching-directory (quote first))
  '(ido-everywhere t)
  '(ido-mode (quote both) nil (ido))
+ '(ido-read-file-name-non-ido (quote (dired-do-rename dired-create-directory)))
  '(ido-save-directory-list-file "~/.emacs.d/persistence/ido.last")
  '(ido-ubiquitous-enable-old-style-default nil)
  '(ido-ubiquitous-mode t)
