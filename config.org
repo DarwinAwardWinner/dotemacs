@@ -1916,7 +1916,7 @@ the package to be installed immediately without having to call
   (define-advice eval-last-sexp (:around (orig-fun &rest args) req-package-eagerly)
     "Call `req-package-finish' afterward if evaluating a `req-package' form."
     (let ((is-req-package
-           (eq (car (elisp--preceding-sexp))
+           (eq (car-safe (elisp--preceding-sexp))
                'req-package)))
       (prog1 (apply orig-fun args)
         (ignore-errors
