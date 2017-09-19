@@ -1819,10 +1819,11 @@ enables that. It also enables it for a few other zsh-related files.
   ;; zsh startup files
   (add-to-list 'auto-mode-alist '("\\.\\(zshrc\\|zshenv\\|zprofile\\|zlogin\\|zlogout\\)\\>" . sh-mode))
   ;; Ensure that sh-mode uses zsh as shell for these files
-  (add-hook 'sh-mode-hook
-            (lambda ()
-              (if (string-match-p "\\.zsh\\(rc\\|env\\|\\'\\)" buffer-file-name)
-                  (sh-set-shell "zsh"))))
+  (defun sh-mode-set-zsh-by-file-name ()
+    (when (and buffer-file-name
+               (string-match-p "\\.zsh\\(rc\\|env\\|\\'\\)" buffer-file-name))
+      (sh-set-shell "zsh")))
+  (add-hook 'sh-mode-hook 'sh-mode-set-zsh-by-file-name)
 #+END_SRC
 
 ** Add ~sort-words~ command
