@@ -1962,6 +1962,16 @@ These are disabled for now due to the error documented here:
   ;;                           `([,(cdr char-regexp) 0 font-shape-gstring]))))
 #+END_SRC
 
+** Ignore left/right scroll events
+If wheel-left and wheel-right are left unbound, Emacs rings the bell
+when they are used, which can easily happen when scrolling on a
+touchpad.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "<wheel-left>" 'ignore)
+  (bind-key "<wheel-right>" 'ignore)
+#+END_SRC
+
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
