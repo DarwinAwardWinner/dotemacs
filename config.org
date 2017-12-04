@@ -832,6 +832,8 @@ must already be installed if this code is running.
   (req-package org
     :commands org-clocking-buffer
     :config
+    (require 'ox-extra)
+    (ox-extras-activate '(latex-header-blocks ignore-headlines))
     (defun org-in-src-block-p (&optional inside)
       "Whether point is in a code source block.
        When INSIDE is non-nil, don't consider we are within a src block
