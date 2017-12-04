@@ -268,6 +268,12 @@
  '(safe-local-variable-values
    (quote
     ((checkdoc-minor-mode . 1)
+     (org-emphasis-alist
+      ("*" bold)
+      ("/" italic)
+      ("_" underline)
+      ("=" org-verbatim verbatim)
+      ("~" org-code verbatim))
      (eval when
            (and
             (buffer-file-name)
