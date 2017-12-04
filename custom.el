@@ -221,7 +221,7 @@
      (sequence "WORKING" "WRITING(r)" "SUBMITTED" "|" "REJECTED(j)" "ACCEPTED" "PUBLISHED"))))
  '(package-selected-packages
    (quote
-    (package-build git commander f dash rainbow-delimiters shrink-whitespace which-key iqa crux volatile-highlights editorconfig tempbuf smooth-scrolling hydra async mac-pseudo-daemon ido-complete-space-or-hyphen git-wip-mode fringe-helper git-gutter ess julia-mode cask shut-up epl bar-cursor auto-complete popup amx python org cl-lib ht log4e memoize cask-mode edit-indirect magithub travis pcre2el s a help-fns+ buttercup with-simulated-input package-lint undercover counsel isearch+ ivy-hydra slime creole-mode nginx-mode exec-path-from-shell feature-mode ecukes org-bullets magit-find-file neotree fireplace guide-key swiper string-edit highlight-escape-sequences sx pdf-tools highlight-stages magit-filenotify multiple-cursors nameless better-shell git-commit magit-popup snakemake-mode with-editor magit paradox transmission transpose-frame zone-nyan zone-rainbow zone-select zone-sl ztree ace-window adaptive-wrap avy req-package reveal-in-osx-finder yaml-mode ws-butler use-package undo-tree systemd system-specific-settings sr-speedbar sml-modeline scratch-ext restart-emacs python-mode pyenv-mode py-isort pretty-symbols polymode pointback pkg-info php-mode pallet osx-pseudo-daemon org-plus-contrib occur-context-resize noflet md-readme markdown-mode magit-gh-pulls macrostep lexbind-mode keydef jedi ido-yes-or-no ido-load-library highlight-defined helm header2 haskell-mode hardhat gitignore-mode github-clone github-browse-file git-gutter-fringe esup ess-smart-underscore ess-R-object-popup ess-R-data-view el-get crontab-mode crm-custom cl-lib-highlight beacon autopair auto-dim-other-buffers apples-mode apache-mode anzu aggressive-indent adjust-parens)))
+    (tempbuf git-wip-mode yaml-mode ws-butler with-simulated-input which-key volatile-highlights undo-tree system-specific-settings snakemake-mode smooth-scrolling sml-modeline slime shrink-whitespace reveal-in-osx-finder rainbow-delimiters pretty-symbols polymode pointback paradox org-bullets occur-context-resize noflet markdown-mode edit-indirect magit-filenotify magit mac-pseudo-daemon lexbind-mode iqa ido-yes-or-no ido-completing-read+ ido-complete-space-or-hyphen highlight-stages highlight-defined header2 git-gutter-fringe git-gutter esup ess editorconfig crux creole-mode cask-mode cask buttercup beacon bar-cursor autopair auto-dim-other-buffers auto-complete apache-mode anzu amx req-package package-build git commander dash hydra fringe-helper julia-mode shut-up epl popup python org cl-lib ht log4e memoize magithub travis pcre2el a help-fns+ package-lint undercover counsel isearch+ ivy-hydra nginx-mode feature-mode ecukes magit-find-file neotree fireplace guide-key swiper string-edit highlight-escape-sequences sx pdf-tools multiple-cursors nameless better-shell transmission transpose-frame zone-nyan zone-rainbow zone-select zone-sl ztree ace-window adaptive-wrap avy use-package systemd sr-speedbar scratch-ext restart-emacs python-mode pyenv-mode py-isort pkg-info php-mode pallet osx-pseudo-daemon md-readme magit-gh-pulls macrostep jedi ido-load-library helm haskell-mode hardhat gitignore-mode github-clone github-browse-file ess-smart-underscore ess-R-object-popup ess-R-data-view el-get crontab-mode crm-custom cl-lib-highlight apples-mode aggressive-indent adjust-parens)))
  '(paradox-execute-asynchronously t)
  '(paradox-github-token t)
  '(pretty-symbol-categories (lambda relational nil))
@@ -267,13 +267,18 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((checkdoc-minor-mode . 1)
+    ((eval add-hook
+           (quote after-save-hook)
+           (quote org-html-export-to-html)
+           t t)
+     (pretty-symbols-mode)
      (org-emphasis-alist
       ("*" bold)
       ("/" italic)
       ("_" underline)
       ("=" org-verbatim verbatim)
       ("~" org-code verbatim))
+     (checkdoc-minor-mode . 1)
      (eval when
            (and
             (buffer-file-name)
