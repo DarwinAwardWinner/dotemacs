@@ -911,6 +911,41 @@ This provides pretty-looking bullets for org-mode.
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+END_SRC
 
+*** Stable-ish HTML anchors for org export
+This code makes the anchors IDs generated when exporting org files to
+HTML less random. It sets the seed to a specific value before
+executing the export, which means that it should always generate the
+same anchors IDs given the same set of headlines.
+#+BEGIN_SRC emacs-lisp
+  (defmacro with-reproducible-rng (seed &rest body)
+    "Execute BODY with reproducible RNG.
+
+  Before executing BODY, the random number generator will be
+  initialized with SEED, which should be a string (see `random').
+  Hence, the sequence of random numbers returned by `random' within
+  BODY will be reproducible. After BODY finishes, the random number
+  generatore will be reinitialized from system entropy, and will
+  therefore no longer be predictable.
+
+  \(There does not seem to be a way to save and restore a specific
+  RNG state, so the RNG state after executing this macro will not
+  be the same as it was prior.)"
+    (declare (indent 1))
+    `(unwind-protect
+         (progn
+           (random (or ,seed ""))
+           ,@body)
+       (random t)))
+
+  (define-advice org-html-export-to-html (:around (orig-fun &rest args) reproducible-rng)
+    "Use a reproducible RNG stream for HTML export.
+
+  This results in the same pseudo-random anchor IDs for
+  the same set of headlines every time."
+    (with-reproducible-rng "org-html-export"
+      (apply orig-fun args)))
+#+END_SRC
+
 ** paradox
 
 #+BEGIN_SRC emacs-lisp
