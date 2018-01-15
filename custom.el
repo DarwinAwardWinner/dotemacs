@@ -209,6 +209,21 @@
  '(org-adapt-indentation nil)
  '(org-bullets-bullet-list (quote ("◉" "✸" "✿")))
  '(org-completion-use-ido t)
+ '(org-html-allow-name-attribute-in-anchors t)
+ '(org-html-infojs-options
+   (quote
+    ((path . "http://orgmode.org/org-info.js")
+     (view . "overview")
+     (toc . :with-toc)
+     (ftoc . "0")
+     (tdepth . "max")
+     (sdepth . "max")
+     (mouse . "underline")
+     (buttons . "0")
+     (ltoc . "1")
+     (up . :html-link-up)
+     (home . :html-link-home))))
+ '(org-html-use-infojs (quote when-configured))
  '(org-support-shift-select t)
  '(org-todo-keyword-faces
    (quote
@@ -221,7 +236,7 @@
      (sequence "WORKING" "WRITING(r)" "SUBMITTED" "|" "REJECTED(j)" "ACCEPTED" "PUBLISHED"))))
  '(package-selected-packages
    (quote
-    (tempbuf git-wip-mode yaml-mode ws-butler with-simulated-input which-key volatile-highlights undo-tree system-specific-settings snakemake-mode smooth-scrolling sml-modeline slime shrink-whitespace reveal-in-osx-finder rainbow-delimiters pretty-symbols polymode pointback paradox org-bullets occur-context-resize noflet markdown-mode edit-indirect magit-filenotify magit mac-pseudo-daemon lexbind-mode iqa ido-yes-or-no ido-completing-read+ ido-complete-space-or-hyphen highlight-stages highlight-defined header2 git-gutter-fringe git-gutter esup ess editorconfig crux creole-mode cask-mode cask buttercup beacon bar-cursor autopair auto-dim-other-buffers auto-complete apache-mode anzu amx req-package package-build git commander dash hydra fringe-helper julia-mode shut-up epl popup python org cl-lib ht log4e memoize magithub travis pcre2el a help-fns+ package-lint undercover counsel isearch+ ivy-hydra nginx-mode feature-mode ecukes magit-find-file neotree fireplace guide-key swiper string-edit highlight-escape-sequences sx pdf-tools multiple-cursors nameless better-shell transmission transpose-frame zone-nyan zone-rainbow zone-select zone-sl ztree ace-window adaptive-wrap avy use-package systemd sr-speedbar scratch-ext restart-emacs python-mode pyenv-mode py-isort pkg-info php-mode pallet osx-pseudo-daemon md-readme magit-gh-pulls macrostep jedi ido-load-library helm haskell-mode hardhat gitignore-mode github-clone github-browse-file ess-smart-underscore ess-R-object-popup ess-R-data-view el-get crontab-mode crm-custom cl-lib-highlight apples-mode aggressive-indent adjust-parens)))
+    (toc-org exec-path-from-shell diminish bind-key f s tempbuf git-wip-mode yaml-mode ws-butler with-simulated-input which-key volatile-highlights undo-tree system-specific-settings snakemake-mode smooth-scrolling sml-modeline slime shrink-whitespace reveal-in-osx-finder rainbow-delimiters pretty-symbols polymode pointback paradox org-bullets occur-context-resize noflet markdown-mode edit-indirect magit-filenotify magit mac-pseudo-daemon lexbind-mode iqa ido-yes-or-no ido-completing-read+ ido-complete-space-or-hyphen highlight-stages highlight-defined header2 git-gutter-fringe git-gutter esup ess editorconfig crux creole-mode cask-mode cask buttercup beacon bar-cursor autopair auto-dim-other-buffers auto-complete apache-mode anzu amx req-package package-build git commander dash hydra fringe-helper julia-mode shut-up epl popup python org cl-lib ht log4e memoize magithub travis pcre2el a help-fns+ package-lint undercover counsel isearch+ ivy-hydra nginx-mode feature-mode ecukes magit-find-file neotree fireplace guide-key swiper string-edit highlight-escape-sequences sx pdf-tools multiple-cursors nameless better-shell transmission transpose-frame zone-nyan zone-rainbow zone-select zone-sl ztree ace-window adaptive-wrap avy use-package systemd sr-speedbar scratch-ext restart-emacs python-mode pyenv-mode py-isort pkg-info php-mode pallet osx-pseudo-daemon md-readme magit-gh-pulls macrostep jedi ido-load-library helm haskell-mode hardhat gitignore-mode github-clone github-browse-file ess-smart-underscore ess-R-object-popup ess-R-data-view el-get crontab-mode crm-custom cl-lib-highlight apples-mode aggressive-indent adjust-parens)))
  '(paradox-execute-asynchronously t)
  '(paradox-github-token t)
  '(pretty-symbol-categories (lambda relational nil))
@@ -267,7 +282,8 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((eval add-hook
+    ((org-html-use-infojs . t)
+     (eval add-hook
            (quote after-save-hook)
            (quote org-html-export-to-html)
            t t)
@@ -309,7 +325,6 @@
             default-directory))
      (eval ignore-errors
            (ws-butler-mode 0))
-     (\"lexical-binding\" . t)
      (eval when
            (and
             (buffer-file-name)
@@ -419,7 +434,7 @@
  '(user-mail-address "rct@thompsonclan.org")
  '(vc-make-backup-files t)
  '(version-control t)
- '(visible-bell nil)
+ '(visible-bell t)
  '(void-text-area-pointer (quote text))
  '(volatile-highlights-mode t)
  '(which-function-mode t)
