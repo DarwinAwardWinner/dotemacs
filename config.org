@@ -834,60 +834,67 @@ must already be installed if this code is running.
     :config
     (require 'ox-extra)
     (ox-extras-activate '(latex-header-blocks ignore-headlines))
-    (defun org-in-src-block-p (&optional inside)
-      "Whether point is in a code source block.
+    ;; Custom src-block behaviors
+    (progn
+      (defun org-in-src-block-p (&optional inside)
+        "Whether point is in a code source block.
        When INSIDE is non-nil, don't consider we are within a src block
        when point is at #+BEGIN_SRC or #+END_SRC."
-      (save-match-data
-        (let* ((elem (org-element-at-point))
-               (elem-type (car elem))
-               (props (cadr elem))
-               (end (plist-get props :end))
-               (pb (plist-get props :post-blank))
-               (content-end
-                (save-excursion
-                  (goto-char end)
-                  (forward-line (- pb))
-                  (point)))
-               (case-fold-search t))
-          (and
-           ;; Elem is a src block
-           (eq elem-type 'src-block)
-           ;; Make sure point is not on one of the blank lines after the
-           ;; element.
-           (< (point) content-end)
-           ;; If INSIDE is non-nil, then must not be at block delimiter
-           (not
+        (save-match-data
+          (let* ((elem (org-element-at-point))
+                 (elem-type (car elem))
+                 (props (cadr elem))
+                 (end (plist-get props :end))
+                 (pb (plist-get props :post-blank))
+                 (content-end
+                  (save-excursion
+                    (goto-char end)
+                    (forward-line (- pb))
+                    (point)))
+                 (case-fold-search t))
             (and
-             inside
-             (save-excursion
-               (beginning-of-line)
-               (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
-    (defun org-insert-src-block (src-code-type)
-      "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
-      (interactive
-       (let ((src-code-types
-              '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
-                "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
-                "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
-                "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
-                "scheme" "sqlite")))
-         (list (ido-completing-read "Source code type: " src-code-types))))
-      (progn
-        (newline-and-indent)
-        (insert (format "#+BEGIN_SRC %s\n" src-code-type))
-        (newline-and-indent)
-        (insert "#+END_SRC\n")
-        (forward-line -2)
-        (org-edit-src-code)))
-    (defun org-insert-or-edit-src-block (src-code-type &optional interactive-call)
-      "Insert a source code block in org-mode or edit an existing one."
-      (interactive (list nil t))
-      (if (org-in-src-block-p)
-          (org-edit-src-code)
-        (if interactive-call
-            (call-interactively 'org-insert-src-block)
-          (org-insert-src-block src-code-type))))
+             ;; Elem is a src block
+             (eq elem-type 'src-block)
+             ;; Make sure point is not on one of the blank lines after the
+             ;; element.
+             (< (point) content-end)
+             ;; If INSIDE is non-nil, then must not be at block delimiter
+             (not
+              (and
+               inside
+               (save-excursion
+                 (beginning-of-line)
+                 (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
+      (defun org-insert-src-block (src-code-type)
+        "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+        (interactive
+         (let ((src-code-types
+                '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                  "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
+                  "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
+                  "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
+                  "scheme" "sqlite")))
+           (list (ido-completing-read "Source code type: " src-code-types))))
+        (progn
+          (newline-and-indent)
+          (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+          (newline-and-indent)
+          (insert "#+END_SRC\n")
+          (forward-line -2)
+          (org-edit-src-code)))
+      (defun org-insert-or-edit-src-block (src-code-type &optional interactive-call)
+        "Insert a source code block in org-mode or edit an existing one."
+        (interactive (list nil t))
+        (if (org-in-src-block-p)
+            (org-edit-src-code)
+          (if interactive-call
+              (call-interactively 'org-insert-src-block)
+            (org-insert-src-block src-code-type)))))
+    ;; Allow an emphasized expression to extend over 5 lines
+    (progn
+      (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\r\n\"'")
+      (setcar (nthcdr 4 org-emphasis-regexp-components) 5)
+      (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
     :bind (:map org-mode-map
                 ("C-c C-'" . org-insert-or-edit-src-block)
                 :map org-src-mode-map
