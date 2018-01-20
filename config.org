@@ -2016,30 +2016,6 @@ touchpad.
   (bind-key "<wheel-right>" 'ignore)
 #+END_SRC
 
-** Less intrusive visible bell
-
-#+BEGIN_SRC emacs-lisp
-  (defvar visible-bell-flash-modeline-saved-face-attrs nil)
-  (defvar visible-bell-flash-modeline-time 0.5)
-
-  (defun visible-bell-flash-modeline ()
-    "Flash the modeline."
-    (unless visible-bell-flash-modeline-saved-face-attrs
-      (setq visible-bell-flash-modeline-saved-face-attrs
-            (or visible-bell-flash-modeline-saved-face-attrs
-                (face-all-attributes 'mode-line)))
-      (invert-face 'mode-line)
-      (run-with-timer
-       visible-bell-flash-modeline-time nil
-       (lambda ()
-         (apply #'set-face-attribute 'mode-line nil
-                (cl-loop for (attr . value) in visible-bell-flash-modeline-saved-face-attrs
-                         collect attr and collect value))
-         (setq visible-bell-flash-modeline-saved-face-attrs nil)))))
-
-  (setq ring-bell-function #'visible-bell-flash-modeline)
-#+END_SRC
-
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
