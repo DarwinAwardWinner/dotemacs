@@ -193,6 +193,7 @@
    (quote
     (header-title header-completely-blank header-copyright header-completely-blank header-file-name header-author header-creation-date header-version header-pkg-requires header-url header-keywords header-completely-blank header-not-part-of-emacs header-completely-blank header-end-line header-commentary header-completely-blank header-blank header-completely-blank header-end-line header-free-software header-code header-provide-statement header-eof)))
  '(markdown-asymmetric-header t)
+ '(markdown-command "pandoc --to html --from markdown")
  '(marmalade-server "http://marmalade-repo.org" t)
  '(marmalade-token "jxzMp9uu6+16QPYKyarL9glfVfekWdWta8EEdMSkKlE=")
  '(mc/list-file "~/.emacs.d/persistence/.mc-lists.el")
