@@ -337,8 +337,7 @@ Emacs Lisp packages.
   (req-package buttercup
     :quelpa (buttercup
              :fetcher github
-             :repo "DarwinAwardWinner/emacs-buttercup"
-             :branch "expect-closures"))
+             :repo "DarwinAwardWinner/emacs-buttercup"))
 #+END_SRC
 
 ** cask
