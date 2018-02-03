@@ -226,6 +226,7 @@
      (up . :html-link-up)
      (home . :html-link-home))))
  '(org-html-use-infojs (quote when-configured))
+ '(org-image-actual-width (quote (400)))
  '(org-support-shift-select t)
  '(org-todo-keyword-faces
    (quote
@@ -284,7 +285,13 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((org-html-use-infojs . t)
+    ((org-emphasis-alist quote
+                         (("*" bold)
+                          ("/" italic)
+                          ("_" underline)
+                          ("=" org-verbatim verbatim)
+                          ("~" org-code verbatim)))
+     (org-html-use-infojs . t)
      (eval add-hook
            (quote after-save-hook)
            (quote org-html-export-to-html)
