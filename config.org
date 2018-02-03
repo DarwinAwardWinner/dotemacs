@@ -689,6 +689,14 @@ This uses my bleeding-edge branch of ido-completing-read+.
   (req-package ido-yes-or-no :quelpa)
 #+END_SRC
 
+** image+
+
+#+BEGIN_SRC emacs-lisp
+  (req-package image+
+    :after image)
+#+END_SRC
+
+
 ** iqa
 This package provides shortcuts to quickly open the user's init file for editing.
 
