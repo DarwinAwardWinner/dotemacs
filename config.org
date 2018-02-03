@@ -361,9 +361,11 @@ them.
 #+BEGIN_SRC emacs-lisp
   (req-package cl-lib-highlight
     :config
-    (progn
-      (cl-lib-highlight-initialize)
-      (cl-lib-highlight-warn-cl-initialize))
+    (cl-lib-highlight-initialize)
+    (cl-lib-highlight-warn-cl-initialize)
+    :commands
+    cl-lib-highlight-initialize
+    cl-lib-highlight-warn-cl-initialize
     :defer nil)
 #+END_SRC
 
