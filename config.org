@@ -900,7 +900,7 @@ must already be installed if this code is running.
     ;; Allow an emphasized expression to extend over 5 lines
     (progn
       (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\r\n\"'")
-      (setcar (nthcdr 4 org-emphasis-regexp-components) 5)
+      (setcar (nthcdr 4 org-emphasis-regexp-components) 15)
       (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
     :bind (:map org-mode-map
                 ("C-c C-'" . org-insert-or-edit-src-block)
