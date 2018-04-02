@@ -517,7 +517,7 @@ http://editorconfig.org/
      '((ess-indent-offset . 4)
        (ess-offset-arguments . open-delim)
        (ess-offset-arguments-newline . prev-line)
-       (ess-offset-block . prev-call)
+       (ess-offset-block . prev-line)
        (ess-offset-continued . straight)
        (ess-align-nested-calls "ifelse")
        (ess-align-arguments-in-calls "function[ 	]*(")
