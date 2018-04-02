@@ -363,13 +363,10 @@ them.
 
 #+BEGIN_SRC emacs-lisp
   (req-package cl-lib-highlight
+    :demand t
     :config
     (cl-lib-highlight-initialize)
-    (cl-lib-highlight-warn-cl-initialize)
-    :commands
-    cl-lib-highlight-initialize
-    cl-lib-highlight-warn-cl-initialize
-    :defer nil)
+    (cl-lib-highlight-warn-cl-initialize))
 #+END_SRC
 
 ** cperl-mode
