@@ -203,6 +203,9 @@ declared in the config. So if the setup code for one package depends
 on having another package loaded, ~req-package~ can handle that.
 
 #+BEGIN_SRC emacs-lisp
+  ;; Install undeclared dependency el-get first
+  ;; https://github.com/edvorg/req-package/pull/53
+  (use-package el-get :quelpa)
   (use-package req-package :quelpa)
 #+END_SRC
 * Package configuration
