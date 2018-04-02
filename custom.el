@@ -68,7 +68,8 @@
      (which-key-mode . "")
      (highlight-stages-mode . "")
      (bar-cursor-mode . "")
-     (beacon-mode . ""))))
+     (beacon-mode . "")
+     (magit-filenotify-mode . ""))))
  '(dired-auto-revert-buffer (quote dired-directory-changed-p))
  '(dired-listing-switches "-aBhl  --group-directories-first")
  '(dired-omit-extensions
