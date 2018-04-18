@@ -1089,6 +1089,13 @@ regular ~python-mode~ is just fine.
                  (unless (s-suffix? "-mode" symname)
                    "-mode")))))
 
+    (defun tempbuf-protect ()
+      "Prevent tempbuf from killing visible or unsaved buffers."
+      (when (or (get-buffer-window)
+                (buffer-modified-p))
+        (throw 'tempbuf-skip-kill)))
+    (add-hook 'tempbuf-kill-hook 'tempbuf-protect)
+
     (defun tempbuf-major-mode-hook ()
       "Turn on `tempbuf-mode' in current buffer if buffer's `major-mode' is in `tempbuf-temporary-major-modes'.
 
