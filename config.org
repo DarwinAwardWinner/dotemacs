@@ -1093,7 +1093,7 @@ regular ~python-mode~ is just fine.
       "Prevent tempbuf from killing visible or unsaved buffers."
       (when (or (get-buffer-window)
                 (buffer-modified-p))
-        (throw 'tempbuf-skip-kill)))
+        (throw 'tempbuf-skip-kill nil)))
     (add-hook 'tempbuf-kill-hook 'tempbuf-protect)
 
     (defun tempbuf-major-mode-hook ()
