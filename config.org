@@ -661,6 +661,13 @@ built-in ones.
   (req-package highlight-stages :quelpa)
 #+END_SRC
 
+** htmlize
+This is needed for ~org-html-fontify-code~.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package htmlize :quelpa)
+#+END_SRC
+
 ** ido-complete-space-or-hyphen
 My personal fork of ido-complete-space-or-hyphen. It converts the
 package into a full-fledged minor mode.
@@ -697,7 +704,6 @@ This uses my bleeding-edge branch of ido-completing-read+.
   (req-package image+
     :after image)
 #+END_SRC
-
 
 ** iqa
 This package provides shortcuts to quickly open the user's init file for editing.
