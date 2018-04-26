@@ -415,6 +415,33 @@ advanced versions of existing commands.
            ([remap move-beginning-of-line] . crux-move-beginning-of-line)))
 #+END_SRC
 
+** dpkg-dev-el
+This is a series of elisp provided by the Debian package dpkg-dev-el.
+Some of them have uses outside Debian, so it's nice to have a way to
+install them without dpkg.
+
+https://packages.debian.org/sid/dpkg-dev-el
+https://salsa.debian.org/debian/emacs-goodies-el/tree/master/elisp/dpkg-dev-el
+
+#+BEGIN_SRC emacs-lisp
+  (req-package debian-changelog-mode
+    :quelpa (debian-changelog-mode
+             :fetcher git :url "https://salsa.debian.org/debian/emacs-goodies-el.git"
+             :files ("elisp/dpkg-dev-el/debian-changelog-mode.el")))
+  (req-package debian-control-mode
+    :quelpa (debian-control-mode
+             :fetcher git :url "https://salsa.debian.org/debian/emacs-goodies-el.git"
+             :files ("elisp/dpkg-dev-el/debian-control-mode.el")))
+  (req-package debian-copyright
+    :quelpa (debian-copyright
+             :fetcher git :url "https://salsa.debian.org/debian/emacs-goodies-el.git"
+             :files ("elisp/dpkg-dev-el/debian-copyright.el")))
+  (req-package readme-debian
+    :quelpa (readme-debian
+             :fetcher git :url "https://salsa.debian.org/debian/emacs-goodies-el.git"
+             :files ("elisp/dpkg-dev-el/readme-debian.el")))
+#+END_SRC
+
 ** diminish
 This hides or shortens the names of minor modes in the modeline.
 
