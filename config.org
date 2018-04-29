@@ -263,6 +263,11 @@ This loads apache-mode and sets it up to detect the vim
     :quelpa)
 #+END_SRC
 
+** apt-sources-list
+#+BEGIN_SRC emacs-lisp
+  (req-package apt-sources-list :quelpa)
+#+END_SRC
+
 ** auto-complete
 Auto-complete mode provides IDE-style popup completions while editing.
 
