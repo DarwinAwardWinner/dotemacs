@@ -993,6 +993,13 @@ same anchors IDs given the same set of headlines.
       (apply orig-fun args)))
 #+END_SRC
 
+** package-lint
+This is used to check packages for package.el compliance.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package package-lint :quelpa)
+#+END_SRC
+
 ** paradox
 
 #+BEGIN_SRC emacs-lisp
