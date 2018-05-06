@@ -1001,12 +1001,17 @@ This is used to check packages for package.el compliance.
 #+END_SRC
 
 ** paradox
+Paradox provides an improved interface to package.el.
 
 #+BEGIN_SRC emacs-lisp
   (req-package paradox :quelpa)
 #+END_SRC
 
 ** pointback
+This package saves a per-window buffer point when switching buffers.
+This is mainly important when two windows are displaying the same
+buffer. Without this package, switching away and back to the buffer in
+one window will reset the point to its position in the other one.
 
 #+BEGIN_SRC emacs-lisp
   (req-package pointback :quelpa)
