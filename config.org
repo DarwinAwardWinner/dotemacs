@@ -57,7 +57,8 @@ installed. This uses the standard [[https://github.com/quelpa/quelpa#installatio
 #+BEGIN_SRC emacs-lisp
   (eval-and-compile
     (if (require 'quelpa nil t)
-        (quelpa-self-upgrade)
+        (when (not noninteractive)
+          (quelpa-self-upgrade))
       (with-temp-buffer
         (url-insert-file-contents
          "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
