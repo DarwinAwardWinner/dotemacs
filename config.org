@@ -994,6 +994,35 @@ same anchors IDs given the same set of headlines.
       (apply orig-fun args)))
 #+END_SRC
 
+*** Skip most initialization for org async export
+Org-mode supports asynchronous export functionality. By default, each
+async process loads the user's full init file, but we don't want that,
+because that would be too slow, and because Quelpa runs into problems
+when multiple Emacsen try to start up at the same time. So instead,
+whenever we run an async Org export job, we generate a minimal init
+file that just sets the ~load-path~ from this Emacs, disables backup &
+lock files, and then loads the appropriate Org-mode functionality.
+Then we tell the export process to use this file instead or the usual
+init file.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-export-async-init-file (f-join user-emacs-directory ".temp-org-export-async-init.el"))
+  (let ((init-form
+         `(progn
+            ,@(cl-loop
+               for binding in
+               '(load-path
+                 (create-lockfiles nil)
+                 (make-backup-files nil))
+               if (symbolp binding)
+               collect (list 'setq binding (list 'quote (symbol-value binding)))
+               else
+               collect (cons 'setq binding))
+            (require 'ox))))
+    (with-temp-file org-export-async-init-file
+      (insert (gnus-pp-to-string init-form) "\n")))
+#+END_SRC
+
 ** package-lint
 This is used to check packages for package.el compliance.
 
