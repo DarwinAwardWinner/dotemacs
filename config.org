@@ -50,6 +50,67 @@ This config uses [[https://github.com/quelpa/quelpa-use-package][quelpa-use-pack
 configuration with [[https://github.com/quelpa/quelpa][Quelpa]] and [[https://github.com/jwiegley/use-package][use-package]]. This section installs those
 packages so that they can be used to set up all other packages.
 
+** Don't ask about file locks in non-interactive sessions
+Quelpa briefly locks its cache file during startup. If multiple
+Emacsen are starting up at the same time, one of them may encounter
+the other's file lock. Normally, it would prompt the user about what
+to do, but if it is running in batch mode, this will not work. This
+advice tells Emacs to instead simply wait for up to 30 seconds for the
+file to become unlocked.
+
+Naturally, this advice it is only effective it is evaluated before
+setting up Quelpa.
+
+#+BEGIN_SRC emacs-lisp
+  ;; userlock.el doesn't provide a feature
+  (load "userlock")
+
+  (defvar lock-file-noninteractive-wait-time 30
+    "Seconds to wait for a file lock before signaling `file-locked'.
+
+  If Emacs is running in batch mode, instead of asking the user
+  whether it should edit a locked file, it will simply wait up to
+  this long for the file to become unlocked.
+
+  If this variable is nil, Emacs will wait forever for a locked file
+  to become unlocked.")
+
+  (define-advice ask-user-about-lock
+      (:around (oldfun file opponent) wait-when-noninteractive)
+    "When running in batch mode, always wait for file locks to clear.
+
+  Normally, when Emacs attempts to open a file that is currently
+  locked by another Emacs process, it will ask the user how to
+  handle the conflict. However, this is not an option in batch
+  mode. Instead, in batch mode, Emacs will simply wait until the
+  file becomes unlocked and then continue. If the file is still
+  locked after waiting for `lock-file-noninteractive-wait-time'
+  seconds, a `file-locked' error will be signalled."
+    (if noninteractive
+        (cl-loop
+         initially do (message "Waiting for %S to be unlocked." file)
+         with still-locked = t
+         with wait-time = lock-file-noninteractive-wait-time
+         while still-locked
+         ;; This function is only called after a lock was detected, so
+         ;; start() by waiting 1 second before checking again.
+         do (sit-for 1)
+         ;; Count down from wait-time to zero, if it's non-nil
+         while (or (null wait-time)
+                   (< 0 (setq wait-time (1- wait-time))))
+         ;; Check if the file is still locked
+         for still-locked = (file-locked-p file)
+         finally return
+         (if still-locked
+             (signal 'file-locked (list FILE OPPONENT))
+           ;; `t' means "steal the file", which should be fine since
+           ;; it's no longer locked. But first we wait one more second.
+           ;; (sit-for 1)
+           t)
+         )
+      (funcall oldfun file opponent)))
+#+END_SRC
+
 ** Install Quelpa
 First, we try to load Quelpa, and install it if it isn't already
 installed. This uses the standard [[https://github.com/quelpa/quelpa#installation][Quelpa bootstrapping code]].
