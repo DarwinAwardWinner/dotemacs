@@ -283,7 +283,102 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((org-emphasis-alist quote
+    ((eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (org-export-to-file
+                 (quote html)
+                 "character sheet.html" t))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (org-export-to-file
+                 (quote html)
+                 "campaign.html" t)
+             (org-export-to-file
+                 (quote html)
+                 "Public/campaign.html" t nil nil nil
+                 (\`
+                  (:exclude-tags
+                   (\,
+                    (cons "secret" org-export-exclude-tags))))))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (add-hook
+            (quote after-save-hook)
+            (lambda nil
+              (org-export-to-file
+                  (quote html)
+                  "campaign.html" t)
+              (org-export-to-file
+                  (quote html)
+                  "Public/campaign.html" t nil nil nil
+                  (\`
+                   (:exclude-tags
+                    (\,
+                     (cons "secret" org-export-exclude-tags)))))))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (org-export-to-file
+                 (quote html)
+                 "campaign.html" t)
+             (let
+                 ((org-export-exclude-tags
+                   (cons "secret" org-export-exclude-tags)))
+               (org-export-to-file
+                   (quote html)
+                   "Public/campaign.html")))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (org-export-to-file
+                 (quote html)
+                 "campaign.html" t)
+             (let
+                 ((org-export-exclude-tags
+                   (cons "secret" org-export-exclude-tags)))
+               (org-export-to-file
+                   (quote html)
+                   "Public/campaign.html" t)))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (let
+                 ((org-export-exclude-tags
+                   (cons "secret" org-export-exclude-tags)))
+               (org-export-to-file
+                   (quote html)
+                   "Public/campaign.html" t))
+             (org-export-to-file
+                 (quote html)
+                 "campaign.html" t))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (apply-partially
+            (quote org-html-export-to-html)
+            t)
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (let
+                 ((org-export-exclude-tags
+                   (cons "secret" org-export-exclude-tags)))
+               (org-export-to-file
+                   (quote html)
+                   "campaign.html" t))
+             (org-export-to-file
+                 (quote html)
+                 "campaign_secret.html" t))
+           t t)
+     (org-emphasis-alist quote
                          (("*" bold)
                           ("/" italic)
                           ("_" underline)
