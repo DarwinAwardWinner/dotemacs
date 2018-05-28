@@ -648,6 +648,15 @@ http://editorconfig.org/
     :quelpa)
 #+END_SRC
 
+** filelock
+
+#+BEGIN_SRC emacs-lisp
+  (req-package filelock
+    :quelpa (filelock
+             :fetcher github
+             :repo DarwinAwardWinner/emacs-filelock))
+#+END_SRC
+
 ** git-gutter
 This package puts change indicators in the buffer fringe to indicate
 what parts of the file have been added, deleted, or modified since the
