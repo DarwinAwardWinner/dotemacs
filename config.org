@@ -663,10 +663,10 @@ what parts of the file have been added, deleted, or modified since the
 last Git commit.
 
 #+BEGIN_SRC emacs-lisp
-    (req-package git-gutter
-      :quelpa)
-    (req-package git-gutter-fringe
-      :quelpa)
+  (req-package git-gutter
+    :quelpa)
+  (req-package git-gutter-fringe
+    :quelpa)
 #+END_SRC
 
 ** git-wip
