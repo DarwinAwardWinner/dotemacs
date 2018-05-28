@@ -113,13 +113,17 @@ setting up Quelpa.
 
 ** Install Quelpa
 First, we try to load Quelpa, and install it if it isn't already
-installed. This uses the standard [[https://github.com/quelpa/quelpa#installation][Quelpa bootstrapping code]].
+installed. This uses the standard [[https://github.com/quelpa/quelpa#installation][Quelpa bootstrapping code]], with
+adaptations to suppress auto-update when running in batch mode and to
+avoid throwing an error if the auto-update fails (e.g. due to a lack
+of a network connection.)
 
 #+BEGIN_SRC emacs-lisp
   (eval-and-compile
     (if (require 'quelpa nil t)
         (when (not noninteractive)
-          (quelpa-self-upgrade))
+          (ignore-errors
+            (quelpa-self-upgrade)))
       (with-temp-buffer
         (url-insert-file-contents
          "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
