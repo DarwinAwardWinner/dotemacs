@@ -1080,6 +1080,7 @@ Then we tell the export process to use this file instead or the usual
 init file.
 
 #+BEGIN_SRC emacs-lisp
+  (require 'gnus)
   (setq org-export-async-init-file (f-join user-emacs-directory ".temp-org-export-async-init.el"))
   (let ((init-form
          `(progn
