@@ -237,7 +237,7 @@
  '(org-todo-keywords (quote ((sequence "TODO" "|" "DONE" "CANCELLED"))))
  '(package-selected-packages
    (quote
-    (filelock apt-sources-list readme-debian debian-copyright debian-control-mode debian-changelog-mode quelpa quelpa-use-package el-get ghub a ace-window adaptive-wrap adjust-parens aggressive-indent amx anzu apache-mode apples-mode async auto-complete auto-dim-other-buffers autopair avy bar-cursor beacon better-shell bind-key buttercup cask cask-mode cl-lib cl-lib-highlight commander counsel creole-mode crm-custom crontab-mode crux dash diminish ecukes edit-indirect editorconfig el-get epl ess ess-R-data-view ess-R-object-popup ess-smart-underscore esup exec-path-from-shell f feature-mode fireplace fringe-helper ghub git git-commit git-gutter git-gutter-fringe git-wip-mode github-browse-file github-clone gitignore-mode guide-key hardhat haskell-mode header2 helm help-fns+ highlight-defined highlight-escape-sequences highlight-stages ht htmlize hydra ido-complete-space-or-hyphen ido-completing-read+ ido-load-library ido-yes-or-no image+ iqa isearch+ ivy-hydra jedi julia-mode keydef lexbind-mode log4e mac-pseudo-daemon macrostep magit magit-filenotify magit-find-file magit-gh-pulls magit-popup magithub markdown-mode md-readme memoize multiple-cursors nameless neotree nginx-mode noflet occur-context-resize org org-bullets org-plus-contrib osx-pseudo-daemon package-build package-lint pallet paradox pcre2el pdf-tools php-mode pkg-info pointback polymode popup pretty-symbols py-isort pyenv-mode python python-mode quelpa quelpa-use-package rainbow-delimiters req-package restart-emacs reveal-in-osx-finder s scratch-ext shrink-whitespace shut-up slime sml-modeline smooth-scrolling snakemake-mode sr-speedbar string-edit swiper sx system-specific-settings systemd tempbuf toc-org transmission transpose-frame travis undercover undo-tree use-package volatile-highlights which-key with-editor with-simulated-input ws-butler yaml-mode zone-nyan zone-rainbow zone-select zone-sl ztree)))
+    (a ace-window adaptive-wrap adjust-parens aggressive-indent apples-mode avy better-shell cl-lib cl-lib-highlight commander counsel crm-custom crontab-mode ecukes edit-indirect epl ess-R-data-view ess-R-object-popup ess-smart-underscore feature-mode fireplace fringe-helper git github-browse-file github-clone gitignore-mode guide-key hardhat haskell-mode header2 helm help-fns+ highlight-defined highlight-escape-sequences highlight-stages ht hydra ido-load-library ido-yes-or-no image+ iqa isearch+ ivy-hydra jedi julia-mode keydef lexbind-mode log4e mac-pseudo-daemon macrostep magit-filenotify magit-find-file magit-gh-pulls magithub md-readme memoize multiple-cursors nameless neotree nginx-mode noflet occur-context-resize osx-pseudo-daemon package-build pallet pcre2el pdf-tools php-mode pkg-info pointback popup pretty-symbols py-isort pyenv-mode python python-mode rainbow-delimiters restart-emacs reveal-in-osx-finder scratch-ext shrink-whitespace shut-up sml-modeline smooth-scrolling sr-speedbar string-edit swiper sx system-specific-settings systemd tempbuf transmission transpose-frame travis undercover undo-tree use-package volatile-highlights with-simulated-input ws-butler zone-nyan zone-rainbow zone-select zone-sl ztree)))
  '(paradox-execute-asynchronously t)
  '(paradox-github-token t)
  '(pretty-symbol-categories (lambda relational nil))
@@ -284,6 +284,33 @@
  '(safe-local-variable-values
    (quote
     ((eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "character sheet.html" t)))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "campaign.html" t)
+               (org-export-to-file
+                   (quote html)
+                   "Public/campaign.html" t nil nil nil
+                   (\`
+                    (:exclude-tags
+                     (\,
+                      (cons "secret" org-export-exclude-tags)))))))
+           t t)
+     (eval add-hook
            (quote after-save-hook)
            (lambda nil
              (org-export-to-file
@@ -522,11 +549,11 @@
    (quote
     (Custom-mode w3-mode Man-mode view-mode help-mode apropos-mode completion-list-mode dired-mode ibuffer-mode bookmark-bmenu-mode ess-help-mode compilation-mode vc-dir-mode vc-hg-log-view-mode occur-mode diff-mode magit-key-mode magit-log-edit-mode ess-help-mode)))
  '(tool-bar-mode nil)
- '(tramp-default-method "sftp")
- '(tramp-persistency-file-name "/Users/ryan/.emacs.d/persistence/tramp")
+ '(tramp-default-method "sftp" nil (tramp))
+ '(tramp-persistency-file-name "/Users/ryan/.emacs.d/persistence/tramp" nil (tramp))
  '(tramp-remote-path
    (quote
-    (tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin")))
+    (tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin")) nil (tramp))
  '(undo-tree-auto-save-history t)
  '(undo-tree-history-directory-alist (quote (("." . "~/.emacs.d/persistence/undo-tree"))))
  '(undo-tree-incompatible-major-modes (quote (term-mode eshell-mode)))
