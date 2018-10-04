@@ -497,20 +497,20 @@ https://salsa.debian.org/debian/emacs-goodies-el/tree/master/elisp/dpkg-dev-el
 #+BEGIN_SRC emacs-lisp
   (req-package debian-changelog-mode
     :quelpa (debian-changelog-mode
-             :fetcher git :url "https://salsa.debian.org/debian/emacs-goodies-el.git"
-             :files ("elisp/dpkg-dev-el/debian-changelog-mode.el")))
+             :fetcher git :url "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+             :files ("debian-changelog-mode.el")))
   (req-package debian-control-mode
     :quelpa (debian-control-mode
-             :fetcher git :url "https://salsa.debian.org/debian/emacs-goodies-el.git"
-             :files ("elisp/dpkg-dev-el/debian-control-mode.el")))
+             :fetcher git :url "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+             :files ("debian-control-mode.el")))
   (req-package debian-copyright
     :quelpa (debian-copyright
-             :fetcher git :url "https://salsa.debian.org/debian/emacs-goodies-el.git"
-             :files ("elisp/dpkg-dev-el/debian-copyright.el")))
+             :fetcher git :url "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+             :files ("debian-copyright.el")))
   (req-package readme-debian
     :quelpa (readme-debian
-             :fetcher git :url "https://salsa.debian.org/debian/emacs-goodies-el.git"
-             :files ("elisp/dpkg-dev-el/readme-debian.el")))
+             :fetcher git :url "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+             :files ("readme-debian.el")))
 #+END_SRC
 
 ** diminish
