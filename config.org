@@ -950,6 +950,15 @@ also add a function to insert a new src block into an org-mode buffer.
 Note that there's no ~:ensure t~ or ~:quelpa~ here, since org-mode
 must already be installed if this code is running.
 
+Org-mode supports asynchronous export functionality. By default, each
+async process loads the user's full init file, but we don't want that,
+because that would be too slow, and because Quelpa runs into problems
+when multiple Emacsen try to start up at the same time. So instead,
+whenever we run an async Org export job, we generate a minimal init
+file that just sets the ~load-path~ from this Emacs, disables backup &
+lock files, and then loads the appropriate Org-mode functionality.
+Then we tell the export process to use this file instead or the usual
+init file.
 #+BEGIN_SRC emacs-lisp
   (req-package org
     :commands org-clocking-buffer
@@ -1012,11 +1021,40 @@ must already be installed if this code is running.
           (if interactive-call
               (call-interactively 'org-insert-src-block)
             (org-insert-src-block src-code-type)))))
-    ;; Allow an emphasized expression to extend over 5 lines
+    ;; Allow an emphasized expression to extend over 15 lines
     (progn
       (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\r\n\"'")
       (setcar (nthcdr 4 org-emphasis-regexp-components) 15)
       (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
+    ;; Use a minimal init file for org exporting
+    (progn
+      (require 'gnus)
+      (setq org-export-async-init-file (f-join user-emacs-directory ".temp-org-export-async-init.el"))
+      (let ((init-form
+             `(progn
+                ,@(cl-loop
+                   for binding in
+                   '(load-path
+                     (create-lockfiles nil)
+                     (make-backup-files nil)
+                     org-emphasis-regexp-components)
+                   if (symbolp binding)
+                   collect (list 'setq binding (list 'quote (symbol-value binding)))
+                   else
+                   collect (cons 'setq binding))
+                ;; Bring all customized org variables along
+                ,@(cl-loop
+                   for sym being the symbols
+                   for symname = (symbol-name sym)
+                   if (and (s-matches-p "^org\\(?:tbl\\)?-" (symbol-name sym))
+                           (eq sym (indirect-variable sym))
+                           (custom-variable-p sym)
+                           (not (eq 'standard (custom-variable-state
+                                               sym (symbol-value sym)))))
+                   collect (list 'setq sym (list 'quote (symbol-value sym))))
+                (require 'ox))))
+        (with-temp-file org-export-async-init-file
+          (insert (gnus-pp-to-string init-form) "\n"))))
     :bind (:map org-mode-map
                 ("C-c C-'" . org-insert-or-edit-src-block)
                 :map org-src-mode-map
@@ -1066,36 +1104,6 @@ same anchors IDs given the same set of headlines.
   the same set of headlines every time."
     (with-reproducible-rng "org-html-export"
       (apply orig-fun args)))
-#+END_SRC
-
-*** Skip most initialization for org async export
-Org-mode supports asynchronous export functionality. By default, each
-async process loads the user's full init file, but we don't want that,
-because that would be too slow, and because Quelpa runs into problems
-when multiple Emacsen try to start up at the same time. So instead,
-whenever we run an async Org export job, we generate a minimal init
-file that just sets the ~load-path~ from this Emacs, disables backup &
-lock files, and then loads the appropriate Org-mode functionality.
-Then we tell the export process to use this file instead or the usual
-init file.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'gnus)
-  (setq org-export-async-init-file (f-join user-emacs-directory ".temp-org-export-async-init.el"))
-  (let ((init-form
-         `(progn
-            ,@(cl-loop
-               for binding in
-               '(load-path
-                 (create-lockfiles nil)
-                 (make-backup-files nil))
-               if (symbolp binding)
-               collect (list 'setq binding (list 'quote (symbol-value binding)))
-               else
-               collect (cons 'setq binding))
-            (require 'ox))))
-    (with-temp-file org-export-async-init-file
-      (insert (gnus-pp-to-string init-form) "\n")))
 #+END_SRC
 
 ** package-lint
