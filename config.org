@@ -695,56 +695,56 @@ the Emacs Lisp file, and to tell Emacs where to find the script.
 This automatically inserts a header into any new elisp file.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package header2
-    :config
-    (progn
-      (define-advice make-header (:after (&rest args) add-lexbind-variable)
-        "Add `lexical-binding: t' to header."
-        (when (eq major-mode 'emacs-lisp-mode)
-          (save-excursion
-            (add-file-local-variable-prop-line 'lexical-binding t))))
-      (defsubst header-not-part-of-emacs ()
-        "Insert line declaring that this file is not part of Emacs."
-        (when (eq major-mode 'emacs-lisp-mode)
-          (insert header-prefix-string "This file is NOT part of GNU Emacs.\n")))
-      (defsubst header-completely-blank ()
-        "Insert an empty line to file header (not even `header-prefix-string')."
-        (insert "\n"))
-      (setq header-copyright-notice
-            (format-time-string "Copyright (C) %Y Ryan C. Thompson\n"))
-      ;; Set up headers when creating an elisp file
-      (add-hook 'emacs-lisp-mode-hook #'auto-make-header)
-      ;; Update headers on save
-      (add-hook 'write-file-hooks #'auto-update-file-header)
-      ;; Override `header-eof' to not insert a separator line
-      (defun header-eof ()
-        "Insert comment indicating end of file."
-        (goto-char (point-max))
-        (insert "\n")
-        (insert comment-start
-                (concat (and (= 1 (length comment-start)) header-prefix-string)
-                        (if (buffer-file-name)
-                            (file-name-nondirectory (buffer-file-name))
-                          (buffer-name))
-                        " ends here"
-                        (or (nonempty-comment-end) "\n"))))
-      ;; Function to insert `provide' statement at end of file; This is
-      ;; used in `make-header-hook'.
-      (defun header-provide-statement ()
-        "Insert `provide' statement."
-        (save-excursion
-          (goto-char (point-max))
-          (insert
-           (format "\n%s"
-                   (pp-to-string `(provide ',(intern (f-base (buffer-file-name)))))))))
-      ;; Prevent `auto-make-header' from setting the buffer modified flag
-      (define-advice auto-make-header
-          (:around (orig-fun &rest args) dont-set-buffer-modified)
-        "Don't set the buffer modified flag."
-        (preserve-buffer-modified-p
-          (apply orig-fun args))))
-    :demand t
-    :quelpa)
+  ;; (req-package header2
+  ;;   :config
+  ;;   (progn
+  ;;     (define-advice make-header (:after (&rest args) add-lexbind-variable)
+  ;;       "Add `lexical-binding: t' to header."
+  ;;       (when (eq major-mode 'emacs-lisp-mode)
+  ;;         (save-excursion
+  ;;           (add-file-local-variable-prop-line 'lexical-binding t))))
+  ;;     (defsubst header-not-part-of-emacs ()
+  ;;       "Insert line declaring that this file is not part of Emacs."
+  ;;       (when (eq major-mode 'emacs-lisp-mode)
+  ;;         (insert header-prefix-string "This file is NOT part of GNU Emacs.\n")))
+  ;;     (defsubst header-completely-blank ()
+  ;;       "Insert an empty line to file header (not even `header-prefix-string')."
+  ;;       (insert "\n"))
+  ;;     (setq header-copyright-notice
+  ;;           (format-time-string "Copyright (C) %Y Ryan C. Thompson\n"))
+  ;;     ;; Set up headers when creating an elisp file
+  ;;     (add-hook 'emacs-lisp-mode-hook #'auto-make-header)
+  ;;     ;; Update headers on save
+  ;;     (add-hook 'write-file-hooks #'auto-update-file-header)
+  ;;     ;; Override `header-eof' to not insert a separator line
+  ;;     (defun header-eof ()
+  ;;       "Insert comment indicating end of file."
+  ;;       (goto-char (point-max))
+  ;;       (insert "\n")
+  ;;       (insert comment-start
+  ;;               (concat (and (= 1 (length comment-start)) header-prefix-string)
+  ;;                       (if (buffer-file-name)
+  ;;                           (file-name-nondirectory (buffer-file-name))
+  ;;                         (buffer-name))
+  ;;                       " ends here"
+  ;;                       (or (nonempty-comment-end) "\n"))))
+  ;;     ;; Function to insert `provide' statement at end of file; This is
+  ;;     ;; used in `make-header-hook'.
+  ;;     (defun header-provide-statement ()
+  ;;       "Insert `provide' statement."
+  ;;       (save-excursion
+  ;;         (goto-char (point-max))
+  ;;         (insert
+  ;;          (format "\n%s"
+  ;;                  (pp-to-string `(provide ',(intern (f-base (buffer-file-name)))))))))
+  ;;     ;; Prevent `auto-make-header' from setting the buffer modified flag
+  ;;     (define-advice auto-make-header
+  ;;         (:around (orig-fun &rest args) dont-set-buffer-modified)
+  ;;       "Don't set the buffer modified flag."
+  ;;       (preserve-buffer-modified-p
+  ;;         (apply orig-fun args))))
+  ;;   :demand t
+  ;;   :quelpa)
 #+END_SRC
 
 ** highlight-defined
