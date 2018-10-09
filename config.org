@@ -434,6 +434,7 @@ them.
 
 #+BEGIN_SRC emacs-lisp
   (req-package cl-lib-highlight
+    :quelpa
     :demand t
     :config
     (cl-lib-highlight-initialize)
@@ -809,6 +810,7 @@ This uses my bleeding-edge branch of ido-completing-read+.
 
 #+BEGIN_SRC emacs-lisp
   (req-package image+
+    :quelpa
     :after image)
 #+END_SRC
 
@@ -1294,7 +1296,7 @@ regular ~python-mode~ is just fine.
 ** undo-tree
 
 #+BEGIN_SRC emacs-lisp
-  (req-package undo-tree :quelpa)
+  (req-package undo-tree :ensure)
 #+END_SRC
 
 ** volatile-highlight
