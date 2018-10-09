@@ -1138,7 +1138,8 @@ Rmarkdown files, where some parts of the file are Markdown and others
 are R code.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package polymode
+  (req-package polymode :quelpa)
+  (req-package poly-R
     :quelpa
     :mode ("\\.Rmd\\'" . poly-markdown+r-mode))
 #+END_SRC
