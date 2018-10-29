@@ -931,7 +931,7 @@ Ring the bell by flashing the mode line of the active window.
   (req-package mode-line-bell
     :quelpa (mode-line-bell
              :fetcher github
-             :repo DarwinAwardWinner/mode-line-bell))
+             :repo purcell/mode-line-bell))
 #+END_SRC
 
 ** noflet
