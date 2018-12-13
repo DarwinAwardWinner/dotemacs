@@ -1046,6 +1046,26 @@ init file.
       (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\r\n\"'")
       (setcar (nthcdr 4 org-emphasis-regexp-components) 15)
       (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
+    ;; Enable org links that roll dice
+    (progn
+      (defvar roll-dice-command "roll")
+      (defun roll-dice (&rest args)
+        (interactive "sRoll dice: ")
+        (let ((result
+               (s-trim
+                (shell-command-to-string
+                 (mapconcat #'shell-quote-argument (cons roll-dice-command args) " ")))))
+          (when (called-interactively-p)
+            (message result))
+          result))
+      (defun org-rolldice-open (path)
+        (let ((spec (read-string "Roll dice: " path)))
+          (message (roll-dice spec))))
+      (org-link-set-parameters
+       "roll"
+       :follow #'org-rolldice-open
+       ;; This must be a lambda so it is self-contained
+       :export (lambda (link desc format) (or desc link))))
     ;; Use a minimal init file for org exporting
     (progn
       (require 'gnus)
