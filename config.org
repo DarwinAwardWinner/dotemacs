@@ -514,6 +514,14 @@ https://salsa.debian.org/debian/emacs-goodies-el/tree/master/elisp/dpkg-dev-el
              :files ("readme-debian.el")))
 #+END_SRC
 
+** decide
+Decide provides functions for dice rolling and similar tasks.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package decide
+    :quelpa)
+#+END_SRC
+
 ** diminish
 This hides or shortens the names of minor modes in the modeline.
 
