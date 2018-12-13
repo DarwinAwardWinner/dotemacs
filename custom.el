@@ -201,6 +201,7 @@
  '(midnight-mode t nil (midnight))
  '(minibuffer-depth-indicate-mode t)
  '(minibuffer-electric-default-mode t)
+ '(mode-line-bell-mode t)
  '(mouse-wheel-progressive-speed nil)
  '(mouse-wheel-scroll-amount (quote (5 ((shift) . 1) ((control)))))
  '(nameless-affect-indentation-and-filling nil)
@@ -237,7 +238,7 @@
  '(org-todo-keywords (quote ((sequence "TODO" "|" "DONE" "CANCELLED"))))
  '(package-selected-packages
    (quote
-    (mode-line-bell filelock apt-sources-list poly-R poly-noweb poly-markdown treepy graphql readme-debian debian-copyright debian-control-mode debian-changelog-mode quelpa quelpa-use-package el-get ghub a ace-window adaptive-wrap adjust-parens aggressive-indent amx anzu apache-mode apples-mode async auto-complete auto-dim-other-buffers autopair avy bar-cursor beacon better-shell bind-key buttercup cask cask-mode cl-lib cl-lib-highlight commander counsel creole-mode crm-custom crontab-mode crux dash diminish ecukes edit-indirect editorconfig el-get epl ess ess-R-data-view ess-R-object-popup ess-smart-underscore esup exec-path-from-shell f feature-mode fireplace fringe-helper ghub git git-commit git-gutter git-gutter-fringe git-wip-mode github-browse-file github-clone gitignore-mode guide-key hardhat haskell-mode header2 helm help-fns+ highlight-defined highlight-escape-sequences highlight-stages ht htmlize hydra ido-complete-space-or-hyphen ido-completing-read+ ido-load-library ido-yes-or-no image+ iqa isearch+ ivy-hydra jedi julia-mode keydef lexbind-mode log4e mac-pseudo-daemon macrostep magit magit-filenotify magit-find-file magit-gh-pulls magit-popup magithub markdown-mode md-readme memoize multiple-cursors nameless neotree nginx-mode noflet occur-context-resize org org-bullets org-plus-contrib osx-pseudo-daemon package-build package-lint pallet paradox pcre2el pdf-tools php-mode pkg-info pointback polymode popup pretty-symbols py-isort pyenv-mode python python-mode quelpa quelpa-use-package rainbow-delimiters req-package restart-emacs reveal-in-osx-finder s scratch-ext shrink-whitespace shut-up slime sml-modeline smooth-scrolling snakemake-mode sr-speedbar string-edit swiper sx system-specific-settings systemd tempbuf toc-org transmission transpose-frame travis undercover undo-tree use-package volatile-highlights which-key with-editor with-simulated-input ws-butler yaml-mode zone-nyan zone-rainbow zone-select zone-sl ztree)))
+    (named-timer decide mode-line-bell filelock apt-sources-list poly-R poly-noweb poly-markdown treepy graphql readme-debian debian-copyright debian-control-mode debian-changelog-mode quelpa quelpa-use-package el-get ghub a ace-window adaptive-wrap adjust-parens aggressive-indent amx anzu apache-mode apples-mode async auto-complete auto-dim-other-buffers autopair avy bar-cursor beacon better-shell bind-key buttercup cask cask-mode cl-lib cl-lib-highlight commander counsel creole-mode crm-custom crontab-mode crux dash diminish ecukes edit-indirect editorconfig el-get epl ess ess-R-data-view ess-R-object-popup ess-smart-underscore esup exec-path-from-shell f feature-mode fireplace fringe-helper ghub git git-commit git-gutter git-gutter-fringe git-wip-mode github-browse-file github-clone gitignore-mode guide-key hardhat haskell-mode header2 helm help-fns+ highlight-defined highlight-escape-sequences highlight-stages ht htmlize hydra ido-complete-space-or-hyphen ido-completing-read+ ido-load-library ido-yes-or-no image+ iqa isearch+ ivy-hydra jedi julia-mode keydef lexbind-mode log4e mac-pseudo-daemon macrostep magit magit-filenotify magit-find-file magit-gh-pulls magit-popup magithub markdown-mode md-readme memoize multiple-cursors nameless neotree nginx-mode noflet occur-context-resize org org-bullets org-plus-contrib osx-pseudo-daemon package-build package-lint pallet paradox pcre2el pdf-tools php-mode pkg-info pointback polymode popup pretty-symbols py-isort pyenv-mode python python-mode quelpa quelpa-use-package rainbow-delimiters req-package restart-emacs reveal-in-osx-finder s scratch-ext shrink-whitespace shut-up slime sml-modeline smooth-scrolling snakemake-mode sr-speedbar string-edit swiper sx system-specific-settings systemd tempbuf toc-org transmission transpose-frame travis undercover undo-tree use-package volatile-highlights which-key with-editor with-simulated-input ws-butler yaml-mode zone-nyan zone-rainbow zone-select zone-sl ztree)))
  '(paradox-execute-asynchronously t)
  '(paradox-github-token t)
  '(pretty-symbol-categories (lambda relational nil))
@@ -284,6 +285,43 @@
  '(safe-local-variable-values
    (quote
     ((eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "character sheet.html" t)
+               (org-export-to-file
+                   (quote html)
+                   "Public/character sheet.html" t nil nil nil
+                   (\`
+                    (:exclude-tags
+                     (\,
+                      (append
+                       (quote
+                        ("secret" "hidden"))
+                       org-export-exclude-tags)))))))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "character sheet.html" t)
+               (org-export-to-file
+                   (quote html)
+                   "Public/character sheet.html" t nil nil nil
+                   (\`
+                    (:exclude-tags
+                     (\,
+                      (cons "secret" org-export-exclude-tags)))))))
+           t t)
+     (eval add-hook
            (quote after-save-hook)
            (lambda nil
              (save-mark-and-excursion
