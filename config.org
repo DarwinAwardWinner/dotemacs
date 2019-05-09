@@ -752,7 +752,9 @@ This automatically inserts a header into any new elisp file.
         (preserve-buffer-modified-p
           (apply orig-fun args))))
     :demand t
-    :quelpa)
+    :quelpa (header2
+             :fetcher github :repo emacsmirror/header2
+             :files ("header2.el")))
 #+END_SRC
 
 ** highlight-defined
