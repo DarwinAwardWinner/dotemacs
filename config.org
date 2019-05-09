@@ -359,7 +359,13 @@ highlight which window is currently active.
     (progn
       (autopair-global-mode 1)
       (setq autopair-skip-whitespace 'chomp)
-      (setq autopair-skip-criteria 'always))
+      (setq autopair-skip-criteria 'always)
+      (define-advice autopair--post-command-handler
+          (:after (&rest args) realign-org-tags)
+        "Re-align org-mode headline tags after doing autopair."
+        (when (and (eq major-mode 'org-mode)
+                   (org-at-heading-p))
+          (org-align-tags))))
     :defer nil
     :quelpa)
 #+END_SRC
