@@ -618,7 +618,8 @@ http://editorconfig.org/
 
 #+BEGIN_SRC emacs-lisp
   (req-package elsa :quelpa)
-  (req-package flycheck-elsa :quelpa)
+  (req-package flycheck-elsa :quelpa
+    :require flycheck elsa)
 #+END_SRC
 
 ** ess
