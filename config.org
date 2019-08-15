@@ -614,6 +614,13 @@ http://editorconfig.org/
     (editorconfig-mode 1))
 #+END_SRC
 
+** elsa
+
+#+BEGIN_SRC emacs-lisp
+  (req-package elsa :quelpa)
+  (req-package flycheck-elsa :quelpa)
+#+END_SRC
+
 ** ess
 
 #+BEGIN_SRC emacs-lisp
@@ -675,6 +682,13 @@ http://editorconfig.org/
              :fetcher github
              :repo DarwinAwardWinner/emacs-filelock))
 #+END_SRC
+
+** flycheck
+
+#+BEGIN_SRC emacs-lisp
+  (req-package flycheck :quelpa)
+#+END_SRC
+
 
 ** git-gutter
 This package puts change indicators in the buffer fringe to indicate
