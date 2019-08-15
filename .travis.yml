@@ -11,7 +11,11 @@ env:
 
 matrix:
   allow_failures:
+    # Broken for weird TLS-related reasons
+    - env: EMACS_VERSION=emacs-26.2
+    # Also broken for maybe different TLS-related reasons
     - env: EMACS_VERSION=remacs-git-snapshot
+    # Broken due to missing function "define-fringe-bitmap"
     - env: EMACS_VERSION=emacs-git-snapshot
 
 before_script:
