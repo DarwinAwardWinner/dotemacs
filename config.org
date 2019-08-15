@@ -423,8 +423,8 @@ Emacs Lisp packages.
 ** cask
 
 #+BEGIN_SRC emacs-lisp
-  ;; (req-package cask :quelpa)
-  ;; (req-package cask-mode :quelpa)
+  (req-package cask :quelpa)
+  (req-package cask-mode :quelpa)
 #+END_SRC
 
 ** cl-lib
