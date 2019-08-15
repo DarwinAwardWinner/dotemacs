@@ -1103,12 +1103,12 @@ init file.
                 (require 'ox))))
         (with-temp-file org-export-async-init-file
           (insert (gnus-pp-to-string init-form) "\n"))))
-    :bind (:map org-mode-map
-                ("C-c C-'" . org-insert-or-edit-src-block)
-                ("C-c l" . org-store-link)
-                :map org-src-mode-map
-                ("C-c C-'" . org-edit-src-exit)
-                ("C-c C-c" . org-edit-src-exit)))
+    :bind (("C-c l" . org-store-link)
+           :map org-mode-map
+           ("C-c C-'" . org-insert-or-edit-src-block)
+           :map org-src-mode-map
+           ("C-c C-'" . org-edit-src-exit)
+           ("C-c C-c" . org-edit-src-exit)))
 #+END_SRC
 
 *** Org-bullets
