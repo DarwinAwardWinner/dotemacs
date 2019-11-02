@@ -985,8 +985,6 @@ process to use this file instead or the usual init file.
     :straight nil
     :commands org-clocking-buffer
     :config
-    (require 'ox-extra)
-    (ox-extras-activate '(latex-header-blocks ignore-headlines))
     ;; Custom src-block behaviors
     (progn
       (defun org-in-src-block-p (&optional inside)
@@ -1104,6 +1102,11 @@ process to use this file instead or the usual init file.
            :map org-src-mode-map
            ("C-c C-'" . org-edit-src-exit)
            ("C-c C-c" . org-edit-src-exit)))
+  (req-package ox-extra
+    :straight nil
+    :require org
+    :config
+    (ox-extras-activate '(latex-header-blocks ignore-headlines)))
 #+END_SRC
 
 *** Org-bullets
