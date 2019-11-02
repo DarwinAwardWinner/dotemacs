@@ -286,7 +286,8 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((eval org-display-inline-images)
+    ((major-mode . LaTeX)
+     (eval org-display-inline-images)
      (eval add-hook
            (quote after-save-hook)
            (lambda nil
