@@ -250,15 +250,6 @@ https://github.com/justbur/emacs-vdiff/commit/cfad650c53b4fcaad8f24bbb7d44623678
       bitmap))
 #+END_SRC
 
-* Set up and load a separate custom file
-This is the file where everything set via =M-x customize= goes.
-
-#+BEGIN_SRC emacs-lisp
-  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-  (when (f-exists? custom-file)
-    (load custom-file))
-#+END_SRC
-
 * Package configuration
 This section declares all the packages required by the config and sets
 up variables, key bindings, and such for some of them.
@@ -1387,6 +1378,16 @@ correct order to satisfy those dependencies.
 #+BEGIN_SRC emacs-lisp
   (req-package-finish)
 #+END_SRC
+* Set up and load a separate custom file
+This is the file where everything set via =M-x customize= goes.
+
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (if (f-exists? custom-file)
+      (load custom-file)
+    (display-warning 'init "Could not load custom file"))
+#+END_SRC
+
 * Tweaks
 This section contains a set of tweaks to Emacs behavior that are not
 specific to a single package and cannot be accomplished by customizing
