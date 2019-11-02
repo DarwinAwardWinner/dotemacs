@@ -4,20 +4,16 @@ sudo: false
 
 env:
   matrix:
-    # - EMACS_VERSION=emacs-25.3
-    # - EMACS_VERSION=emacs-26.2
     - EMACS_VERSION=emacs-26.3
     - EMACS_VERSION=emacs-git-snapshot
-    - EMACS_VERSION=remacs-git-snapshot
+    # Disabled due to TLS bug not being fixed (they need to rebase I
+    # guess)
+    # - EMACS_VERSION=remacs-git-snapshot
 
 matrix:
   allow_failures:
-    # # Broken for weird TLS-related reasons
-    # - env: EMACS_VERSION=emacs-26.2
     # Also broken for maybe different TLS-related reasons
     - env: EMACS_VERSION=remacs-git-snapshot
-    # Broken due to missing function "define-fringe-bitmap"
-    - env: EMACS_VERSION=emacs-git-snapshot
 
 before_script:
   # Install evm
