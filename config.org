@@ -44,6 +44,10 @@ be installed /before/ loading this file. Otherwise, loading this file
 first would auto-load the built-in version of Org-mode and prevent use
 of the newly-installed version until Emacs was restarted.
 
+Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https://github.com/raxod502/straight.el][Straight package
+manager]], which it uses to install Org mode. Here we complete the setup
+so Straight can be used to manage all pacakges below.
+
 * TODO Don't ask about file locks in non-interactive sessions
 Quelpa briefly locks its cache file during startup. If multiple
 Emacsen are starting up at the same time, one of them may encounter
@@ -103,15 +107,6 @@ setting up Quelpa.
            t)
          )
       (funcall oldfun file opponent)))
-#+END_SRC
-
-* TODO Straight package manager setup
-Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https://github.com/raxod502/straight.el][Straight package
-manager]], which it uses to install Org mode. Here we complete the setup
-so Straight can be used to manage all pacakges below.
-
-#+BEGIN_SRC emacs-lisp
-  ;; Is there any additional setup?
 #+END_SRC
 
 * Preliminary environment setup
