@@ -12,7 +12,6 @@ env:
 
 matrix:
   allow_failures:
-    # Also broken for maybe different TLS-related reasons
     - env: EMACS_VERSION=remacs-git-snapshot
 
 before_script:
