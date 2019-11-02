@@ -241,7 +241,21 @@ items depend on having the full PATH available.
     :config (exec-path-from-shell-initialize))
 #+END_SRC
 
-** Set up and load a separate custom file
+** Ensure ~define-fringe-bitmap~ is defined
+If this function is undefined (which happens with Emacs is compiled
+without GUI support), git-gutter-fringe won't load. See
+https://github.com/justbur/emacs-vdiff/commit/cfad650c53b4fcaad8f24bbb7d44623678d2edff.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Define as a no-op if not already defined
+  (unless (fboundp 'define-fringe-bitmap)
+    (defun define-fringe-bitmap (bitmap &rest _)
+      "This is a no-op placeholder function."
+      ;; Return the symbol, just like the normal function does.
+      bitmap))
+#+END_SRC
+
+* Set up and load a separate custom file
 This is the file where everything set via =M-x customize= goes.
 
 #+BEGIN_SRC emacs-lisp
