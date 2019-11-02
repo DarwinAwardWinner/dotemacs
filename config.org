@@ -36,7 +36,7 @@ first line of Emacs Lisp:
 #+END_SRC
 
 * Bootstrappping
-The =init.el= file does all the bootstrapping necessary to load the
+The [[file:init.el][=init.el=]] file does all the bootstrapping necessary to load the
 configuration in this Org-mode file. It is required as a separate
 non-Org-mode file because this config does not use the version of
 Org-mode included with Emacs, so the proper version of Org mode must
@@ -44,13 +44,7 @@ be installed /before/ loading this file. Otherwise, loading this file
 first would auto-load the built-in version of Org-mode and prevent use
 of the newly-installed version until Emacs was restarted.
 
-* Initial Quelpa setup
-
-This config uses [[https://github.com/quelpa/quelpa-use-package][quelpa-use-package]] to implement declarative package
-configuration with [[https://github.com/quelpa/quelpa][Quelpa]] and [[https://github.com/jwiegley/use-package][use-package]]. This section installs those
-packages so that they can be used to set up all other packages.
-
-** Don't ask about file locks in non-interactive sessions
+* TODO Don't ask about file locks in non-interactive sessions
 Quelpa briefly locks its cache file during startup. If multiple
 Emacsen are starting up at the same time, one of them may encounter
 the other's file lock. Normally, it would prompt the user about what
@@ -111,45 +105,13 @@ setting up Quelpa.
       (funcall oldfun file opponent)))
 #+END_SRC
 
-** Install Quelpa
-First, we try to load Quelpa, and install it if it isn't already
-installed. This uses the standard [[https://github.com/quelpa/quelpa#installation][Quelpa bootstrapping code]], with
-adaptations to suppress auto-update when running in batch mode and to
-avoid throwing an error if the auto-update fails (e.g. due to a lack
-of a network connection.)
+* TODO Straight package manager setup
+Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https://github.com/raxod502/straight.el][Straight package
+manager]], which it uses to install Org mode. Here we complete the setup
+so Straight can be used to manage all pacakges below.
 
 #+BEGIN_SRC emacs-lisp
-  (eval-and-compile
-    (if (require 'quelpa nil t)
-        (when (not noninteractive)
-          (ignore-errors
-            (quelpa-self-upgrade)))
-      (with-temp-buffer
-        (url-insert-file-contents
-         "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
-        (eval-buffer))))
-  (require 'quelpa)
-#+END_SRC
-
-** (Don't) Prefer MELPA stable
-Next, we tell Quelpa to use the stable version of each package by
-default.
-
-#+BEGIN_SRC emacs-lisp
-  (setq quelpa-stable-p nil)
-#+END_SRC
-
-** Install quelpa-use-package
-Finally we use Quelpa to install ~quelpa-use-package~, which allows
-~use-package~ to install packages using Quelpa.
-
-#+BEGIN_SRC emacs-lisp
-  (quelpa
-   '(quelpa-use-package
-     :fetcher github
-     :repo "quelpa/quelpa-use-package")
-   :stable nil)
-  (require 'quelpa-use-package)
+  ;; Is there any additional setup?
 #+END_SRC
 
 * Preliminary environment setup
@@ -157,16 +119,42 @@ This section sets up a functions and other aspects of the environment
 that will be needed later in the configuration, so they need to be
 defined/prepared up front.
 
-** Install and load basic libraries
-This installs the ~s~ and ~f~ packages for string and filename
-manipulation.
+** Tell use-package to install packages using straight
+This tells ~use-package~ (and by extension ~req-package~) to use
+Straight to install packages by default. See [[https://github.com/raxod502/straight.el#integration-with-use-package][here]] for more
+information.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package f :quelpa)
-  (use-package s :quelpa)
+  (setq straight-use-package-by-default t)
 #+END_SRC
 
-** Fixing Default Directory
+** Install req-package
+This config uses [[https://github.com/edvorg/req-package][~req-package~]] to configure packages, using Straight
+to install them automatically. So we first need to install
+~req-package~ and its dependencies (particularly [[https://github.com/jwiegley/use-package][~use-package~]]).
+
+#+BEGIN_SRC emacs-lisp
+  (straight-use-package
+   '(req-package
+      :type git
+      :flavor melpa
+      :host gitlab
+      :repo "edvorg/req-package"
+      ;; This branch contains the required fixes for el-get support
+      :branch "develop"))
+#+END_SRC
+
+** Install and load basic libraries
+This installs and loads the ~s~ and ~f~ packages for string and
+filename manipulation. These are used in various places throughout the
+config, so we install them right now.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package f :force t)
+  (req-package s :force t)
+#+END_SRC
+
+** Fix Default Directory
 Regardless of which directory Emacs is started from, I want the
 initial non-file buffers such as =*scratch*= and =*Messages*= to have
 their ~default-directory~ set to my home directory. This code goes
@@ -237,19 +225,18 @@ configure it to save its state somewhere in this directory.
 
 ** Set PATH and MANPATH from shell
 My shell configuration adds a lot of things to PATH dynamically
-(pyenv, perlbrew, etc.), so rather than emulate that in Emacs, we
-simply run a shell and tell it to print out the environment variables
-we care about. Then we set them in Emacs. For PATH, we also set the
-Elisp variable ~exec-path~, which is not auto-updated when you modify
-the environment variable.
+(pyenv, perlbrew, etc.), so rather than try to emulate all that logic
+in Emacs, we simply run a shell and tell it to print out the
+environment variables we care about. Then we set them in Emacs. For
+PATH, we also set the Elisp variable ~exec-path~, which is not
+auto-updated when you modify the environment variable.
 
 This step needs to be done early, because some later configuration
 items depend on having the full PATH available.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package exec-path-from-shell
-    :quelpa
-    :demand t
+  (req-package exec-path-from-shell
+    :force t
     :config (exec-path-from-shell-initialize))
 #+END_SRC
 
@@ -262,18 +249,6 @@ This is the file where everything set via =M-x customize= goes.
     (load custom-file))
 #+END_SRC
 
-** Install req-package
-~req-package~ is an extension of ~use-package~ that automatically
-loads all packages in the correct order, based on dependencies
-declared in the config. So if the setup code for one package depends
-on having another package loaded, ~req-package~ can handle that.
-
-#+BEGIN_SRC emacs-lisp
-  ;; Install undeclared dependency el-get first
-  ;; https://github.com/edvorg/req-package/pull/53
-  (use-package el-get :quelpa)
-  (use-package req-package :quelpa)
-#+END_SRC
 * Package configuration
 This section declares all the packages required by the config and sets
 up variables, key bindings, and such for some of them.
@@ -289,23 +264,20 @@ This allows TAB and S-TAB to increase and decrease the nesting depth
 
 #+BEGIN_SRC emacs-lisp
   (req-package adjust-parens
-    :demand t
     :commands adjust-parens-mode
     :init (progn
             (defun turn-on-adjust-parens-mode ()
               (adjust-parens-mode 1))
             (dolist (hook '(lisp-interaction-mode-hook
                             emacs-lisp-mode-hook))
-              (add-hook hook #'turn-on-adjust-parens-mode)))
-    :ensure t)
+              (add-hook hook #'turn-on-adjust-parens-mode))))
 #+END_SRC
 
 ** amx
 amx is an enhanced M-x.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package amx
-    :quelpa)
+  (req-package amx)
 #+END_SRC
 
 ** anzu
@@ -313,7 +285,7 @@ Anzu mode displays the total number of matches and which one is
 currently highlighted while doing an isearch.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package anzu :quelpa)
+  (req-package anzu)
 #+END_SRC
 ** apache-mode
 This loads apache-mode and sets it up to detect the vim
@@ -325,13 +297,12 @@ This loads apache-mode and sets it up to detect the vim
     :init (progn
             (defun apache-magic-mode-detect ()
               (string-match-p "^\\s-*#.*\\bsyntax=apache\\b" (buffer-string)))
-            (add-to-list 'magic-mode-alist '(apache-magic-mode-detect . apache-mode)))
-    :quelpa)
+            (add-to-list 'magic-mode-alist '(apache-magic-mode-detect . apache-mode))))
 #+END_SRC
 
 ** apt-sources-list
 #+BEGIN_SRC emacs-lisp
-  (req-package apt-sources-list :quelpa)
+  (req-package apt-sources-list)
 #+END_SRC
 
 ** auto-complete
@@ -339,8 +310,7 @@ Auto-complete mode provides IDE-style popup completions while editing.
 
 #+BEGIN_SRC emacs-lisp
   (req-package auto-complete
-    :init (global-auto-complete-mode 1)
-    :quelpa)
+    :init (global-auto-complete-mode 1))
 #+END_SRC
 
 ** auto-dim-other-buffers
@@ -348,7 +318,7 @@ This package slightly dims the background of inactive windows so as to
 highlight which window is currently active.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package auto-dim-other-buffers :quelpa)
+  (req-package auto-dim-other-buffers)
 #+END_SRC
 
 ** autopair
@@ -366,8 +336,7 @@ highlight which window is currently active.
         (when (and (eq major-mode 'org-mode)
                    (org-at-heading-p))
           (org-align-tags))))
-    :defer nil
-    :quelpa)
+    :defer nil)
 #+END_SRC
 
 ** bar-cursor
@@ -375,8 +344,7 @@ This changes the cursor from a 1-character block to a bar in between
 characters.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package bar-cursor
-    :quelpa)
+  (req-package bar-cursor)
 #+END_SRC
 
 ** beacon
@@ -384,29 +352,27 @@ Beacon mode causes the "spotlight" to shine on the cursor whenever the
 window scrolls, in order to highlight the new position of the cursor.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package beacon :quelpa)
+  (req-package beacon)
 #+END_SRC
 
 ** bind-key
 
 #+BEGIN_SRC emacs-lisp
-  (req-package bind-key :quelpa)
+  (req-package bind-key)
 #+END_SRC
 ** browse-url
 This binds Shift+click to open a link
 
 #+BEGIN_SRC emacs-lisp
   (req-package browse-url
-    :bind ("<s-mouse-1>" . browse-url-at-mouse)
-    :quelpa)
+    :bind ("<s-mouse-1>" . browse-url-at-mouse))
 #+END_SRC
 
 ** bs (Buffer Show)
 
 #+BEGIN_SRC emacs-lisp
   (req-package bs
-    :bind ("C-x C-b" . bs-show)
-    :quelpa)
+    :bind ("C-x C-b" . bs-show))
 #+END_SRC
 
 ** buttercup
@@ -415,16 +381,22 @@ Emacs Lisp packages.
 
 #+BEGIN_SRC emacs-lisp
   (req-package buttercup
-    :quelpa (buttercup
-             :fetcher github
-             :repo "DarwinAwardWinner/emacs-buttercup"))
+    :straight
+    (buttercup
+     :type git
+     :flavor melpa
+     :files (:defaults "bin" "buttercup-pkg.el")
+     :host github
+     :repo "jorgenschaefer/emacs-buttercup"
+     :fork (:host github
+                  :repo "DarwinAwardWinner/emacs-buttercup")))
 #+END_SRC
 
 ** cask
 
 #+BEGIN_SRC emacs-lisp
-  (req-package cask :quelpa)
-  (req-package cask-mode :quelpa)
+  (req-package cask)
+  (req-package cask-mode)
 #+END_SRC
 
 ** cl-lib
@@ -440,8 +412,6 @@ them.
 
 #+BEGIN_SRC emacs-lisp
   (req-package cl-lib-highlight
-    :quelpa
-    :demand t
     :config
     (cl-lib-highlight-initialize)
     (cl-lib-highlight-warn-cl-initialize))
@@ -476,7 +446,6 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
 
 #+BEGIN_SRC emacs-lisp
   (req-package creole-mode
-    :quelpa
     :mode (".creole\\'" . creole-mode))
 #+END_SRC
 
@@ -486,7 +455,6 @@ advanced versions of existing commands.
 
 #+BEGIN_SRC emacs-lisp
   (req-package crux
-    :quelpa
     :bind (("C-k" . crux-smart-kill-line)
            ("C-c C-e" . crux-eval-and-replace)
            ("C-x 4 t" . crux-transpose-windows)
@@ -503,29 +471,40 @@ https://salsa.debian.org/debian/emacs-goodies-el/tree/master/elisp/dpkg-dev-el
 
 #+BEGIN_SRC emacs-lisp
   (req-package debian-changelog-mode
-    :quelpa (debian-changelog-mode
-             :fetcher git :url "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-             :files ("debian-changelog-mode.el")))
+    :straight
+    (debian-changelog-mode
+     :type git
+     :flavor melpa
+     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+     :files ("debian-changelog-mode.el")))
   (req-package debian-control-mode
-    :quelpa (debian-control-mode
-             :fetcher git :url "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-             :files ("debian-control-mode.el")))
+    :straight
+    (debian-control-mode
+     :type git
+     :flavor melpa
+     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+     :files ("debian-control-mode.el")))
   (req-package debian-copyright
-    :quelpa (debian-copyright
-             :fetcher git :url "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-             :files ("debian-copyright.el")))
+    :straight
+    (debian-copyright
+     :type git
+     :flavor melpa
+     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+     :files ("debian-copyright.el")))
   (req-package readme-debian
-    :quelpa (readme-debian
-             :fetcher git :url "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-             :files ("readme-debian.el")))
+    :straight
+    (readme-debian
+     :type git
+     :flavor melpa
+     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+     :files ("readme-debian.el")))
 #+END_SRC
 
 ** decide
 Decide provides functions for dice rolling and similar tasks.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package decide
-    :quelpa)
+  (req-package decide)
 #+END_SRC
 
 ** diminish
@@ -535,8 +514,6 @@ The below code sets up a custom variable ~diminished-minor-modes~ to
 control the diminishing of modes.
 #+BEGIN_SRC emacs-lisp
   (req-package diminish
-    :quelpa
-    :demand t
     :config
     (defun diminish-undo (mode)
       "Restore mode-line display of diminished mode MODE to its minor-mode value.
@@ -608,17 +585,14 @@ http://editorconfig.org/
 
 #+BEGIN_SRC emacs-lisp
   (req-package editorconfig
-    :quelpa
-    :demand t
-    :config
-    (editorconfig-mode 1))
+    :config (editorconfig-mode 1))
 #+END_SRC
 
 ** elsa
 
 #+BEGIN_SRC emacs-lisp
-  (req-package elsa :quelpa)
-  (req-package flycheck-elsa :quelpa
+  (req-package elsa)
+  (req-package flycheck-elsa
     :require flycheck elsa)
 #+END_SRC
 
@@ -663,31 +637,26 @@ http://editorconfig.org/
   If MODE is not active, do nothing."
       (when (eval mode)
         (funcall mode 0)
-        (funcall mode 1)))
-    :quelpa)
+        (funcall mode 1))))
 #+END_SRC
 
 ** esup
 
 #+BEGIN_SRC emacs-lisp
   (req-package esup
-    :defer t
-    :quelpa)
+    :defer t)
 #+END_SRC
 
 ** filelock
 
 #+BEGIN_SRC emacs-lisp
-  (req-package filelock
-    :quelpa (filelock
-             :fetcher github
-             :repo DarwinAwardWinner/emacs-filelock))
+  (req-package filelock)
 #+END_SRC
 
 ** flycheck
 
 #+BEGIN_SRC emacs-lisp
-  (req-package flycheck :quelpa)
+  (req-package flycheck)
 #+END_SRC
 
 
@@ -697,10 +666,8 @@ what parts of the file have been added, deleted, or modified since the
 last Git commit.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package git-gutter
-    :quelpa)
-  (req-package git-gutter-fringe
-    :quelpa)
+  (req-package git-gutter)
+  (req-package git-gutter-fringe)
 #+END_SRC
 
 ** git-wip
@@ -711,9 +678,12 @@ the Emacs Lisp file, and to tell Emacs where to find the script.
 
 #+BEGIN_SRC emacs-lisp
   (req-package git-wip-mode
-    :quelpa (git-wip-mode
-             :fetcher github :repo bartman/git-wip
-             :files ("emacs/git-wip-mode.el" "git-wip"))
+    :straight
+    (git-wip-mode
+     :type git
+     :host github
+     :repo "bartman/git-wip"
+     :files ("emacs/git-wip-mode.el" "git-wip"))
     :config
     (setq git-wip-path
           (f-join (f-dirname (locate-library "git-wip-mode"))
@@ -771,11 +741,7 @@ This automatically inserts a header into any new elisp file.
           (:around (orig-fun &rest args) dont-set-buffer-modified)
         "Don't set the buffer modified flag."
         (preserve-buffer-modified-p
-          (apply orig-fun args))))
-    :demand t
-    :quelpa (header2
-             :fetcher github :repo emacsmirror/header2
-             :files ("header2.el")))
+          (apply orig-fun args)))))
 #+END_SRC
 
 ** highlight-defined
@@ -790,21 +756,20 @@ built-in ones.
             (add-hook 'emacs-lisp-mode-hook 'turn-on-highlight-defined-mode)
             (add-hook 'lisp-interaction-mode-hook 'turn-on-highlight-defined-mode)
             (eval-after-load 'ielm
-              (add-hook 'inferior-emacs-lisp-mode-hook 'turn-on-highlight-defined-mode)))
-    :quelpa)
+              (add-hook 'inferior-emacs-lisp-mode-hook 'turn-on-highlight-defined-mode))))
 #+END_SRC
 
 ** highlight-stages
 
 #+BEGIN_SRC emacs-lisp
-  (req-package highlight-stages :quelpa)
+  (req-package highlight-stages)
 #+END_SRC
 
 ** htmlize
 This is needed for ~org-html-fontify-code~.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package htmlize :quelpa)
+  (req-package htmlize)
 #+END_SRC
 
 ** ido-complete-space-or-hyphen
@@ -816,9 +781,14 @@ https://github.com/doitian/ido-complete-space-or-hyphen/pull/2
 
 #+BEGIN_SRC emacs-lisp
   (req-package ido-complete-space-or-hyphen
-    :quelpa (ido-complete-space-or-hyphen
-             :fetcher github
-             :repo DarwinAwardWinner/ido-complete-space-or-hyphen))
+    :straight
+    (ido-complete-space-or-hyphen
+     :type git
+     :flavor melpa
+     :host github
+     :repo "doitian/ido-complete-space-or-hyphen"
+     :fork (:host github
+                  :repo "DarwinAwardWinner/ido-complete-space-or-hyphen")))
 #+END_SRC
 
 ** ido-completing-read+
@@ -826,22 +796,26 @@ This uses my bleeding-edge branch of ido-completing-read+.
 
 #+BEGIN_SRC emacs-lisp
   (req-package ido-completing-read+
-    :quelpa (ido-completing-read+
-             :fetcher github
-             :repo DarwinAwardWinner/ido-completing-read-plus))
+    :straight
+    (ido-completing-read+
+     :type git
+     :flavor melpa
+     :files ("ido-completing-read+.el" "ido-completing-read+-pkg.el")
+     :host github
+     :repo "DarwinAwardWinner/ido-completing-read-plus"))
 #+END_SRC
 
 ** ido-yes-or-no
 
 #+BEGIN_SRC emacs-lisp
-  (req-package ido-yes-or-no :quelpa)
+  (req-package ido-yes-or-no)
 #+END_SRC
 
 ** image+
+We only load this when ~image.el~ is loaded.
 
 #+BEGIN_SRC emacs-lisp
   (req-package image+
-    :quelpa
     :after image)
 #+END_SRC
 
@@ -850,8 +824,6 @@ This package provides shortcuts to quickly open the user's init file for editing
 
 #+BEGIN_SRC emacs-lisp
   (req-package iqa
-    :quelpa
-    :demand t
     :config
     (iqa-setup-default)
     (setq iqa-user-init-file (f-join user-emacs-directory "config.org")))
@@ -863,8 +835,7 @@ lexical binding is enabled for that file.
 
 #+BEGIN_SRC emacs-lisp
   (req-package lexbind-mode
-    :init (add-hook 'emacs-lisp-mode-hook (apply-partially #'lexbind-mode 1))
-    :quelpa)
+    :init (add-hook 'emacs-lisp-mode-hook (apply-partially #'lexbind-mode 1)))
 #+END_SRC
 
 ** mac-pseudo-daemon
@@ -873,8 +844,7 @@ open after the last window is closed, by creating a new window and
 hiding it until Emacs is reactivated.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package mac-pseudo-daemon
-    :quelpa)
+  (req-package mac-pseudo-daemon)
 #+END_SRC
 
 ** magit
@@ -908,8 +878,7 @@ in normal operation.
       "Use `hub' instead of `git' if available."
       (let ((magit-git-executable
              (or magit-hub-executable magit-git-executable)))
-        (apply orig-fun args)))
-    :quelpa)
+        (apply orig-fun args))))
 
   ;; Magit is apparently missing an autoload for `magit-process-file',
   ;; which is called by a function in `post-command-hook', resulting in
@@ -933,8 +902,7 @@ only enable it for local files.
            0
          1)))
     (add-hook 'magit-status-mode-hook
-              'turn-on-magit-filenotify-mode-if-local)
-    :quelpa)
+              'turn-on-magit-filenotify-mode-if-local))
 #+END_SRC
 
 ** markdown-mode
@@ -942,11 +910,9 @@ This mode is for editing Markdown files.
 
 #+BEGIN_SRC emacs-lisp
   (req-package markdown-mode
-    :mode ("\\.\\(md\\|mkdn\\)$" . markdown-mode)
-    :quelpa)
+    :mode ("\\.\\(md\\|mkdn\\)$" . markdown-mode))
   ;; Needed for editing code blocks in a separate buffer
-  (req-package edit-indirect
-    :quelpa)
+  (req-package edit-indirect)
 #+END_SRC
 
 *** edit-indirect
@@ -961,10 +927,7 @@ This is an optional dependency of markdown-mode.
 Ring the bell by flashing the mode line of the active window.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package mode-line-bell
-    :quelpa (mode-line-bell
-             :fetcher github
-             :repo purcell/mode-line-bell))
+  (req-package mode-line-bell)
 #+END_SRC
 
 ** noflet
@@ -972,8 +935,7 @@ Noflet provides an enhanced version of ~flet~, and more importantly,
 provides proper indentation support for flet-like macros.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package noflet
-    :quelpa)
+  (req-package noflet)
 #+END_SRC
 
 ** occur-context-resize
@@ -983,8 +945,7 @@ and minus keys (and 0 key to reset)
 
 #+BEGIN_SRC emacs-lisp
   (req-package occur-context-resize
-    :init (add-hook 'occur-mode-hook 'occur-context-resize-mode)
-    :quelpa)
+    :init (add-hook 'occur-mode-hook 'occur-context-resize-mode))
 #+END_SRC
 
 ** org-mode
@@ -992,20 +953,19 @@ The default implementation of the ~org-in-src-block-p~ function is
 broken and always returns nil, so we reimplement it correctly here. We
 also add a function to insert a new src block into an org-mode buffer.
 
-Note that there's no ~:ensure t~ or ~:quelpa~ here, since org-mode
-must already be installed if this code is running.
+Note that we put ~:straight nil~ here, since org-mode must already be
+installed if this code is running.
 
 Org-mode supports asynchronous export functionality. By default, each
 async process loads the user's full init file, but we don't want that,
-because that would be too slow, and because Quelpa runs into problems
-when multiple Emacsen try to start up at the same time. So instead,
-whenever we run an async Org export job, we generate a minimal init
-file that just sets the ~load-path~ from this Emacs, disables backup &
-lock files, and then loads the appropriate Org-mode functionality.
-Then we tell the export process to use this file instead or the usual
-init file.
+because that would be too slow. So instead, whenever we run an async
+Org export job, we generate a minimal init file that just sets the
+~load-path~ from this Emacs, disables backup & lock files, and then
+loads the appropriate Org-mode functionality. Then we tell the export
+process to use this file instead or the usual init file.
 #+BEGIN_SRC emacs-lisp
   (req-package org
+    :straight nil
     :commands org-clocking-buffer
     :config
     (require 'ox-extra)
@@ -1134,7 +1094,6 @@ This provides pretty-looking bullets for org-mode.
 
 #+BEGIN_SRC emacs-lisp
   (req-package org-bullets
-    :quelpa
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+END_SRC
 
@@ -1177,14 +1136,14 @@ same anchors IDs given the same set of headlines.
 This is used to check packages for package.el compliance.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package package-lint :quelpa)
+  (req-package package-lint)
 #+END_SRC
 
 ** paradox
 Paradox provides an improved interface to package.el.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package paradox :quelpa)
+  (req-package paradox)
 #+END_SRC
 
 ** pointback
@@ -1194,7 +1153,7 @@ buffer. Without this package, switching away and back to the buffer in
 one window will reset the point to its position in the other one.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package pointback :quelpa)
+  (req-package pointback)
 #+END_SRC
 
 ** polymode
@@ -1203,9 +1162,8 @@ Rmarkdown files, where some parts of the file are Markdown and others
 are R code.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package polymode :quelpa)
+  (req-package polymode)
   (req-package poly-R
-    :quelpa
     :mode ("\\.Rmd\\'" . poly-markdown+r-mode))
 #+END_SRC
 
@@ -1229,8 +1187,7 @@ visual, and the files are saved with the original words.
                      (cl-mapcan (lambda (x) (cl-copy-list (nth 3 x)))
                                 pretty-symbol-patterns)))
           (pretty-symbols-mode 1)))
-      (add-hook 'after-change-major-mode-hook #'pretty-symbols-enable-if-available))
-    :quelpa)
+      (add-hook 'after-change-major-mode-hook #'pretty-symbols-enable-if-available)))
 #+END_SRC
 
 ** python-mode
@@ -1247,70 +1204,63 @@ regular ~python-mode~ is just fine.
 
 #+BEGIN_SRC emacs-lisp
   (req-package rainbow-delimiters
-    :quelpa
     :init
     (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable))
 #+END_SRC
 
 ** reveal-in-osx-finder
 #+BEGIN_SRC emacs-lisp
-  (req-package reveal-in-osx-finder
-    :quelpa)
+  (req-package reveal-in-osx-finder)
 #+END_SRC
 
 ** shrink-whitespace
 
 #+BEGIN_SRC emacs-lisp
   (req-package shrink-whitespace
-    :quelpa
     :commands shrink-whitespace)
 #+END_SRC
 
 ** SLIME
 
 #+BEGIN_SRC emacs-lisp
-  (req-package slime
-    :quelpa)
+  (req-package slime)
 #+END_SRC
 
 ** sml-modeline
 
 #+BEGIN_SRC emacs-lisp
-  (req-package sml-modeline
-    :quelpa (sml-modeline
-             :fetcher github
-             :repo emacsmirror/sml-modeline))
+  (req-package sml-modeline)
 #+END_SRC
 
 ** smooth-scrolling
 
 #+BEGIN_SRC emacs-lisp
   (req-package smooth-scrolling
-    :quelpa
+    :straight
     (smooth-scrolling
-     :fetcher github
-     :repo "DarwinAwardWinner/smooth-scrolling"))
+     :type git
+     :flavor melpa
+     :host github
+     :repo "aspiers/smooth-scrolling"
+     :fork (:host github
+                  :repo "DarwinAwardWinner/smooth-scrolling")))
 #+END_SRC
 
 ** snakemake
 
 #+BEGIN_SRC emacs-lisp
-  (req-package snakemake-mode
-    :quelpa)
+  (req-package snakemake-mode)
 #+END_SRC
 
 ** system-specific-settings
 
 #+BEGIN_SRC emacs-lisp
-  (req-package system-specific-settings :quelpa)
+  (req-package system-specific-settings)
 #+END_SRC
 
 ** tempbuf
 #+BEGIN_SRC emacs-lisp
   (req-package tempbuf
-    :quelpa (tempbuf
-             :fetcher github
-             :repo emacsattic/tempbuf)
     :config
     (defun mode-symbol (sym)
       "Append \"-mode\" to SYM unless it already ends in it."
@@ -1369,7 +1319,6 @@ regular ~python-mode~ is just fine.
 
 #+BEGIN_SRC emacs-lisp
   (req-package volatile-highlights
-    :quelpa
     :config
     (put 'vhl/define-extension 'lisp-indent-function 1)
     (vhl/define-extension 'adjust-parens
@@ -1392,27 +1341,25 @@ regular ~python-mode~ is just fine.
 
 #+BEGIN_SRC emacs-lisp
   (req-package which-key
-    :quelpa
     :defer t)
 #+END_SRC
 
 ** with-simulated-input
 
 #+BEGIN_SRC emacs-lisp
-  (req-package with-simulated-input
-    :quelpa)
+  (req-package with-simulated-input)
 #+END_SRC
 
 ** ws-butler
 
 #+BEGIN_SRC emacs-lisp
-  (req-package ws-butler :quelpa)
+  (req-package ws-butler)
 #+END_SRC
 
 ** yaml-mode
 
 #+BEGIN_SRC emacs-lisp
-  (req-package yaml-mode :quelpa)
+  (req-package yaml-mode)
 #+END_SRC
 
 * Install and load all configured packages

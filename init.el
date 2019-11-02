@@ -3,25 +3,25 @@
 ;; The purpose of this file is to ensure that the latest org-mode is
 ;; installed before loading config.org.
 
-;; Initialize the emacs packaging system
-(require 'package)
-(package-initialize)
+;; Bootstrap straight package manager
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-;; Ensure latest org-mode is installed from
-;; http://orgmode.org/elpa.html
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-
-(defun package-ensure (pkg &optional dont-select)
-  "Ensure PKG is installed, refreshing if necessary."
-  (unless (package-installed-p pkg)
-    (unless (memq pkg (mapcar #'car package-archive-contents))
-      (package-refresh-contents))
-    (package-install pkg dont-select)))
-
+;; (Try to) Ensure the latest org-mode is installed
 (condition-case nil
-    (package-ensure 'org-plus-contrib)
-  (error (display-warning "Could not install latest org-mode. Falling back to bundled version.")))
+    (straight-use-package 'org-plus-contrib)
+  (error
+   (display-warning "Could not install latest org-mode. Falling back to bundled version.")))
 
 (require 'org)
 (save-window-excursion
