@@ -142,6 +142,7 @@ to install them automatically. So we first need to install
       :repo "edvorg/req-package"
       ;; This branch contains the required fixes for el-get support
       :branch "develop"))
+  (require 'req-package)
 #+END_SRC
 
 ** Install and load basic libraries
@@ -884,6 +885,8 @@ in normal operation.
   ;; which is called by a function in `post-command-hook', resulting in
   ;; an unusable emacs unless the autoload is added manually.
   (req-package magit-process
+    ;; This isn't a separate package, so don't try to install it
+    :straight nil
     :require magit
     :commands (magit-process-file))
 #+END_SRC
