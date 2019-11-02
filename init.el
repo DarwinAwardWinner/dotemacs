@@ -21,7 +21,7 @@
 (condition-case nil
     (straight-use-package 'org-plus-contrib)
   (error
-   (display-warning "Could not install latest org-mode. Falling back to bundled version.")))
+   (display-warning 'init "Could not install latest org-mode. Falling back to bundled version.")))
 
 (require 'org)
 (save-window-excursion
