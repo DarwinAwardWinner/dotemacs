@@ -1318,7 +1318,7 @@ regular ~python-mode~ is just fine.
 ** undo-tree
 
 #+BEGIN_SRC emacs-lisp
-  (req-package undo-tree :ensure)
+  (req-package undo-tree)
 #+END_SRC
 
 ** volatile-highlight
