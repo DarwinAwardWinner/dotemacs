@@ -944,6 +944,9 @@ This mode is for editing Markdown files.
   (req-package markdown-mode
     :mode ("\\.\\(md\\|mkdn\\)$" . markdown-mode)
     :quelpa)
+  ;; Needed for editing code blocks in a separate buffer
+  (req-package edit-indirect
+    :quelpa)
 #+END_SRC
 
 *** edit-indirect
