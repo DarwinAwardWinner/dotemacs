@@ -651,6 +651,7 @@
  '(uniquify-trailing-separator-p nil)
  '(use-dialog-box nil)
  '(user-mail-address "rct@thompsonclan.org")
+ '(vc-follow-symlinks t)
  '(vc-make-backup-files t)
  '(version-control t)
  '(visible-bell t)
