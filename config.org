@@ -19,13 +19,32 @@ If you have an old =.emacs= file or =.emacs.d= directory that you want
 to save, move them out of the way first so that they don't interfere
 with the new config.
 
-** First run slow startup
+** Slow startup on first run
 The first time you start up Emacs after installing this configuration,
 the code in ~init.el~ will install org-mode and then use that to run
 the Emacs lisp code in this file, which will in turn install the many
 packages used by this config. This could take quite a while.
 Subsequent startups will skip the install process and should be
 relatively fast.
+
+You can run the config in batch mode at the command line without
+actually launching Emacs as an editor using a command like this:
+
+#+BEGIN_SRC sh
+  $ emacs -Q -batch -nw -l ~/.emacs.d/init.el
+#+END_SRC
+
+This will load the entire config, forcing an installation of all
+required packages, and you can watch the progress in your terminal.
+Then when you launch Emacs, it will start up much more quickly
+(although it will still take several seconds to start).
+
+** LICENSE
+All code in this config is licensed under the GPL3 (See the [[file:LICENSE][=LICENSE=]]
+file in this repo or the [[info:emacs#Copying][copy included with Emacs]]).
+
+Exceptions to this may be noted in cases where code has been copied
+from another source with a different license.
 
 * Enable Lexical Binding
 In order to enable lexical binding in the config, this must be the
