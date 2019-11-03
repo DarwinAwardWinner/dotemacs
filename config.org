@@ -239,7 +239,7 @@ items depend on having the full PATH available.
 ** Ensure ~define-fringe-bitmap~ is defined
 If this function is undefined (which happens with Emacs is compiled
 without GUI support), git-gutter-fringe won't load. See
-https://github.com/justbur/emacs-vdiff/commit/cfad650c53b4fcaad8f24bbb7d44623678d2edff.
+https://github.com/nschum/fringe-helper.el/issues/5.
 
 #+BEGIN_SRC emacs-lisp
   ;; Define as a no-op if not already defined
