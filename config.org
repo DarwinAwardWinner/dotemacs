@@ -67,16 +67,12 @@ Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https:
 manager]], which it uses to install Org mode. Here we complete the setup
 so Straight can be used to manage all pacakges below.
 
-* TODO Don't ask about file locks in non-interactive sessions
-Quelpa briefly locks its cache file during startup. If multiple
-Emacsen are starting up at the same time, one of them may encounter
-the other's file lock. Normally, it would prompt the user about what
-to do, but if it is running in batch mode, this will not work. This
-advice tells Emacs to instead simply wait for up to 30 seconds for the
-file to become unlocked.
-
-Naturally, this advice it is only effective it is evaluated before
-setting up Quelpa.
+* Don't ask about file locks in non-interactive sessions
+If multiple Emacsen are starting up at the same time, one of them may
+encounter a file locked by the other. Normally, it would prompt the
+user about what to do, but if it is running in batch mode, this will
+not work. This advice tells Emacs to instead simply wait for up to 30
+seconds for the file to become unlocked.
 
 #+BEGIN_SRC emacs-lisp
   ;; userlock.el doesn't provide a feature
@@ -1943,10 +1939,10 @@ instead.
 #+END_SRC
 
 ** Fix ~diff~ behavior when backup file is not in same directory
-My settings put all backup files in one directory. So when ~diff~
-prmopts for the second file, it starts in that backup directory. I
-would rather have it start in the same directory as the first file.
-
+My settings put all backup files in one directory (see
+~backup-directory-alist~). So when ~diff~ prmopts for the second file,
+it starts in that backup directory. I would rather have it start in
+the same directory as the first file.
 
 #+BEGIN_SRC emacs-lisp
   (define-advice diff (:before (&rest args) same-dir-for-both-files)
