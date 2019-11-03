@@ -11,5 +11,8 @@ HOME="$TMPHOME" \
     --eval "(setq network-security-level 'low)" \
     -f toggle-debug-on-error \
     -l "~/.emacs.d/init.el" \
-    --eval "(wsi-simulate-idle-time 500)"
-# Note: the TLS thing works around Emacs bug #34341
+    --eval "(wsi-simulate-idle-time 500)" \
+    --eval "(progn (require 'cl-lib) (cl-assert ido-ubiquitous-mode))"
+# I could actually define some buttercup tests for things if I wanted
+# to instead of just asserting a variable here, but maybe that's
+# overkill.
