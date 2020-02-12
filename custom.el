@@ -97,7 +97,7 @@
  '(global-adjust-parens-mode t)
  '(global-anzu-mode t)
  '(global-git-gutter+-mode t)
- '(global-git-gutter-mode nil)
+ '(global-git-gutter-mode t)
  '(global-hardhat-mode t)
  '(global-hl-line-mode t)
  '(global-pointback-mode t)
@@ -162,7 +162,7 @@
  '(ido-confirm-unique-completion t)
  '(ido-cr+-function-blacklist
    (quote
-    (read-file-name-internal read-buffer todo-add-category gnus-emacs-completing-read gnus-iswitchb-completing-read grep-read-files magit-builtin-completing-read ess-completing-read Info-read-node-name tmm-prompt dired-do-rename org-tags-completion-function)))
+    (read-file-name-internal read-buffer todo-add-category gnus-emacs-completing-read gnus-iswitchb-completing-read grep-read-files magit-builtin-completing-read ess-completing-read Info-read-node-name tmm-prompt dired-do-rename org-tags-completion-function org-read-property-value)))
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory (quote first))
  '(ido-everywhere t)
@@ -235,8 +235,14 @@
    (quote
     (("DONE" . "darkgreen")
      ("CANCELLED" . "darkred")
-     ("REJECTED" . "darkred"))))
+     ("REJECTED" . "darkred")
+     ("WAITING" . "chocolate1")
+     ("WAIT" . "chocolate1"))))
  '(org-todo-keywords (quote ((sequence "TODO" "|" "DONE" "CANCELLED"))))
+ '(package-archives
+   (quote
+    (("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa" . "https://melpa.org/packages/"))))
  '(paradox-execute-asynchronously t)
  '(paradox-github-token t)
  '(pretty-symbol-categories (lambda relational nil))
@@ -282,219 +288,48 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((major-mode . LaTeX)
+    ((eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "sessions.html" t)))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "tsl.html" t)))
+           t t)
+     (org-emphasis-alist
+      ("*" bold)
+      ("/" italic)
+      ("_" underline)
+      ("=" org-verbatim verbatim)
+      ("~" org-code verbatim)
+      ("+"
+       (:strike-through nil)))
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "jobhunt.html" t)))
+           t t)
+     (major-mode . LaTeX)
      (eval org-display-inline-images)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (save-mark-and-excursion
-               (deactivate-mark
-                (quote force))
-               (org-export-to-file
-                   (quote html)
-                   "campaign.html" t)))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (save-mark-and-excursion
-               (deactivate-mark
-                (quote force))
-               (org-export-to-file
-                   (quote html)
-                   "lore.html" t)))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (save-mark-and-excursion
-               (deactivate-mark
-                (quote force))
-               (org-export-to-file
-                   (quote html)
-                   "artificer-planning.html" t)))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (save-mark-and-excursion
-               (deactivate-mark
-                (quote force))
-               (org-export-to-file
-                   (quote html)
-                   "campaign.html" t)
-               (org-export-to-file
-                   (quote html)
-                   "Public/campaign.html" t nil nil nil
-                   (\`
-                    (:exclude-tags
-                     (\,
-                      (append
-                       (quote
-                        ("secret" "hidden"))
-                       org-export-exclude-tags)))))))
-           t t)
      (git-commit-major-mode . git-commit-elisp-text-mode)
      (org-export-allow-bind-keywords . t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (save-mark-and-excursion
-               (deactivate-mark
-                (quote force))
-               (org-export-to-file
-                   (quote html)
-                   "character sheet.html" t)
-               (org-export-to-file
-                   (quote html)
-                   "Public/character sheet.html" t nil nil nil
-                   (\`
-                    (:exclude-tags
-                     (\,
-                      (append
-                       (quote
-                        ("secret" "hidden"))
-                       org-export-exclude-tags)))))))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (save-mark-and-excursion
-               (deactivate-mark
-                (quote force))
-               (org-export-to-file
-                   (quote html)
-                   "character sheet.html" t)
-               (org-export-to-file
-                   (quote html)
-                   "Public/character sheet.html" t nil nil nil
-                   (\`
-                    (:exclude-tags
-                     (\,
-                      (cons "secret" org-export-exclude-tags)))))))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (save-mark-and-excursion
-               (deactivate-mark
-                (quote force))
-               (org-export-to-file
-                   (quote html)
-                   "character sheet.html" t)))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (save-mark-and-excursion
-               (deactivate-mark
-                (quote force))
-               (org-export-to-file
-                   (quote html)
-                   "campaign.html" t)
-               (org-export-to-file
-                   (quote html)
-                   "Public/campaign.html" t nil nil nil
-                   (\`
-                    (:exclude-tags
-                     (\,
-                      (cons "secret" org-export-exclude-tags)))))))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (org-export-to-file
-                 (quote html)
-                 "character sheet.html" t))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (org-export-to-file
-                 (quote html)
-                 "campaign.html" t)
-             (org-export-to-file
-                 (quote html)
-                 "Public/campaign.html" t nil nil nil
-                 (\`
-                  (:exclude-tags
-                   (\,
-                    (cons "secret" org-export-exclude-tags))))))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (add-hook
-            (quote after-save-hook)
-            (lambda nil
-              (org-export-to-file
-                  (quote html)
-                  "campaign.html" t)
-              (org-export-to-file
-                  (quote html)
-                  "Public/campaign.html" t nil nil nil
-                  (\`
-                   (:exclude-tags
-                    (\,
-                     (cons "secret" org-export-exclude-tags)))))))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (org-export-to-file
-                 (quote html)
-                 "campaign.html" t)
-             (let
-                 ((org-export-exclude-tags
-                   (cons "secret" org-export-exclude-tags)))
-               (org-export-to-file
-                   (quote html)
-                   "Public/campaign.html")))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (org-export-to-file
-                 (quote html)
-                 "campaign.html" t)
-             (let
-                 ((org-export-exclude-tags
-                   (cons "secret" org-export-exclude-tags)))
-               (org-export-to-file
-                   (quote html)
-                   "Public/campaign.html" t)))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (let
-                 ((org-export-exclude-tags
-                   (cons "secret" org-export-exclude-tags)))
-               (org-export-to-file
-                   (quote html)
-                   "Public/campaign.html" t))
-             (org-export-to-file
-                 (quote html)
-                 "campaign.html" t))
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (apply-partially
-            (quote org-html-export-to-html)
-            t)
-           t t)
-     (eval add-hook
-           (quote after-save-hook)
-           (lambda nil
-             (let
-                 ((org-export-exclude-tags
-                   (cons "secret" org-export-exclude-tags)))
-               (org-export-to-file
-                   (quote html)
-                   "campaign.html" t))
-             (org-export-to-file
-                 (quote html)
-                 "campaign_secret.html" t))
-           t t)
      (org-emphasis-alist quote
                          (("*" bold)
                           ("/" italic)
@@ -514,93 +349,11 @@
       ("=" org-verbatim verbatim)
       ("~" org-code verbatim))
      (checkdoc-minor-mode . 1)
-     (eval when
-           (and
-            (buffer-file-name)
-            (file-regular-p
-             (buffer-file-name))
-            (string-match-p "^[^.]"
-                            (buffer-file-name)))
-           (unless
-               (featurep
-                (quote package-build))
-             (let
-                 ((load-path
-                   (cons "../package-build" load-path)))
-               (require
-                (quote package-build))))
-           (package-build-minor-mode)
-           (set
-            (make-local-variable
-             (quote package-build-working-dir))
-            (expand-file-name "../working/"))
-           (set
-            (make-local-variable
-             (quote package-build-archive-dir))
-            (expand-file-name "../packages/"))
-           (set
-            (make-local-variable
-             (quote package-build-recipes-dir))
-            default-directory))
      (eval ignore-errors
            (ws-butler-mode 0))
-     (eval when
-           (and
-            (buffer-file-name)
-            (file-regular-p
-             (buffer-file-name))
-            (string-match-p "^[^.]"
-                            (buffer-file-name)))
-           (emacs-lisp-mode)
-           (when
-               (fboundp
-                (quote flycheck-mode))
-             (flycheck-mode -1))
-           (unless
-               (featurep
-                (quote package-build))
-             (let
-                 ((load-path
-                   (cons ".." load-path)))
-               (require
-                (quote package-build))))
-           (package-build-minor-mode)
-           (set
-            (make-local-variable
-             (quote package-build-working-dir))
-            (expand-file-name "../working/"))
-           (set
-            (make-local-variable
-             (quote package-build-archive-dir))
-            (expand-file-name "../packages/"))
-           (set
-            (make-local-variable
-             (quote package-build-recipes-dir))
-            default-directory))
      (flycheck-disabled-checkers
       (quote
        (emacs-lisp emacs-lisp-checkdoc)))
-     (eval when
-           (and
-            (buffer-file-name)
-            (file-regular-p
-             (buffer-file-name))
-            (string-match-p "^[^.]"
-                            (buffer-file-name)))
-           (emacs-lisp-mode)
-           (when
-               (fboundp
-                (quote flycheck-mode))
-             (flycheck-mode -1))
-           (unless
-               (featurep
-                (quote package-build))
-             (let
-                 ((load-path
-                   (cons ".." load-path)))
-               (require
-                (quote package-build))))
-           (package-build-minor-mode))
      (whitespace-style face tabs trailing lines-tail)
      (eval if
            (fboundp
