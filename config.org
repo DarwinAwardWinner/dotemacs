@@ -327,6 +327,12 @@ This loads apache-mode and sets it up to detect the vim
   (req-package apt-sources-list)
 #+END_SRC
 
+** async
+
+#+BEGIN_SRC emacs-lisp
+  (req-package async)
+#+END_SRC
+
 ** auto-complete
 Auto-complete mode provides IDE-style popup completions while editing.
 
@@ -483,45 +489,6 @@ advanced versions of existing commands.
            ([remap move-beginning-of-line] . crux-move-beginning-of-line)))
 #+END_SRC
 
-** dpkg-dev-el
-This is a series of elisp provided by the Debian package dpkg-dev-el.
-Some of them have uses outside Debian, so it's nice to have a way to
-install them without dpkg.
-
-https://packages.debian.org/sid/dpkg-dev-el
-https://salsa.debian.org/debian/emacs-goodies-el/tree/master/elisp/dpkg-dev-el
-
-#+BEGIN_SRC emacs-lisp
-  (req-package debian-changelog-mode
-    :straight
-    (debian-changelog-mode
-     :type git
-     :flavor melpa
-     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-     :files ("debian-changelog-mode.el")))
-  (req-package debian-control-mode
-    :straight
-    (debian-control-mode
-     :type git
-     :flavor melpa
-     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-     :files ("debian-control-mode.el")))
-  (req-package debian-copyright
-    :straight
-    (debian-copyright
-     :type git
-     :flavor melpa
-     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-     :files ("debian-copyright.el")))
-  (req-package readme-debian
-    :straight
-    (readme-debian
-     :type git
-     :flavor melpa
-     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-     :files ("readme-debian.el")))
-#+END_SRC
-
 ** decide
 Decide provides functions for dice rolling and similar tasks.
 
@@ -599,6 +566,45 @@ control the diminishing of modes.
 
     (eval-after-init
      '(diminish-init)))
+#+END_SRC
+
+** dpkg-dev-el
+This is a series of elisp provided by the Debian package dpkg-dev-el.
+Some of them have uses outside Debian, so it's nice to have a way to
+install them without dpkg.
+
+https://packages.debian.org/sid/dpkg-dev-el
+https://salsa.debian.org/debian/emacs-goodies-el/tree/master/elisp/dpkg-dev-el
+
+#+BEGIN_SRC emacs-lisp
+  (req-package debian-changelog-mode
+    :straight
+    (debian-changelog-mode
+     :type git
+     :flavor melpa
+     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+     :files ("debian-changelog-mode.el")))
+  (req-package debian-control-mode
+    :straight
+    (debian-control-mode
+     :type git
+     :flavor melpa
+     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+     :files ("debian-control-mode.el")))
+  (req-package debian-copyright
+    :straight
+    (debian-copyright
+     :type git
+     :flavor melpa
+     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+     :files ("debian-copyright.el")))
+  (req-package readme-debian
+    :straight
+    (readme-debian
+     :type git
+     :flavor melpa
+     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
+     :files ("readme-debian.el")))
 #+END_SRC
 
 ** editorconfig
@@ -680,7 +686,6 @@ http://editorconfig.org/
 #+BEGIN_SRC emacs-lisp
   (req-package flycheck)
 #+END_SRC
-
 
 ** git-gutter
 This package puts change indicators in the buffer fringe to indicate
@@ -849,6 +854,12 @@ This package provides shortcuts to quickly open the user's init file for editing
     :config
     (iqa-setup-default)
     (setq iqa-user-init-file (f-join user-emacs-directory "config.org")))
+#+END_SRC
+
+** json-mode
+
+#+BEGIN_SRC emacs-lisp
+  (req-package json-mode)
 #+END_SRC
 
 ** lexbind-mode
@@ -1982,6 +1993,9 @@ the same directory as the first file.
 #+END_SRC
 
 *** TODO Report this as a bug in Emacs
+This is actually an ido bug: see
+https://github.com/DarwinAwardWinner/ido-completing-read-plus/issues/165
+and https://debbugs.gnu.org/cgi/bugreport.cgi?bug=19412
 ** Fix value of ~x-colors~
 For some reason the ~x-colors~ variable has started to get the wrong
 value, so I've copied the code to set it correctly out of
