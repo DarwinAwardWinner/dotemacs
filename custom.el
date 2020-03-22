@@ -291,6 +291,49 @@
     ((eval add-hook
            (quote after-save-hook)
            (lambda nil
+             (org-export-to-file
+                 (quote html)
+                 "index.html" t))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "character sheet.html" t)
+               (org-export-to-file
+                   (quote html)
+                   "Public/character sheet.html" t nil nil nil
+                   (\`
+                    (:exclude-tags
+                     (\,
+                      (append
+                       (quote
+                        ("secret" "hidden"))
+                       org-export-exclude-tags)))))))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (require
+              (quote async))
+             (async-start
+              (\`
+               (lambda nil
+                 (load
+                  (\,
+                   (expand-file-name "export-campaign.el")))))
+              (lambda
+                (result)
+                (message "Export complete."))))
+           t t)
+     (eval conf-quote-normal nil)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
              (save-mark-and-excursion
                (deactivate-mark
                 (quote force))
