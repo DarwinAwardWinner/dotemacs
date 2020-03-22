@@ -1125,6 +1125,12 @@ process to use this file instead or the usual init file.
     :require org
     :config
     (ox-extras-activate '(latex-header-blocks ignore-headlines)))
+  ;; Need this loaded or Eldoc throws errors in org buffers. TODO: Could
+  ;; probably be replaced with an autoload for `org-get-outline-path'
+  (req-package org-refile
+    :straight nil
+    :require org
+    :defer nil)
 #+END_SRC
 
 *** Org-bullets
