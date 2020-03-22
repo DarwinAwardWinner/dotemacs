@@ -1,29 +1,23 @@
-language: generic
-dist: trusty
-sudo: false
+language: nix
 
 env:
   matrix:
-    - EMACS_VERSION=emacs-26.3
-    - EMACS_VERSION=emacs-git-snapshot
-    # Disabled due to TLS bug not being fixed (they need to rebase I
-    # guess)
-    # - EMACS_VERSION=remacs-git-snapshot
+    - EMACS_CI=emacs-26-3
+    - EMACS_CI=emacs-snapshot
 
 matrix:
   allow_failures:
-    - env: EMACS_VERSION=remacs-git-snapshot
+  - env: EMACS_CI=emacs-snapshot
 
 before_script:
-  # Install evm
-  - git clone https://github.com/rejeep/evm.git ~/.evm
-  - export PATH="$HOME/.evm/bin:$PATH"
-  - evm config path /tmp
-  - evm list
-  # use this version of emacs for tests
-  - evm install "${EMACS_VERSION}-travis" --use --skip
-  - evm list
+  # travis-wait-enhanced
+  - |
+    wget -qO- "https://github.com/crazy-max/travis-wait-enhanced/releases/download/v1.1.0/travis-wait-enhanced_1.1.0_linux_x86_64.tar.gz" | tar -zxvf - travis-wait-enhanced
+    mv travis-wait-enhanced /home/travis/bin/
+    travis-wait-enhanced --version
+  # Install nix-emacs-ci
+  - bash <(curl https://raw.githubusercontent.com/purcell/nix-emacs-ci/master/travis-install)
   - emacs --version
 
 script:
-  - ./test-config.sh -batch
+  - travis-wait-enhanced --timeout=5m -- ./test-config.sh -batch
