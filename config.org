@@ -2560,6 +2560,20 @@ touchpad.
   (bind-key "<wheel-right>" 'ignore)
 #+END_SRC
 
+** Disable ~suspend-frame~ for GUI frames
+Calling ~suspend-frame~ on a GUI frame causes it to remain frozen when
+unminimized. So we prevent ~suspend-frame~ from working on GUI frames.
+
+
+#+BEGIN_SRC emacs-lisp
+  (define-advice suspend-frame (:around (orig-fun &rest args) disable-on-gui-frames)
+    "Disable `suspend-frame' on GUI frames."
+    (if (display-graphic-p (selected-frame))
+        (message "`suspend-frame' disabled for GUI frames.")
+      (apply orig-fun args)))
+#+END_SRC
+
+
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
