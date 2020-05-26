@@ -483,8 +483,7 @@ advanced versions of existing commands.
 
 #+BEGIN_SRC emacs-lisp
   (req-package crux
-    :bind (("C-k" . crux-smart-kill-line)
-           ("C-c C-e" . crux-eval-and-replace)
+    :bind (("C-c C-e" . crux-eval-and-replace)
            ("C-x 4 t" . crux-transpose-windows)
            ([remap move-beginning-of-line] . crux-move-beginning-of-line)))
 #+END_SRC
