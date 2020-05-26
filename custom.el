@@ -9,7 +9,7 @@
  '(abbrev-file-name "~/.emacs.d/persistence/abbrev_defs")
  '(ac-comphist-file "/Users/ryan/.emacs.d/persistence/ac-comphist.dat")
  '(ack-and-a-half-executable "/Users/ryan/perl5/perlbrew/perls/perl-5.16.3/bin/ack")
- '(amx-mode t)
+ '(amx-mode nil)
  '(amx-save-file "~/.emacs.d/persistence/amx-items")
  '(auto-dim-other-buffers-mode t)
  '(autopair-global-mode t)
@@ -247,7 +247,7 @@
  '(paradox-github-token t)
  '(prescient-filter-method (quote (literal regexp initialism fuzzy)))
  '(prescient-persist-mode t)
- '(prescient-save-file "/Users/ryan/.emacs.d/persistence/prescient-save.el")
+ '(prescient-save-file "~/.emacs.d/persistence/prescient-save.el")
  '(pretty-symbol-categories (lambda relational nil))
  '(pretty-symbol-patterns
    (quote
