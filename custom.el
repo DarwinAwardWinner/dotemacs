@@ -22,6 +22,7 @@
  '(beacon-blink-when-point-moves-vertically 2)
  '(beacon-dont-blink-commands nil)
  '(beacon-mode t)
+ '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/persistence/bookmarks")
  '(bs-default-configuration "all")
  '(clean-buffer-list-delay-general 7)
@@ -36,6 +37,7 @@
  '(cperl-indent-level 4)
  '(cperl-indent-parens-as-block t)
  '(cperl-merge-trailing-else nil)
+ '(custom-raised-buttons t)
  '(delete-by-moving-to-trash t)
  '(delete-old-versions t)
  '(delete-selection-mode t)
@@ -291,6 +293,26 @@
     ((eval add-hook
            (quote after-save-hook)
            (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "artificer-planning.html" t)))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "campaign.html" t)))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
              (org-export-to-file
                  (quote html)
                  "index.html" t))
@@ -462,7 +484,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "White" :foreground "Black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "nil" :family "Fira Code"))))
+ '(default ((t (:family "DejaVu Sans Mono"))))
  '(auto-dim-other-buffers-face ((t (:background "gray97"))))
  '(git-gutter+-added ((t (:foreground "green4" :weight bold))))
  '(git-gutter+-deleted ((t (:foreground "red4" :weight bold))))
