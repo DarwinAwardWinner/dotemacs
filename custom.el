@@ -291,6 +291,30 @@
     ((eval add-hook
            (quote after-save-hook)
            (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "artificer-planning.html" t)))
+           t t)
+     (eval set
+           (make-local-variable
+            (quote mouse-1-click-follows-link))
+           nil)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark
+                (quote force))
+               (org-export-to-file
+                   (quote html)
+                   "campaign.html" t)))
+           t t)
+     (eval add-hook
+           (quote after-save-hook)
+           (lambda nil
              (org-export-to-file
                  (quote html)
                  "index.html" t))
@@ -443,6 +467,7 @@
  '(undo-tree-auto-save-history t)
  '(undo-tree-history-directory-alist (quote (("." . "~/.emacs.d/persistence/undo-tree"))))
  '(undo-tree-incompatible-major-modes (quote (term-mode eshell-mode)))
+ '(undo-tree-limit 80000)
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(uniquify-trailing-separator-p nil)
  '(use-dialog-box nil)
