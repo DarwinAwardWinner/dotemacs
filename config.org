@@ -904,7 +904,7 @@ in normal operation.
     (define-advice magit-init (:after (&rest args) show-status)
       "Show the status buffer after initialization if interactive."
       (when (called-interactively-p 'interactive)
-        (magit-status-internal directory)))
+        (magit-status-setup-buffer (car args))))
     ;; Redirect "git" command to "hub" for interactive use only
     (defvar magit-hub-executable (when (executable-find "hub") "hub"))
     (define-advice magit-git-command (:around (orig-fun &rest args) use-hub)
@@ -988,8 +988,9 @@ The default implementation of the ~org-in-src-block-p~ function is
 broken and always returns nil, so we reimplement it correctly here. We
 also add a function to insert a new src block into an org-mode buffer.
 
-Note that we put ~:straight nil~ here, since org-mode must already be
-installed if this code is running.
+Note that we put ~:straight nil~ here, since this code is inside an
+org file, so org-mode already installed and loaded by the time this
+code runs.
 
 Org-mode supports asynchronous export functionality. By default, each
 async process loads the user's full init file, but we don't want that,
@@ -1127,10 +1128,7 @@ process to use this file instead or the usual init file.
     (ox-extras-activate '(latex-header-blocks ignore-headlines)))
   ;; Need this loaded or Eldoc throws errors in org buffers. TODO: Could
   ;; probably be replaced with an autoload for `org-get-outline-path'
-  (req-package org-refile
-    :straight nil
-    :require org
-    :defer nil)
+  (autoload 'org-get-outline-path "org-refile")
 #+END_SRC
 
 *** Org-bullets
