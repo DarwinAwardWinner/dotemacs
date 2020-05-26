@@ -1256,6 +1256,13 @@ regular ~python-mode~ is just fine.
   (req-package reveal-in-osx-finder)
 #+END_SRC
 
+** selectrum
+
+#+BEGIN_SRC emacs-lisp
+  (req-package selectrum)
+  (req-package selectrum-prescient)
+#+END_SRC
+
 ** shrink-whitespace
 
 #+BEGIN_SRC emacs-lisp
