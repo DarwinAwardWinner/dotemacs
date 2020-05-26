@@ -9,7 +9,7 @@
  '(abbrev-file-name "~/.emacs.d/persistence/abbrev_defs")
  '(ac-comphist-file "/Users/ryan/.emacs.d/persistence/ac-comphist.dat")
  '(ack-and-a-half-executable "/Users/ryan/perl5/perlbrew/perls/perl-5.16.3/bin/ack")
- '(amx-mode t)
+ '(amx-mode nil)
  '(amx-save-file "~/.emacs.d/persistence/amx-items")
  '(auto-dim-other-buffers-mode t)
  '(autopair-global-mode t)
@@ -167,12 +167,12 @@
     (read-file-name-internal read-buffer todo-add-category gnus-emacs-completing-read gnus-iswitchb-completing-read grep-read-files magit-builtin-completing-read ess-completing-read Info-read-node-name tmm-prompt dired-do-rename org-tags-completion-function org-read-property-value)))
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory (quote first))
- '(ido-everywhere t)
- '(ido-mode (quote both) nil (ido))
+ '(ido-everywhere nil)
+ '(ido-mode nil nil (ido))
  '(ido-read-file-name-non-ido (quote (dired-do-rename dired-create-directory)))
  '(ido-save-directory-list-file "~/.emacs.d/persistence/ido.last")
  '(ido-ubiquitous-enable-old-style-default nil)
- '(ido-ubiquitous-mode t)
+ '(ido-ubiquitous-mode nil)
  '(ido-use-virtual-buffers t)
  '(ido-yes-or-no-mode t)
  '(imagex-auto-adjust-mode t)
@@ -247,6 +247,9 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(paradox-execute-asynchronously t)
  '(paradox-github-token t)
+ '(prescient-filter-method (quote (literal regexp initialism fuzzy)))
+ '(prescient-persist-mode t)
+ '(prescient-save-file "~/.emacs.d/persistence/prescient-save.el")
  '(pretty-symbol-categories (lambda relational nil))
  '(pretty-symbol-patterns
    (quote
@@ -300,6 +303,10 @@
                    (quote html)
                    "artificer-planning.html" t)))
            t t)
+     (eval set
+           (make-local-variable
+            (quote mouse-1-click-follows-link))
+           nil)
      (eval add-hook
            (quote after-save-hook)
            (lambda nil
@@ -447,6 +454,9 @@
  '(save-place-mode t nil (saveplace))
  '(savehist-file "~/.emacs.d/persistence/history")
  '(savehist-mode t)
+ '(selectrum-mode t)
+ '(selectrum-prescient-mode t)
+ '(selectrum-show-indices nil)
  '(send-mail-function (quote mailclient-send-it))
  '(sentence-end-double-space nil)
  '(show-paren-mode t)
@@ -465,6 +475,7 @@
  '(undo-tree-auto-save-history t)
  '(undo-tree-history-directory-alist (quote (("." . "~/.emacs.d/persistence/undo-tree"))))
  '(undo-tree-incompatible-major-modes (quote (term-mode eshell-mode)))
+ '(undo-tree-limit 80000)
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(uniquify-trailing-separator-p nil)
  '(use-dialog-box nil)
