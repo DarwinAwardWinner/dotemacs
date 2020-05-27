@@ -12,7 +12,7 @@ HOME="$TMPHOME" \
     -f toggle-debug-on-error \
     -l "~/.emacs.d/init.el" \
     --eval "(wsi-simulate-idle-time 500)" \
-    --eval "(progn (require 'cl-lib) (cl-assert ido-ubiquitous-mode))"
+    --eval "(require 'ido-completing-read+)"
 # I could actually define some buttercup tests for things if I wanted
 # to instead of just asserting a variable here, but maybe that's
 # overkill.
