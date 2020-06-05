@@ -1670,7 +1670,8 @@ you want look at the definitions of Emacs primitive functions.
   (setq find-function-C-source-directory "~/Projects/emacs/src")
 #+END_SRC
 
-** Fix OSX movement keys (unswap some Command/Option shortcuts)
+** Fix Mac OS movement keys
+*** Unswap some Command/Option shortcuts
 I map Option -> Super and Command -> Meta in Emacs on Mac OS, which is
 the opposite of what it is by default, because I need Emacs' meta key
 to be directly below X. However, there are a handful of shortcuts
@@ -1716,6 +1717,16 @@ themselves.
               (interactive)
               (call-interactively #'move-end-of-line))
             (apply orig-fun args))))))
+#+END_SRC
+
+*** Bind home/end to bol/eol
+Mac OS binds Home and End to go to start/end of buffer by default. We
+want the windows-like behavior, where Home/End go to start/end of
+line, and Control+Home/End go to start/end of buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "<home>" 'move-beginning-of-line)
+  (bind-key "<end>" 'move-end-of-line)
 #+END_SRC
 
 ** Have ~indent-region~ indent containing defun if mark is inactive
