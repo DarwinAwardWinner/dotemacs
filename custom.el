@@ -231,6 +231,7 @@
      (home . :html-link-home))))
  '(org-html-use-infojs (quote when-configured))
  '(org-image-actual-width (quote (400)))
+ '(org-special-ctrl-a/e t)
  '(org-support-shift-select t)
  '(org-todo-keyword-faces
    (quote
