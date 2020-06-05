@@ -293,7 +293,12 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((eval add-hook
+    ((org-todo-keyword-faces
+      ("TODO" . "red")
+      ("WAIT" . "orange")
+      ("DONE" . "forestgreen")
+      ("CANCELED" . "RosyBrown4"))
+     (eval add-hook
            (quote after-save-hook)
            (lambda nil
              (save-mark-and-excursion
