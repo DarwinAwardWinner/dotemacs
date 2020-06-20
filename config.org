@@ -1360,7 +1360,15 @@ regular ~python-mode~ is just fine.
 ** undo-tree
 
 #+BEGIN_SRC emacs-lisp
-  (req-package undo-tree)
+  (req-package undo-tree
+    :config
+    (require 'epa-hook)
+    (define-advice undo-tree-save-history-from-hook
+        (:around (orig-fun &rest args) no-save-gpg-hist)
+      "Don't save history to disk for gpg files"
+      (unless (and (stringp buffer-file-name)
+                   (s-matches-p epa-file-name-regexp (buffer-file-name)))
+        (apply orig-fun args))))
 #+END_SRC
 
 ** volatile-highlight
