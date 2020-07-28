@@ -478,6 +478,7 @@
  '(tramp-remote-path
    (quote
     (tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin")))
+ '(tramp-use-ssh-controlmaster-options nil)
  '(undo-tree-auto-save-history t)
  '(undo-tree-history-directory-alist (quote (("." . "~/.emacs.d/persistence/undo-tree"))))
  '(undo-tree-incompatible-major-modes (quote (term-mode eshell-mode)))
