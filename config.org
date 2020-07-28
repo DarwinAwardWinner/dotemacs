@@ -1115,6 +1115,7 @@ process to use this file instead or the usual init file.
         (with-temp-file org-export-async-init-file
           (insert (gnus-pp-to-string init-form) "\n"))))
     :bind (("C-c l" . org-store-link)
+           ("C-c a" . org-agenda)
            :map org-mode-map
            ("C-c C-'" . org-insert-or-edit-src-block)
            :map org-src-mode-map

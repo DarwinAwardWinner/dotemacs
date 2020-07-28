@@ -213,6 +213,7 @@
  '(ns-command-modifier (quote meta))
  '(ns-function-modifier (quote control))
  '(org-adapt-indentation nil)
+ '(org-agenda-files (quote ("~/Sync/main.org" "~/Sync/sinai-onboarding.org")))
  '(org-bullets-bullet-list (quote ("◉" "✸" "✿")))
  '(org-completion-use-ido t)
  '(org-html-allow-name-attribute-in-anchors t)
