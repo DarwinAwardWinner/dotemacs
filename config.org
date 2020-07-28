@@ -488,6 +488,15 @@ advanced versions of existing commands.
            ([remap move-beginning-of-line] . crux-move-beginning-of-line)))
 #+END_SRC
 
+** cwl-mode
+https://qiita.com/tm_tn/items/6c9653847412d115bec0
+
+#+BEGIN_SRC emacs-lisp
+  (req-package cwl-mode)
+#+END_SRC
+
+See the [[*flycheck][flycheck]] config for the remainder of the config.
+
 ** decide
 Decide provides functions for dice rolling and similar tasks.
 
@@ -683,7 +692,15 @@ http://editorconfig.org/
 ** flycheck
 
 #+BEGIN_SRC emacs-lisp
-  (req-package flycheck)
+  (req-package flycheck
+    :require f
+    :config
+    (or
+     (and (stringp flycheck-cwl-schema-path)
+          (f-exists-p flycheck-cwl-schema-path))
+     (setq flycheck-cwl-schema-path
+           (car (f-glob "~/.pyenv/versions/*/lib/python*/site-packages/cwltool/schemas/v1.0/CommonWorkflowLanguage.yml")))
+     (display-warning 'init "Could not find a CWL schema. See https://qiita.com/tm_tn/items/6c9653847412d115bec0 for more info.")))
 #+END_SRC
 
 ** git-gutter
@@ -1115,6 +1132,7 @@ process to use this file instead or the usual init file.
         (with-temp-file org-export-async-init-file
           (insert (gnus-pp-to-string init-form) "\n"))))
     :bind (("C-c l" . org-store-link)
+           ("C-c a" . org-agenda)
            :map org-mode-map
            ("C-c C-'" . org-insert-or-edit-src-block)
            :map org-src-mode-map
@@ -1360,7 +1378,15 @@ regular ~python-mode~ is just fine.
 ** undo-tree
 
 #+BEGIN_SRC emacs-lisp
-  (req-package undo-tree)
+  (req-package undo-tree
+    :config
+    (require 'epa-hook)
+    (define-advice undo-tree-save-history-from-hook
+        (:around (orig-fun &rest args) no-save-gpg-hist)
+      "Don't save history to disk for gpg files"
+      (unless (and (stringp buffer-file-name)
+                   (s-matches-p epa-file-name-regexp (buffer-file-name)))
+        (apply orig-fun args))))
 #+END_SRC
 
 ** volatile-highlight
@@ -1670,7 +1696,8 @@ you want look at the definitions of Emacs primitive functions.
   (setq find-function-C-source-directory "~/Projects/emacs/src")
 #+END_SRC
 
-** Fix OSX movement keys (unswap some Command/Option shortcuts)
+** Fix Mac OS movement keys
+*** Unswap some Command/Option shortcuts
 I map Option -> Super and Command -> Meta in Emacs on Mac OS, which is
 the opposite of what it is by default, because I need Emacs' meta key
 to be directly below X. However, there are a handful of shortcuts
@@ -1716,6 +1743,16 @@ themselves.
               (interactive)
               (call-interactively #'move-end-of-line))
             (apply orig-fun args))))))
+#+END_SRC
+
+*** Bind home/end to bol/eol
+Mac OS binds Home and End to go to start/end of buffer by default. We
+want the windows-like behavior, where Home/End go to start/end of
+line, and Control+Home/End go to start/end of buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "<home>" 'move-beginning-of-line)
+  (bind-key "<end>" 'move-end-of-line)
 #+END_SRC
 
 ** Have ~indent-region~ indent containing defun if mark is inactive

@@ -34,3 +34,4 @@ TAGS
 /.temp-org-export-async-init.el
 /transient
 /straight/
+/auto-save-list/

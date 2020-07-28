@@ -213,6 +213,7 @@
  '(ns-command-modifier (quote meta))
  '(ns-function-modifier (quote control))
  '(org-adapt-indentation nil)
+ '(org-agenda-files (quote ("~/Sync/main.org" "~/Sync/sinai-onboarding.org")))
  '(org-bullets-bullet-list (quote ("◉" "✸" "✿")))
  '(org-completion-use-ido t)
  '(org-html-allow-name-attribute-in-anchors t)
@@ -231,6 +232,7 @@
      (home . :html-link-home))))
  '(org-html-use-infojs (quote when-configured))
  '(org-image-actual-width (quote (400)))
+ '(org-special-ctrl-a/e t)
  '(org-support-shift-select t)
  '(org-todo-keyword-faces
    (quote
@@ -292,7 +294,12 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((eval add-hook
+    ((org-todo-keyword-faces
+      ("TODO" . "red")
+      ("WAIT" . "orange")
+      ("DONE" . "forestgreen")
+      ("CANCELED" . "RosyBrown4"))
+     (eval add-hook
            (quote after-save-hook)
            (lambda nil
              (save-mark-and-excursion
@@ -471,6 +478,7 @@
  '(tramp-remote-path
    (quote
     (tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin")))
+ '(tramp-use-ssh-controlmaster-options nil)
  '(undo-tree-auto-save-history t)
  '(undo-tree-history-directory-alist (quote (("." . "~/.emacs.d/persistence/undo-tree"))))
  '(undo-tree-incompatible-major-modes (quote (term-mode eshell-mode)))
