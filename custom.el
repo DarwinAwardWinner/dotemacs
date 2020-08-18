@@ -196,7 +196,6 @@
  '(ns-alternate-modifier 'super)
  '(ns-auto-hide-menu-bar nil)
  '(ns-command-modifier 'meta)
- '(ns-function-modifier 'control)
  '(org-adapt-indentation nil)
  '(org-agenda-files '("~/Sync/main.org" "~/Sync/sinai-onboarding.org"))
  '(org-bullets-bullet-list '("◉" "✸" "✿"))
