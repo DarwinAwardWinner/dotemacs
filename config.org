@@ -2663,14 +2663,15 @@ preferentially, since that is the version installed by Macports.
 
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in
-batch mode since there is no point in that case.
+batch mode since there is no point in that case. We also avoid
+starting the server if it's already running.
 
-Errors are ignored in case there are two instances of Emacs running,
-or in case the current Emacs is already running a server. The first
-will start the server, and the second will silently fail, since a
-server is already running.
+Errors are ignored in case there are two instances of Emacs running.
+The first Emacs will start the server, and the second will silently
+fail, since a server is already running.
 
 #+BEGIN_SRC emacs-lisp
-  (unless noninteractive
-    (ignore-errors (server-start)))
+  (unless (or noninteractive server-process)
+    (ignore-errors
+      (without-user-input (server-start))))
 #+END_SRC
