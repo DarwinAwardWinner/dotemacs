@@ -150,7 +150,7 @@
  '(ido-complete-space-or-hyphen-mode t)
  '(ido-confirm-unique-completion t)
  '(ido-cr+-function-blacklist
-   '(read-file-name-internal read-buffer todo-add-category gnus-emacs-completing-read gnus-iswitchb-completing-read grep-read-files magit-builtin-completing-read ess-completing-read Info-read-node-name tmm-prompt dired-do-rename org-tags-completion-function org-read-property-value))
+   '(read-file-name-internal read-buffer todo-add-category gnus-emacs-completing-read gnus-iswitchb-completing-read grep-read-files magit-builtin-completing-read ess-completing-read Info-read-node-name tmm-prompt dired-do-rename org-tags-completion-function org-olpath-completing-read))
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory 'first)
  '(ido-everywhere t)
@@ -216,6 +216,7 @@
  '(org-html-use-infojs 'when-configured)
  '(org-image-actual-width '(400))
  '(org-special-ctrl-a/e t)
+ '(org-startup-folded t)
  '(org-support-shift-select t)
  '(org-todo-keyword-faces
    '(("DONE" . "darkgreen")
@@ -269,6 +270,18 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    '((eval add-hook 'after-save-hook
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark 'force)
+               (org-export-to-file 'html "Public/raw_notes_archive.html" t)))
+           t t)
+     (eval add-hook 'after-save-hook
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark 'force)
+               (org-export-to-file 'html "raw_notes_archive.html" t)))
+           t t)
+     (eval add-hook 'after-save-hook
            (lambda nil
              (save-mark-and-excursion
                (deactivate-mark 'force)
