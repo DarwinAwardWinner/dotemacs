@@ -2596,7 +2596,8 @@ take up the same space as the normal characters they replace.
 ** Ignore left/right scroll events
 If wheel-left and wheel-right are left unbound, Emacs rings the bell
 when they are used, which can easily happen when scrolling on a
-touchpad.
+touchpad. To prevent the bell from ringing, we add no-op bindings to
+these events.
 
 #+BEGIN_SRC emacs-lisp
   (bind-key "<wheel-left>" 'ignore)
@@ -2606,7 +2607,6 @@ touchpad.
 ** Disable ~suspend-frame~ for GUI frames
 Calling ~suspend-frame~ on a GUI frame causes it to remain frozen when
 unminimized. So we prevent ~suspend-frame~ from working on GUI frames.
-
 
 #+BEGIN_SRC emacs-lisp
   (define-advice suspend-frame (:around (orig-fun &rest args) disable-on-gui-frames)
