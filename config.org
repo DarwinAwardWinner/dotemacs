@@ -2690,7 +2690,7 @@ The first Emacs will start the server, and the second will silently
 fail, since a server is already running.
 
 #+BEGIN_SRC emacs-lisp
-  (unless (or noninteractive server-process)
+  (unless (or noninteractive (bound-and-true-p server-process))
     (ignore-errors
       (without-user-input (server-start))))
 #+END_SRC
