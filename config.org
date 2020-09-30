@@ -2661,6 +2661,25 @@ preferentially, since that is the version installed by Macports.
     (setq directory-free-space-program "gdf"))
 #+END_SRC
 
+** Don't use ns_selection_fg_color and ns_selection_bg_color
+On Mac OS, Emacs uses ns_selection_fg_color and ns_selection_bg_color
+to determine the colors for the region face. When Mac OS activates
+dark mode, these colors change to dark blue, but they don't change
+back when dark mode is deactivated (at least not in Emacs). So we
+avoid using these and instead use specific colors.
+
+#+BEGIN_SRC emacs-lisp
+  (when (and (equal (face-attribute 'region :distant-foreground)
+                    "ns_selection_fg_color")
+             (equal (face-attribute 'region :background)
+                    "ns_selection_bg_color"))
+    (set-face-attribute
+     'region nil
+     :distant-foreground 'unspecified
+     :background "#BAD6FC"))
+#+END_SRC
+
+
 * Start emacs server
 This allows ~emacsclient~ to connect. We avoid starting the server in
 batch mode since there is no point in that case.
