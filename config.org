@@ -1017,6 +1017,8 @@ and minus keys (and 0 key to reset)
 #+END_SRC
 
 ** org-mode
+
+*** Main org config
 The default implementation of the ~org-in-src-block-p~ function is
 broken and always returns nil, so we reimplement it correctly here. We
 also add a function to insert a new src block into an org-mode buffer.
@@ -1165,14 +1167,6 @@ process to use this file instead or the usual init file.
   (autoload 'org-get-outline-path "org-refile")
 #+END_SRC
 
-*** Org-bullets
-This provides pretty-looking bullets for org-mode.
-
-#+BEGIN_SRC emacs-lisp
-  (req-package org-bullets
-    :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-#+END_SRC
-
 *** Stable-ish HTML anchors for org export
 This code makes the anchors IDs generated when exporting org files to
 HTML less random. It sets the seed to a specific value before
@@ -1206,6 +1200,13 @@ same anchors IDs given the same set of headlines.
   the same set of headlines every time."
     (with-reproducible-rng "org-html-export"
       (apply orig-fun args)))
+#+END_SRC
+
+*** org-superstar
+
+#+BEGIN_SRC emacs-lisp
+  (req-package org-superstar
+    :init (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 #+END_SRC
 
 ** package-lint
