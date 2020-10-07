@@ -2646,10 +2646,15 @@ space. But in Mac OS, disabling them causes various things to break,
 so we want to enabled them there.
 
 #+BEGIN_SRC emacs-lisp
-  (let ((mode-arg (if-system-type-match 'darwin 1 -1)))
-    (menu-bar-mode mode-arg)
-    (when (fboundp #'scroll-bar-mode)
-      (scroll-bar-mode mode-arg)))
+  (require 'frame)
+  (add-hook
+   'after-make-frame-functions
+   (lambda (frame)
+     (with-selected-frame frame
+       (let ((mode-arg (if-system-type-match 'darwin 1 -1)))
+         (menu-bar-mode mode-arg)
+         (when (fboundp #'scroll-bar-mode)
+           (scroll-bar-mode mode-arg))))))
 #+END_SRC
 
 ** Use system trash bin
