@@ -75,6 +75,9 @@ not work. This advice tells Emacs to instead simply wait for up to 30
 seconds for the file to become unlocked.
 
 #+BEGIN_SRC emacs-lisp
+  ;; Needed for loop macro
+  (require 'cl-macs)
+
   ;; userlock.el doesn't provide a feature
   (load "userlock")
 
@@ -1806,9 +1809,10 @@ we disable it in markdown buffers only.
 ** Turn on eldoc mode in elisp modes
 
 #+BEGIN_SRC emacs-lisp
-  (loop for hook in
-        '(lisp-interaction-mode-hook emacs-lisp-mode-hook)
-        do (add-hook hook #'eldoc-mode))
+  (cl-loop
+   for hook in
+   '(lisp-interaction-mode-hook emacs-lisp-mode-hook)
+   do (add-hook hook #'eldoc-mode))
 #+END_SRC
 
 ** TRAMP
