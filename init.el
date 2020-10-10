@@ -25,4 +25,6 @@
 
 (require 'org)
 (save-window-excursion
-  (org-babel-load-file (expand-file-name "config.org" user-emacs-directory)))
+  ;; Note: My config file does NOT work if you compile it, for some
+  ;; reason.
+  (org-babel-load-file (expand-file-name "config.org" user-emacs-directory) nil))
