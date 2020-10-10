@@ -17,20 +17,7 @@ matrix:
 install:
   # travis-wait-enhanced
   - |
-    TWE_VERSION="1.2.0"
-    TWE_ARCH="x86_64"
-    case "$TRAVIS_OS_NAME" in
-      osx)
-        TWE_OS="darwin";;
-      linux)
-        TWE_OS="linux";;
-      *)
-        echo "Unknown/unsupported TRAVIS_OS_NAME: $TRAVIS_OS_NAME"
-        exit 1;;
-    esac
-    TWE_URL="https://github.com/crazy-max/travis-wait-enhanced/releases/download/v${TWE_VERSION}/travis-wait-enhanced_${TWE_VERSION}_${TWE_OS}_${TWE_ARCH}.tar.gz"
-    echo Downloading travis-wait-enhanced from "$TWE_URL"
-    wget -qO- "$TWE_URL" | tar -zxvf - travis-wait-enhanced
+    wget -qO- "https://github.com/crazy-max/travis-wait-enhanced/releases/download/v1.1.0/travis-wait-enhanced_1.1.0_linux_x86_64.tar.gz" | tar -zxvf - travis-wait-enhanced
     mv travis-wait-enhanced /home/travis/bin/
     travis-wait-enhanced --version
   # Install nix-emacs-ci
