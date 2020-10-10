@@ -1,9 +1,5 @@
 language: nix
 
-os:
-  - linux
-  - osx
-
 env:
   matrix:
     - EMACS_CI=emacs-26-3
@@ -14,7 +10,7 @@ matrix:
   allow_failures:
   - env: EMACS_CI=emacs-snapshot
 
-install:
+before_script:
   # travis-wait-enhanced
   - |
     wget -qO- "https://github.com/crazy-max/travis-wait-enhanced/releases/download/v1.1.0/travis-wait-enhanced_1.1.0_linux_x86_64.tar.gz" | tar -zxvf - travis-wait-enhanced
