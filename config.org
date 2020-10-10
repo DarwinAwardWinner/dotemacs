@@ -127,28 +127,28 @@ seconds for the file to become unlocked.
       (funcall oldfun file opponent)))
 #+END_SRC
 
-* Start emacs server
-This allows ~emacsclient~ to connect. We avoid starting the server in
-batch mode since there is no point in that case. We also avoid
-starting the server if it's already running. We start the server as
-soon as possible to make it less likely that a second instance of
-Emacs will attempt to start because it didn't find a server already
-running.
-
-Errors are ignored in case there are two instances of Emacs running.
-The first Emacs will start the server, and the second will silently
-fail, since a server is already running.
-
-#+BEGIN_SRC emacs-lisp
-  (unless (or noninteractive (bound-and-true-p server-process))
-    (ignore-errors
-      (without-user-input (server-start))))
-#+END_SRC
 * Preliminary environment setup
 This section sets up a functions and other aspects of the environment
 that will be needed later in the configuration, so they need to be
 defined/prepared up front.
 
+** Start emacs server
+ This allows ~emacsclient~ to connect. We avoid starting the server in
+ batch mode since there is no point in that case. We also avoid
+ starting the server if it's already running. We start the server as
+ soon as possible to make it less likely that a second instance of
+ Emacs will attempt to start because it didn't find a server already
+ running.
+
+ Errors are ignored in case there are two instances of Emacs running.
+ The first Emacs will start the server, and the second will silently
+ fail, since a server is already running.
+
+ #+BEGIN_SRC emacs-lisp
+   (unless (or noninteractive (bound-and-true-p server-process))
+     (ignore-errors
+       (without-user-input (server-start))))
+ #+END_SRC
 ** Tell use-package to install packages using straight
 This tells ~use-package~ (and by extension ~req-package~) to use
 Straight to install packages by default. See [[https://github.com/raxod502/straight.el#integration-with-use-package][here]] for more
