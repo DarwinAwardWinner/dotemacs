@@ -123,7 +123,7 @@ seconds for the file to become unlocked.
          for still-locked = (file-locked-p file)
          finally return
          (if still-locked
-             (signal 'file-locked (list FILE OPPONENT))
+             (signal 'file-locked (list file opponent))
            ;; `t' means "steal the file", which should be fine since
            ;; it's no longer locked. But first we wait one more second.
            ;; (sit-for 1)
