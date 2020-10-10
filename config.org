@@ -2684,12 +2684,15 @@ preferentially, since that is the version installed by Macports.
     (setq directory-free-space-program "gdf"))
 #+END_SRC
 
-** Don't use ns_selection_fg_color and ns_selection_bg_color
-On Mac OS, Emacs uses ns_selection_fg_color and ns_selection_bg_color
-to determine the colors for the region face. When Mac OS activates
-dark mode, these colors change to dark blue, but they don't change
-back when dark mode is deactivated (at least not in Emacs). So we
-avoid using these and instead use specific colors.
+** Fix region colors
+
+*** Don't let MacOS dark mode break region face
+On Mac OS, Emacs uses ~ns_selection_fg_color~ and
+~ns_selection_bg_color~ to determine the colors for the region face.
+When Mac OS activates dark mode, these colors change to dark blue, but
+they don't change back when dark mode is deactivated (at least not in
+Emacs). So we avoid using these and instead set the colors exactly as
+they are in light mode.
 
 #+BEGIN_SRC emacs-lisp
   (when (and (equal (face-attribute 'region :distant-foreground)
@@ -2702,3 +2705,18 @@ avoid using these and instead use specific colors.
      :background "#BAD6FC"))
 #+END_SRC
 
+*** Don't use excessively light region face in GTK on Ubuntu
+In GTK on Ubuntu, the default selection colors are way too light,
+almost invisible. We instead choose a desaturated version of the
+standard Ubuntu orange selection color.
+
+#+BEGIN_SRC emacs-lisp
+  (when (and (equal (face-attribute 'region :distant-foreground)
+                    "gtk_selection_fg_color")
+             (equal (face-attribute 'region :background)
+                    "gtk_selection_bg_color"))
+    (set-face-attribute
+     'region nil
+     :distant-foreground 'unspecified
+     :background "#ffb499"))
+#+END_SRC
