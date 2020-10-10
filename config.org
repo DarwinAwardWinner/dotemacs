@@ -46,15 +46,7 @@ file in this repo or the [[info:emacs#Copying][copy included with Emacs]]).
 Exceptions to this may be noted in cases where code has been copied
 from another source with a different license.
 
-* Enable Lexical Binding
-In order to enable lexical binding in the config, this must be the
-first line of Emacs Lisp:
-
-#+BEGIN_SRC emacs-lisp
-  ;; -*- lexical-binding: t -*-
-#+END_SRC
-
-* Bootstrappping
+* Bootstrappping from =init.el=
 The [[file:init.el][=init.el=]] file does all the bootstrapping necessary to load the
 configuration in this Org-mode file. It is required as a separate
 non-Org-mode file because this config does not use the version of
@@ -67,7 +59,20 @@ Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https:
 manager]], which it uses to install Org mode. Here we complete the setup
 so Straight can be used to manage all pacakges below.
 
-* Don't ask about file locks in non-interactive sessions
+* Enable Lexical Binding
+In order to enable lexical binding in the config, this must be the
+first line of Emacs Lisp:
+
+#+BEGIN_SRC emacs-lisp
+  ;; -*- lexical-binding: t -*-
+#+END_SRC
+
+* Preliminary environment setup
+This section sets up a functions and other aspects of the environment
+that will be needed later in the configuration, so they need to be
+defined/prepared up front.
+
+** Don't ask about file locks in non-interactive sessions
 If multiple Emacsen are starting up at the same time, one of them may
 encounter a file locked by the other. Normally, it would prompt the
 user about what to do, but if it is running in batch mode, this will
@@ -126,11 +131,6 @@ seconds for the file to become unlocked.
          )
       (funcall oldfun file opponent)))
 #+END_SRC
-
-* Preliminary environment setup
-This section sets up a functions and other aspects of the environment
-that will be needed later in the configuration, so they need to be
-defined/prepared up front.
 
 ** Start emacs server
  This allows ~emacsclient~ to connect. We avoid starting the server in
