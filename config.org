@@ -2699,14 +2699,19 @@ Emacs). So we avoid using these and instead set the colors exactly as
 they are in light mode.
 
 #+BEGIN_SRC emacs-lisp
-  (when (and (equal (face-attribute 'region :distant-foreground)
-                    "ns_selection_fg_color")
-             (equal (face-attribute 'region :background)
-                    "ns_selection_bg_color"))
-    (set-face-attribute
-     'region nil
-     :distant-foreground 'unspecified
-     :background "#BAD6FC"))
+  (require 'frame)
+  (add-hook
+   'after-make-frame-functions
+   (lambda (frame)
+     (with-selected-frame frame
+       (when (and (equal (face-attribute 'region :distant-foreground)
+                         "ns_selection_fg_color")
+                  (equal (face-attribute 'region :background)
+                         "ns_selection_bg_color"))
+         (set-face-attribute
+          'region nil
+          :distant-foreground 'unspecified
+          :background "#BAD6FC")))))
 #+END_SRC
 
 *** Don't use excessively light region face in GTK on Ubuntu
@@ -2715,12 +2720,17 @@ almost invisible. We instead choose a desaturated version of the
 standard Ubuntu orange selection color.
 
 #+BEGIN_SRC emacs-lisp
-  (when (and (equal (face-attribute 'region :distant-foreground)
-                    "gtk_selection_fg_color")
-             (equal (face-attribute 'region :background)
-                    "gtk_selection_bg_color"))
-    (set-face-attribute
-     'region nil
-     :distant-foreground 'unspecified
-     :background "#ffb499"))
+  (require 'frame)
+  (add-hook
+   'after-make-frame-functions
+   (lambda (frame)
+     (with-selected-frame frame
+       (when (and (equal (face-attribute 'region :distant-foreground)
+                         "gtk_selection_fg_color")
+                  (equal (face-attribute 'region :background)
+                         "gtk_selection_bg_color"))
+         (set-face-attribute
+          'region nil
+          :distant-foreground 'unspecified
+          :background "#ffb499")))))
 #+END_SRC
