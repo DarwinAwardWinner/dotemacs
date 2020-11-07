@@ -440,6 +440,20 @@ Emacs Lisp packages.
                   :repo "DarwinAwardWinner/emacs-buttercup")))
 #+END_SRC
 
+** caddyfile-mode
+
+#+BEGIN_SRC emacs-lisp
+  (req-package caddyfile-mode
+    :mode (("Caddyfile\\." . caddyfile-mode)
+           ("caddy\\.conf\\'" . caddyfile-mode))
+    :config
+    (defun my-caddyfile-hook ()
+      (setq-local tab-width 4)
+      (setq-local indent-tabs-mode nil))
+    (add-hook 'caddyfile-mode-hook #'my-caddyfile-hook))
+#+END_SRC
+
+
 ** cask
 
 #+BEGIN_SRC emacs-lisp
@@ -495,6 +509,12 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
 #+BEGIN_SRC emacs-lisp
   (req-package creole-mode
     :mode (".creole\\'" . creole-mode))
+#+END_SRC
+
+** crontab-mode
+
+#+BEGIN_SRC emacs-lisp
+  (req-package crontab-mode)
 #+END_SRC
 
 ** crux
