@@ -27,10 +27,6 @@ jobs:
     - name: Check out the source code
       uses: actions/checkout@v2
 
-    - name: Load the config once (installing all dependencies)
+    - name: Load the config
       run: |
-        ./test-config.sh -batch
-
-    - name: Load the config a 2nd time (dependencies already installed)
-      run: |
-        ./test-config.sh -batch
+        ./test-config-batch.sh
