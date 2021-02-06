@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        emacs_version:
+          - 27.1
+          - 26.3
+          - snapshot
+    steps:
+    - name: Set up Emacs
+      uses: purcell/setup-emacs@master
+      with:
+        version: ${{matrix.emacs_version}}
+
+    - name: Check out the source code
+      uses: actions/checkout@v2
+
+    - name: Load the config once (installing all dependencies)
+      run: |
+        ./test-config.sh -batch
+
+    - name: Load the config a 2nd time (dependencies already installed)
+      run: |
+        ./test-config.sh -batch
