@@ -668,12 +668,12 @@ http://editorconfig.org/
     :config (editorconfig-mode 1))
 #+END_SRC
 
-** elsa
+** TODO elsa
 
 #+BEGIN_SRC emacs-lisp
-  (req-package elsa)
-  (req-package flycheck-elsa
-    :require flycheck elsa)
+  ;; (req-package elsa)
+  ;; (req-package flycheck-elsa
+  ;;   :require flycheck elsa)
 #+END_SRC
 
 ** ess
