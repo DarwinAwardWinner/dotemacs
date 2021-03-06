@@ -1,6 +1,15 @@
 #!/bin/bash
+set -euo pipefail
 
-TMPHOME="$(mktemp -d)"
+TMPHOME="${TMPHOME:-}"
+if [ -n "$TMPHOME" ]; then
+    if ! [ -d "$TMPHOME" ]; then
+        mkdir -p "$TMPHOME"
+    fi
+else
+    TMPHOME="$(mktemp -d)"
+fi
+echo "Using '$TMPHOME' as temporary home directory"
 
 mkdir -p "$TMPHOME/.emacs.d/"
 rm -f "$TMPHOME/.emacs.d/config.el"{,c}
