@@ -856,22 +856,9 @@ This is needed for ~org-html-fontify-code~.
 #+END_SRC
 
 ** ido-complete-space-or-hyphen
-My personal fork of ido-complete-space-or-hyphen. It converts the
-package into a full-fledged minor mode.
-
-TODO: Switch back to stock version after this is merged:
-https://github.com/doitian/ido-complete-space-or-hyphen/pull/2
 
 #+BEGIN_SRC emacs-lisp
-  (req-package ido-complete-space-or-hyphen
-    :straight
-    (ido-complete-space-or-hyphen
-     :type git
-     :flavor melpa
-     :host github
-     :repo "doitian/ido-complete-space-or-hyphen"
-     :fork (:host github
-                  :repo "DarwinAwardWinner/ido-complete-space-or-hyphen")))
+  (req-package ido-complete-space-or-hyphen)
 #+END_SRC
 
 ** ido-completing-read+
