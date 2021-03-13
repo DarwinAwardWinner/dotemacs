@@ -2744,18 +2744,27 @@ they are in light mode.
 
 #+BEGIN_SRC emacs-lisp
   (require 'frame)
-  (add-hook
-   'after-make-frame-functions
-   (lambda (frame)
-     (with-selected-frame frame
-       (when (and (equal (face-attribute 'region :distant-foreground)
+  (defun fix-mac-region-colors (&optional frame)
+    "Set region face to a fixed color regardless of Mac Dark Mode
+
+  On Mac OS, Dark Mode messes with the color of the region in weird
+  ways that makes it visually unusable. Instead, we set the region
+  color to a static color that matches the non-dark-mode region
+  color."
+    (interactive)
+    (with-selected-frame (or frame (selected-frame))
+             (when (and (equal (face-attribute 'region :distant-foreground)
                          "ns_selection_fg_color")
                   (equal (face-attribute 'region :background)
                          "ns_selection_bg_color"))
          (set-face-attribute
           'region nil
           :distant-foreground 'unspecified
-          :background "#BAD6FC")))))
+          :background "#BAD6FC"))))
+  ;; Fix for future frames
+  (add-hook 'after-make-frame-functions #'fix-mac-region-colors)
+  ;; Fix for current frames
+  (mapc #'fix-mac-region-colors (frame-list))
 #+END_SRC
 
 *** Don't use excessively light region face in GTK on Ubuntu
@@ -2765,16 +2774,23 @@ standard Ubuntu orange selection color.
 
 #+BEGIN_SRC emacs-lisp
   (require 'frame)
-  (add-hook
-   'after-make-frame-functions
-   (lambda (frame)
-     (with-selected-frame frame
-       (when (and (equal (face-attribute 'region :distant-foreground)
-                         "gtk_selection_fg_color")
-                  (equal (face-attribute 'region :background)
-                         "gtk_selection_bg_color"))
-         (set-face-attribute
-          'region nil
-          :distant-foreground 'unspecified
-          :background "#ffb499")))))
+  (defun fix-gtk-region-colors (&optional frame)
+    "Set reasonable region colors on Ubuntu
+
+  On Ubuntu, the default region color is way too light. We instead
+  choose a desaturated Ubuntu Orange of an appropriate shade."
+    (interactive)
+    (with-selected-frame (or frame (selected-frame))
+             (when (and (equal (face-attribute 'region :distant-foreground)
+                               "gtk_selection_fg_color")
+                        (equal (face-attribute 'region :background)
+                               "gtk_selection_bg_color"))
+               (set-face-attribute
+                'region nil
+                :distant-foreground 'unspecified
+                :background "#ffb499"))))
+  ;; Fix for future frames
+  (add-hook 'after-make-frame-functions #'fix-gtk-region-colors)
+  ;; Fix for current frames
+  (mapc #'fix-gtk-region-colors (frame-list))
 #+END_SRC
