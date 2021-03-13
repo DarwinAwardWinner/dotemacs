@@ -2037,45 +2037,53 @@ instead.
 
 ** Fix ~diff~ behavior when backup file is not in same directory
 My settings put all backup files in one directory (see
-~backup-directory-alist~). So when ~diff~ prmopts for the second file,
+~backup-directory-alist~). So when ~diff~ prompts for the second file,
 it starts in that backup directory. I would rather have it start in
 the same directory as the first file.
 
 #+BEGIN_SRC emacs-lisp
-  (define-advice diff (:before (&rest args) same-dir-for-both-files)
-    "Only prompt with backup file in same directory.
+  ;; (define-advice diff (:before (&rest args) same-dir-for-both-files)
+  ;;   "Only prompt with backup file in same directory.
 
-  When called interactively, `diff' normally offers to compare
-  against the latest backup file of the selected file. But this
-  isn't great if that backup file is in a dedicated backup
-  directory far away from the original directory. So this advice
-  only allows it to offer backup files from the same directory.
+  ;; When called interactively, `diff' normally offers to compare
+  ;; against the latest backup file of the selected file. But this
+  ;; isn't great if that backup file is in a dedicated backup
+  ;; directory far away from the original directory. So this advice
+  ;; only allows it to offer backup files from the same directory.
 
-  This advice doesn't actually modify the function's behavior in
-  any way. It simply overrides the interactive form."
-    (interactive
-     (let* ((newf (if (and buffer-file-name (file-exists-p buffer-file-name))
-                      (read-file-name
-                       (concat "Diff new file (default "
-                               (file-name-nondirectory buffer-file-name) "): ")
-                       nil buffer-file-name t)
-                    (read-file-name "Diff new file: " nil nil t)))
-            (oldf (file-newest-backup newf)))
-       (setq oldf (if (and oldf (file-exists-p oldf)
-                           (f-same? (f-dirname newf) (f-dirname oldf)))
-                      (read-file-name
-                       (concat "Diff original file (default "
-                               (file-name-nondirectory oldf) "): ")
-                       (file-name-directory oldf) oldf t)
-                    (read-file-name "Diff original file: "
-                                    (file-name-directory newf) nil t)))
-       (list oldf newf (diff-switches)))))
+  ;; This advice doesn't actually modify the function's behavior in
+  ;; any way. It simply overrides the interactive form."
+  ;;   (interactive
+  ;;    (let* ((newf (if (and buffer-file-name (file-exists-p buffer-file-name))
+  ;;                     (read-file-name
+  ;;                      (concat "Diff new file (default "
+  ;;                              (file-name-nondirectory buffer-file-name) "): ")
+  ;;                      nil buffer-file-name t)
+  ;;                   (read-file-name "Diff new file: " nil nil t)))
+  ;;           (oldf (file-newest-backup newf)))
+  ;;      (setq oldf (if (and oldf (file-exists-p oldf)
+  ;;                          (f-same? (f-dirname newf) (f-dirname oldf)))
+  ;;                     (read-file-name
+  ;;                      (concat "Diff original file (default "
+  ;;                              (file-name-nondirectory oldf) "): ")
+  ;;                      (file-name-directory oldf) oldf t)
+  ;;                   (read-file-name "Diff original file: "
+  ;;                                   (file-name-directory newf) nil t)))
+  ;;      (list oldf newf (diff-switches)))))
 #+END_SRC
 
-*** TODO Report this as a bug in Emacs
-This is actually an ido bug: see
-https://github.com/DarwinAwardWinner/ido-completing-read-plus/issues/165
-and https://debbugs.gnu.org/cgi/bugreport.cgi?bug=19412
+*** DONE Test the fix for this
+
+#+BEGIN_SRC emacs-lisp
+  (ignore-errors (load "~/.emacs.d/ido.el"))
+#+END_SRC
+
+*** DONE Get this merged into Emacs
+This is actually an ido bug: see:
+- [[https://github.com/DarwinAwardWinner/ido-completing-read-plus/issues/165][ido-cr+ bug #165]]
+- [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=19412][Emacs bug #19412]]
+- [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=28513][Emacs bug #28513]]
+
 ** Fix value of ~x-colors~
 For some reason the ~x-colors~ variable has started to get the wrong
 value, so I've copied the code to set it correctly out of
