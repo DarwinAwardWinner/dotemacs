@@ -2649,6 +2649,31 @@ unminimized. So we prevent ~suspend-frame~ from working on GUI frames.
       (apply orig-fun args)))
 #+END_SRC
 
+** Make ido file sorting respect ~ido-case-fold~
+
+#+BEGIN_SRC emacs-lisp
+  (define-advice ido-file-lessp (:around (orig-fun &rest args) respect-ido-case-fold)
+    "Make sure that Ido file sorting respects `ido-case-fold'."
+    (if ido-case-fold
+        (let ((args-lower (mapcar #'downcase args)))
+          ;; Compare case-insensitively, unless the file names differ
+          ;; only in case.
+          (if (apply #'string= args-lower)
+              (apply orig-fun args)
+            (apply orig-fun args-lower)))
+      (apply orig-fun args)))
+
+  (define-advice ido-file-extension-lessp (:around (orig-fun &rest args) respect-ido-case-fold)
+    "Make sure that Ido file sorting respects `ido-case-fold'."
+    (if ido-case-fold
+        (let ((args-lower (mapcar #'downcase args)))
+          ;; Compare case-insensitively, unless the file names differ
+          ;; only in case.
+          (if (apply #'string= args-lower)
+              (apply orig-fun args)
+            (apply orig-fun args-lower)))
+      (apply orig-fun args)))
+#+END_SRC
 
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
