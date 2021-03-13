@@ -155,6 +155,7 @@
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory 'first)
  '(ido-everywhere t)
+ '(ido-file-extensions-order '(".org" ".mkdn" ".md" t ".html" ".xml"))
  '(ido-mode 'both nil (ido))
  '(ido-read-file-name-non-ido '(dired-do-rename dired-create-directory))
  '(ido-save-directory-list-file "~/.emacs.d/persistence/ido.last")
