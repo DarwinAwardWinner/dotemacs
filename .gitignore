@@ -11,6 +11,7 @@
 TAGS
 .\#*
 \#*
+*~
 
 # My config puts lots of temporary files in this subdirectory
 /persistence
