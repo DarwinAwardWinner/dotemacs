@@ -685,7 +685,7 @@ http://editorconfig.org/
     ;; TRAMP causes problems
     (require 'tramp)
     :config
-    (setq ess-default-style 'OWN)
+    ;; (setq ess-default-style 'OWN)
     (customize-set-variable
      'ess-own-style-list
      ;; Based on (cdr (assoc 'C++ ess-style-alist))

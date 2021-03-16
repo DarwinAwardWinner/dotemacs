@@ -84,7 +84,7 @@
  '(enable-recursive-minibuffers t)
  '(ess-indent-with-fancy-comments nil)
  '(ess-r-pager "cat")
- '(ess-style 'RRR)
+ '(ess-style 'OWN)
  '(ess-use-flymake nil)
  '(ess-use-tracebug nil)
  '(esup-run-as-batch-p t)
