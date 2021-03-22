@@ -97,7 +97,6 @@
  '(global-git-gutter-mode t)
  '(global-hardhat-mode t)
  '(global-hl-line-mode t)
- '(global-pointback-mode t)
  '(global-undo-tree-mode t)
  '(hardhat-fullpath-protected-regexps
    '("~/\\.cask/" "~/\\.emacs\\.d/\\.cask/" "~/\\.emacs\\.d/elpa/" "~/\\.cpan/" "~/\\.cabal/" "~/perl5/perlbrew/" "~/\\.npm/" "~/\\.virtualenv/" "~/\\.virthualenv/" "~/\\.rvm/" "/[._]build/" "/\\.bzr/" "/\\.coverage/" "/\\.git/" "/\\.hg/" "/\\.rspec/" "/\\.sass-cache/" "/\\.svn/" "/_MTN/" "/_darcs/" "/CVS/" "/pm_to_blib/" "/RCS/" "/SCCS/" "/blib/" "/test_output/"))

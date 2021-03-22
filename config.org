@@ -1237,16 +1237,6 @@ Paradox provides an improved interface to package.el.
   (req-package paradox)
 #+END_SRC
 
-** pointback
-This package saves a per-window buffer point when switching buffers.
-This is mainly important when two windows are displaying the same
-buffer. Without this package, switching away and back to the buffer in
-one window will reset the point to its position in the other one.
-
-#+BEGIN_SRC emacs-lisp
-  (req-package pointback)
-#+END_SRC
-
 ** polymode
 This mode allows editing files with multiple major modes, such as
 Rmarkdown files, where some parts of the file are Markdown and others
