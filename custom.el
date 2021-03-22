@@ -271,7 +271,10 @@
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
-   '((eval add-hook 'after-save-hook
+   '((eval add-hook 'kill-buffer-hook
+           (apply-partially #'kill-new "")
+           nil t)
+     (eval add-hook 'after-save-hook
            (lambda nil
              (save-mark-and-excursion
                (deactivate-mark 'force)
