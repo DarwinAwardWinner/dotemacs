@@ -2698,11 +2698,13 @@ so we want to enabled them there.
 ** Use system trash bin
 
 #+BEGIN_SRC emacs-lisp
-  (when-system-type-match 'darwin
+  (when-system-type-match
+      (list 'darwin
+            '(regexp . "linux"))
     (defvar trash-command "trash")
 
     (defun system-move-file-to-trash (filename)
-      "Move file to OS X trash.
+      "Move file to OS X/linux trash.
 
   This assumes that a program called `trash' is in your $PATH and
   that this program will, when passed a single file path as an
