@@ -144,7 +144,7 @@
  '(highlight-stages-global-mode t)
  '(highlight-stages-highlight-priority 0)
  '(horizontal-scroll-bar-mode nil)
- '(icomplete-mode nil)
+ '(icomplete-mode t)
  '(ido-auto-merge-delay-time 9999)
  '(ido-case-fold t)
  '(ido-complete-space-or-hyphen-mode t)
