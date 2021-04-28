@@ -3,6 +3,16 @@
 ;; The purpose of this file is to ensure that the latest org-mode is
 ;; installed before loading config.org.
 
+;; See https://github.com/raxod502/straight.el/issues/742. Remove this
+;; advice once that pull request is merged into master.
+(define-advice straight--build-native-compile
+    (:around (oldfun &rest args) fix-native-comp-test)
+  "Properly disable native compilation on unsupported Emacsen."
+  (when (and (fboundp 'native-comp-available-p)
+             (native-comp-available-p)
+             (fboundp 'native-compile-async))
+    (apply oldfun args)))
+
 ;; Bootstrap straight package manager
 (defvar bootstrap-version)
 (let ((bootstrap-file
