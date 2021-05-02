@@ -271,7 +271,15 @@
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
-   '((eval add-hook 'kill-buffer-hook
+   '((checkdoc-symbol-words quote
+                            ("UNREPL" "unrepl" "stdout" "print-level" "print-length"))
+     (eval add-hook 'after-save-hook
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark 'force)
+               (org-export-to-file 'html "recipes.html" t)))
+           t t)
+     (eval add-hook 'kill-buffer-hook
            (apply-partially #'kill-new "")
            nil t)
      (eval add-hook 'after-save-hook
