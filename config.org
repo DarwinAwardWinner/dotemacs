@@ -1273,14 +1273,25 @@ do the right thing when hitting backspace on a top empty list entry.
     :hook (org-mode . turn-on-org-autolist-mode))
 #+END_SRC
 
-*** org-table-sticky-header
+*** TODO org-sticky-header
+This doesn't seem to work properly in Emacs 28.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package org-table-sticky-header
-    :require org
-    :init
-    (define-activator org-table-sticky-header-mode)
-    :hook (org-mode-hook . turn-on-org-table-sticky-header-mode))
+  ;; (req-package org-sticky-header
+  ;;   :require org
+  ;;   :init
+  ;;   (define-activator org-sticky-header-mode)
+  ;;   :hook (org-mode . turn-on-org-sticky-header-mode))
+#+END_SRC
+
+*** TODO org-table-sticky-header
+
+#+BEGIN_SRC emacs-lisp
+  ;; (req-package org-table-sticky-header
+  ;;   :require org
+  ;;   :init
+  ;;   (define-activator org-table-sticky-header-mode)
+  ;;   :hook (org-mode . turn-on-org-table-sticky-header-mode))
 #+END_SRC
 
 ** package-lint

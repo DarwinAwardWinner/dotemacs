@@ -221,6 +221,7 @@
  '(org-sidebar-tree-jump-fn 'org-sidebar-tree-jump-source)
  '(org-special-ctrl-a/e t)
  '(org-startup-folded t)
+ '(org-sticky-header-full-path 'reversed)
  '(org-superstar-headline-bullets-list '(9673 10040 10047))
  '(org-support-shift-select t)
  '(org-todo-keyword-faces
