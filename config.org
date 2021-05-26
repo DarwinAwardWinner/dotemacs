@@ -1056,7 +1056,6 @@ loads the appropriate Org-mode functionality. Then we tell the export
 process to use this file instead or the usual init file.
 #+BEGIN_SRC emacs-lisp
   (req-package org
-    :straight nil
     :commands org-clocking-buffer
     :config
     ;; Custom src-block behaviors
@@ -1181,14 +1180,32 @@ process to use this file instead or the usual init file.
            :map org-src-mode-map
            ("C-c C-'" . org-edit-src-exit)
            ("C-c C-c" . org-edit-src-exit)))
-  (req-package ox-extra
-    :straight nil
-    :require org
-    :config
-    (ox-extras-activate '(latex-header-blocks ignore-headlines)))
+
   ;; Need this loaded or Eldoc throws errors in org buffers. TODO: Could
   ;; probably be replaced with an autoload for `org-get-outline-path'
   (autoload 'org-get-outline-path "org-refile")
+#+END_SRC
+
+*** org-contrib
+This is now separated out from the main repo
+
+#+BEGIN_SRC emacs-lisp
+  (req-package org-contrib
+    :require org
+    :straight
+    (org-contrib
+     :type git
+     :flavor melpa
+     :host github
+     :repo "emacsmirror/org-contrib")
+    :defer t)
+  (req-package ox-extra
+    ;; No install, it's just to configure one of the packages in
+    ;; org-contrib
+    :require org-contrib
+    :straight nil
+    :config
+    (ox-extras-activate '(latex-header-blocks ignore-headlines)))
 #+END_SRC
 
 *** Stable-ish HTML anchors for org export

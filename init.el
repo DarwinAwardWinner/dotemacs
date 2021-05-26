@@ -29,7 +29,7 @@
 
 ;; (Try to) Ensure the latest org-mode is installed
 (condition-case nil
-    (straight-use-package 'org-plus-contrib)
+    (straight-use-package 'org)
   (error
    (display-warning 'init "Could not install latest org-mode. Falling back to bundled version.")))
 
