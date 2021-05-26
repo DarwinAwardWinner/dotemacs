@@ -1501,12 +1501,6 @@ regular ~python-mode~ is just fine.
   (req-package yaml-mode)
 #+END_SRC
 
-** prism
-
-#+BEGIN_SRC emacs-lisp
-  (req-package prism)
-#+END_SRC
-
 ** highlight-function-calls
 
 #+BEGIN_SRC emacs-lisp
