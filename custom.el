@@ -88,6 +88,8 @@
  '(ess-use-flymake nil)
  '(ess-use-tracebug nil)
  '(esup-run-as-batch-p t)
+ '(forge-database-file
+   "/Users/thompr21/.emacs.d/persistence/forge-database.sqlite")
  '(git-gutter+-diff-options '("--patience"))
  '(git-gutter+-hide-gutter t)
  '(github-clone-url-slot :clone-url)

@@ -1543,6 +1543,18 @@ regular ~python-mode~ is just fine.
     :hook ((lisp-interaction-mode emacs-lisp-mode) . turn-on-highlight-function-calls-mode))
 #+END_SRC
 
+** forge
+
+#+BEGIN_SRC emacs-lisp
+  ;; Straight fails to detect these dependencies, so we have to declare
+  ;; them here?
+  (req-package closql)
+  (req-package ghub)
+  (req-package forge
+    :require closql ghub)
+#+END_SRC
+
+
 * TODO More packages?
 This is the full value of ~package-selected-packages~ from
 =custom.el=. I need to go through and figure out which of these are
