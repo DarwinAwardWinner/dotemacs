@@ -203,8 +203,10 @@
  '(ns-command-modifier 'meta)
  '(org-adapt-indentation nil)
  '(org-agenda-files '("~/Sync/main.org" "~/Sync/sinai-onboarding.org"))
+ '(org-appear-autolinks t)
  '(org-bullets-bullet-list '("◉" "✸" "✿"))
  '(org-completion-use-ido t)
+ '(org-hide-emphasis-markers t)
  '(org-html-allow-name-attribute-in-anchors t)
  '(org-html-infojs-options
    '((path . "http://orgmode.org/org-info.js")

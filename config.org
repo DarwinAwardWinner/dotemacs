@@ -1299,6 +1299,24 @@ This doesn't seem to work properly in Emacs 28.
   ;;   :hook (org-mode . turn-on-org-table-sticky-header-mode))
 #+END_SRC
 
+*** org-appear
+
+#+BEGIN_SRC emacs-lisp
+  (req-package org-appear
+    :require org
+    :init
+    (define-activator org-appear-mode)
+    :hook (org-mode . turn-on-org-appear-mode)
+    :config
+    (define-advice org-fill-paragraph (:before (&rest args) fix-org-appear)
+      "Fill consistently regardless of org-appear element status."
+      (ignore-errors
+        (when org-appear-mode
+          (let ((current-elem (org-appear--current-elem)))
+            (when current-elem
+              (org-appear--hide-invisible current-elem)))))))
+#+END_SRC
+
 ** package-lint
 This is used to check packages for package.el compliance.
 
