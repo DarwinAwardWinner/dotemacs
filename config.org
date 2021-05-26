@@ -1144,7 +1144,9 @@ process to use this file instead or the usual init file.
     (progn
       (require 'gnus)
       (setq org-export-async-init-file (f-join user-emacs-directory ".temp-org-export-async-init.el"))
-      (let ((init-form
+      (let ((init-comment
+             "This minimal init file is used for quick initialization of important variables in org-mode async exports, without needing to load the full config.")
+            (init-form
              `(progn
                 ,@(cl-loop
                    for binding in
@@ -1168,7 +1170,10 @@ process to use this file instead or the usual init file.
                    collect (list 'setq sym (list 'quote (symbol-value sym))))
                 (require 'ox))))
         (with-temp-file org-export-async-init-file
-          (insert (gnus-pp-to-string init-form) "\n"))))
+          (emacs-lisp-mode)
+          (insert ";; " init-comment)
+          (fill-paragraph)
+          (insert "\n\n" (gnus-pp-to-string init-form) "\n"))))
     ;; Fix an error in Emacs 28
     (define-advice org-eldoc-documentation-function (:filter-args (&rest _ignored) ignore-args)
       "Make the function accept and ignore any arguments."
