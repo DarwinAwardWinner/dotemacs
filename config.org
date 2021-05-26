@@ -245,6 +245,24 @@ and restores it after evaluating body.
          (set-buffer-modified-p bmp))))
 #+END_SRC
 
+** Define a macro to make "turn-on-X-mode" functions
+
+
+#+BEGIN_SRC emacs-lisp
+  (defmacro define-activator (mode)
+    "Define `turn-on-MODE', a function that turns on MODE.
+
+  MODE is a symbol naming a function defined with
+  `define-minor-mode' or similar. Specifically, it should turn on
+  the mode when called with a positive number."
+    (let ((activator-name (intern (concat "turn-on-" (symbol-name mode))))
+          (docstring (format "Turn on `%s'." mode)))
+      `(defun ,activator-name ()
+         ,docstring
+         (interactive)
+         (,mode 1))))
+#+END_SRC
+
 ** Ensure persistence directory exists
 
 For any code that wants to save some state to disk (e.g. undo-tree), I
@@ -307,12 +325,10 @@ This allows TAB and S-TAB to increase and decrease the nesting depth
 #+BEGIN_SRC emacs-lisp
   (req-package adjust-parens
     :commands adjust-parens-mode
-    :init (progn
-            (defun turn-on-adjust-parens-mode ()
-              (adjust-parens-mode 1))
-            (dolist (hook '(lisp-interaction-mode-hook
-                            emacs-lisp-mode-hook))
-              (add-hook hook #'turn-on-adjust-parens-mode))))
+    :init
+    (define-activator adjust-parens-mode)
+    :hook ((lisp-interaction-mode emacs-lisp-mode) .
+           turn-on-adjust-parens-mode))
 #+END_SRC
 
 ** amx
@@ -374,16 +390,15 @@ highlight which window is currently active.
 #+BEGIN_SRC emacs-lisp
   (req-package autopair
     :config
-    (progn
-      (autopair-global-mode 1)
-      (setq autopair-skip-whitespace 'chomp)
-      (setq autopair-skip-criteria 'always)
-      (define-advice autopair--post-command-handler
-          (:after (&rest args) realign-org-tags)
-        "Re-align org-mode headline tags after doing autopair."
-        (when (and (eq major-mode 'org-mode)
-                   (org-at-heading-p))
-          (org-align-tags))))
+    (autopair-global-mode 1)
+    (setq autopair-skip-whitespace 'chomp)
+    (setq autopair-skip-criteria 'always)
+    (define-advice autopair--post-command-handler
+        (:after (&rest args) realign-org-tags)
+      "Re-align org-mode headline tags after doing autopair."
+      (when (and (eq major-mode 'org-mode)
+                 (org-at-heading-p))
+        (org-align-tags)))
     :defer nil)
 #+END_SRC
 
@@ -500,7 +515,7 @@ Replace ~perl-mode~ with ~cperl-mode~ in ~auto-mode-alist~ and
            (setcdr x 'cperl-mode)))
        interpreter-mode-alist))
     :bind (:map cperl-mode-map
-                ("C-c C-d". cperl-perldoc))
+                ("C-c C-d" . cperl-perldoc))
     :mode ("\\.[tT]\\'" . cperl-mode))
 #+END_SRC
 
@@ -831,21 +846,6 @@ This automatically inserts a header into any new elisp file.
           (apply orig-fun args)))))
 #+END_SRC
 
-** highlight-defined
-This mode highlights all defined Emacs Lisp symbols instead of just
-built-in ones.
-
-#+BEGIN_SRC emacs-lisp
-  (req-package highlight-defined
-    :init (progn
-            (defun turn-on-highlight-defined-mode ()
-              (highlight-defined-mode 1))
-            (add-hook 'emacs-lisp-mode-hook 'turn-on-highlight-defined-mode)
-            (add-hook 'lisp-interaction-mode-hook 'turn-on-highlight-defined-mode)
-            (eval-after-load 'ielm
-              (add-hook 'inferior-emacs-lisp-mode-hook 'turn-on-highlight-defined-mode))))
-#+END_SRC
-
 ** highlight-stages
 
 #+BEGIN_SRC emacs-lisp
@@ -862,7 +862,13 @@ This is needed for ~org-html-fontify-code~.
 ** ido-complete-space-or-hyphen
 
 #+BEGIN_SRC emacs-lisp
-  (req-package ido-complete-space-or-hyphen)
+  (req-package ido-complete-space-or-hyphen
+    :straight
+    (ido-complete-space-or-hyphen
+     :type git
+     :flavor melpa
+     :host github
+     :repo "DarwinAwardWinner/ido-complete-space-or-hyphen"))
 #+END_SRC
 
 ** ido-completing-read+
@@ -1164,6 +1170,10 @@ process to use this file instead or the usual init file.
                 (require 'ox))))
         (with-temp-file org-export-async-init-file
           (insert (gnus-pp-to-string init-form) "\n"))))
+    ;; Fix an error in Emacs 28
+    (define-advice org-eldoc-documentation-function (:filter-args (&rest _ignored) ignore-args)
+      "Make the function accept and ignore any arguments."
+      nil)
     :bind (("C-c l" . org-store-link)
            ("C-c a" . org-agenda)
            :map org-mode-map
@@ -1182,7 +1192,7 @@ process to use this file instead or the usual init file.
 #+END_SRC
 
 *** Stable-ish HTML anchors for org export
-This code makes the anchors IDs generated when exporting org files to
+This code makes the anchor IDs generated when exporting org files to
 HTML less random. It sets the seed to a specific value before
 executing the export, which means that it should always generate the
 same anchors IDs given the same set of headlines.
@@ -1220,7 +1230,40 @@ same anchors IDs given the same set of headlines.
 
 #+BEGIN_SRC emacs-lisp
   (req-package org-superstar
+    :require org
     :init (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+#+END_SRC
+
+*** org-sidebar
+
+#+BEGIN_SRC emacs-lisp
+  (req-package org-sidebar
+    :require org
+    :bind (:map org-mode-map
+                ("C-c t" . org-sidebar-tree-toggle)))
+#+END_SRC
+
+*** TODO org-autolist
+
+Need to fork this package and apply some fixes from forks, and make it
+do the right thing when hitting backspace on a top empty list entry.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package org-autolist
+    :require org
+    :config
+    (define-activator org-autolist-mode)
+    :hook (org-mode . turn-on-org-autolist-mode))
+#+END_SRC
+
+*** org-table-sticky-header
+
+#+BEGIN_SRC emacs-lisp
+  (req-package org-table-sticky-header
+    :require org
+    :init
+    (define-activator org-table-sticky-header-mode)
+    :hook (org-mode-hook . turn-on-org-table-sticky-header-mode))
 #+END_SRC
 
 ** package-lint
@@ -1456,6 +1499,21 @@ regular ~python-mode~ is just fine.
 
 #+BEGIN_SRC emacs-lisp
   (req-package yaml-mode)
+#+END_SRC
+
+** prism
+
+#+BEGIN_SRC emacs-lisp
+  (req-package prism)
+#+END_SRC
+
+** highlight-function-calls
+
+#+BEGIN_SRC emacs-lisp
+  (req-package highlight-function-calls
+    :init
+    (define-activator highlight-function-calls-mode)
+    :hook ((lisp-interaction-mode emacs-lisp-mode) . turn-on-highlight-function-calls-mode))
 #+END_SRC
 
 * TODO More packages?

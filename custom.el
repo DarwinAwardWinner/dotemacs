@@ -141,6 +141,7 @@
         prepend)))
      (emacs-lisp-mode . "\\(\\\\\\(u[[:xdigit:]]\\{4\\}\\|U00[[:xdigit:]]\\{6\\}\\|x[[:xdigit:]]+\\|[0-7]+\\|.\\)\\)")
      (lisp-interaction-mode . "\\(\\\\\\(u[[:xdigit:]]\\{4\\}\\|U00[[:xdigit:]]\\{6\\}\\|x[[:xdigit:]]+\\|[0-7]+\\|.\\)\\)")))
+ '(highlight-function-calls-not t)
  '(highlight-stages-global-mode t)
  '(highlight-stages-highlight-priority 0)
  '(horizontal-scroll-bar-mode nil)
@@ -194,6 +195,7 @@
  '(mouse-wheel-scroll-amount '(5 ((shift) . 1) ((control))))
  '(nameless-affect-indentation-and-filling nil)
  '(nameless-private-prefix t)
+ '(native-comp-async-report-warnings-errors 'silent)
  '(ns-alternate-modifier 'super)
  '(ns-auto-hide-menu-bar nil)
  '(ns-command-modifier 'meta)
@@ -216,6 +218,7 @@
      (home . :html-link-home)))
  '(org-html-use-infojs 'when-configured)
  '(org-image-actual-width '(400))
+ '(org-sidebar-tree-jump-fn 'org-sidebar-tree-jump-source)
  '(org-special-ctrl-a/e t)
  '(org-startup-folded t)
  '(org-superstar-headline-bullets-list '(9673 10040 10047))
@@ -271,7 +274,35 @@
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
-   '((checkdoc-symbol-words quote
+   '((eval when
+           (and
+            (buffer-file-name)
+            (not
+             (file-directory-p
+              (buffer-file-name)))
+            (string-match-p "^[^.]"
+                            (buffer-file-name)))
+           (unless
+               (featurep 'package-build)
+             (let
+                 ((load-path
+                   (cons "../package-build" load-path)))
+               (require 'package-build)))
+           (unless
+               (derived-mode-p 'emacs-lisp-mode)
+             (emacs-lisp-mode))
+           (package-build-minor-mode)
+           (setq-local flycheck-checkers nil)
+           (set
+            (make-local-variable 'package-build-working-dir)
+            (expand-file-name "../working/"))
+           (set
+            (make-local-variable 'package-build-archive-dir)
+            (expand-file-name "../packages/"))
+           (set
+            (make-local-variable 'package-build-recipes-dir)
+            default-directory))
+     (checkdoc-symbol-words quote
                             ("UNREPL" "unrepl" "stdout" "print-level" "print-length"))
      (eval add-hook 'after-save-hook
            (lambda nil
@@ -481,6 +512,8 @@
  '(highlight-defined-builtin-function-name-face ((t (:inherit font-lock-function-name-face))))
  '(highlight-defined-function-name-face ((t (:inherit font-lock-function-name-face :foreground "blue4"))))
  '(highlight-defined-macro-name-face ((t (:inherit highlight-defined-function-name-face :underline t))))
+ '(highlight-function-calls--not-face ((t (:inherit (font-lock-negation-char-face font-lock-keyword-face)))))
+ '(highlight-function-calls-face ((t (:inherit font-lock-function-name-face :foreground "blue4" :underline t))))
  '(hl-line ((t (:background "azure"))))
  '(indent-guide-face ((t (:foreground "gray" :slant normal))))
  '(magit-item-highlight ((t nil)))
