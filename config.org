@@ -1264,19 +1264,6 @@ same anchors IDs given the same set of headlines.
                 ("C-c t" . org-sidebar-tree-toggle)))
 #+END_SRC
 
-*** TODO org-autolist
-
-Need to fork this package and apply some fixes from forks, and make it
-do the right thing when hitting backspace on a top empty list entry.
-
-#+BEGIN_SRC emacs-lisp
-  (req-package org-autolist
-    :require org
-    :config
-    (define-activator org-autolist-mode)
-    :hook (org-mode . turn-on-org-autolist-mode))
-#+END_SRC
-
 *** TODO org-sticky-header
 This doesn't seem to work properly in Emacs 28.
 
