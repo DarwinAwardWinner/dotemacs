@@ -1305,15 +1305,37 @@ This doesn't seem to work properly in Emacs 28.
     :require org
     :init
     (define-activator org-appear-mode)
-    :hook (org-mode . turn-on-org-appear-mode)
+    ;; Disabled by default for now because it's quite glitchy.
+    ;; :hook (org-mode . turn-on-org-appear-mode)
     :config
-    (define-advice org-fill-paragraph (:before (&rest args) fix-org-appear)
-      "Fill consistently regardless of org-appear element status."
+    ;; Don't allow this function to throw errors, because that's a no-no
+    ;; in `post-command-hook'.
+    (define-advice org-appear--post-cmd (:around (orig-fun &rest args) demote-errors)
+      (with-demoted-errors "Error during `org-appear--post-cmd': %S"
+        (apply orig-fun args)))
+    ;; Hide things that org-appear has made visible before running
+    ;; certain functions that rely on those things being hidden.
+    (defun org-appear--hide-current-elem ()
       (ignore-errors
         (when org-appear-mode
           (let ((current-elem (org-appear--current-elem)))
             (when current-elem
-              (org-appear--hide-invisible current-elem)))))))
+              (org-appear--hide-invisible current-elem))))))
+    (define-advice org-appear-mode (:after (&rest args) set-pre-command-hook)
+      (if org-appear-mode
+          (add-hook 'pre-command-hook #'org-appear--hide-current-elem nil t)
+        (remove-hook 'pre-command-hook #'org-appear--hide-current-elem t)))
+    ;; (defmacro org-appear-hide-before (fun)
+    ;;   `(define-advice ,fun (:before (&rest args) org-appear-hide-before)
+    ;;      "Fill consistently regardless of org-appear element status."
+    ;;      (org-appear--hide-current-elem)))
+    ;; (org-appear-hide-before org-fill-paragraph)
+    ;; (org-appear-hide-before org-table-align)
+    ;; (org-appear-hide-before org-ctrl-c-ctrl-c)
+    ;; (org-appear-hide-before org-table-justify-field-maybe)
+    )
+
+  ;; Error during ‘org-appear--post-cmd’: (user-error "Cannot move further up") [2 times]
 #+END_SRC
 
 ** package-lint

@@ -200,7 +200,7 @@
  '(ns-command-modifier 'meta)
  '(org-adapt-indentation nil)
  '(org-agenda-files '("~/Sync/main.org" "~/Sync/sinai-onboarding.org"))
- '(org-appear-autolinks t)
+ '(org-appear-autolinks nil)
  '(org-bullets-bullet-list '("◉" "✸" "✿"))
  '(org-completion-use-ido t)
  '(org-hide-emphasis-markers t)
