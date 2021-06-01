@@ -7,8 +7,7 @@
  '(S-pager "cat")
  '(Vhl/highlight-zero-width-ranges t)
  '(abbrev-file-name "~/.emacs.d/persistence/abbrev_defs")
- '(ac-comphist-file "/Users/ryan/.emacs.d/persistence/ac-comphist.dat")
- '(ack-and-a-half-executable "/Users/ryan/perl5/perlbrew/perls/perl-5.16.3/bin/ack")
+ '(ac-comphist-file "~/.emacs.d/persistence/ac-comphist.dat")
  '(amx-mode t)
  '(amx-save-file "~/.emacs.d/persistence/amx-items")
  '(auth-source-save-behavior nil)
@@ -88,8 +87,7 @@
  '(ess-use-flymake nil)
  '(ess-use-tracebug nil)
  '(esup-run-as-batch-p t)
- '(forge-database-file
-   "/Users/thompr21/.emacs.d/persistence/forge-database.sqlite")
+ '(forge-database-file "~/.emacs.d/persistence/forge-database.sqlite")
  '(git-gutter+-diff-options '("--patience"))
  '(git-gutter+-hide-gutter t)
  '(github-clone-url-slot :clone-url)
@@ -152,7 +150,7 @@
  '(ido-case-fold t)
  '(ido-complete-space-or-hyphen-mode t)
  '(ido-confirm-unique-completion t)
- '(ido-cr+-function-blacklist
+ '(ido-cr+-disable-list
    '(read-file-name-internal read-buffer todo-add-category gnus-emacs-completing-read gnus-iswitchb-completing-read grep-read-files magit-builtin-completing-read ess-completing-read Info-read-node-name tmm-prompt dired-do-rename org-tags-completion-function org-olpath-completing-read))
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory 'first)
@@ -180,7 +178,6 @@
  '(magit-completing-read-function 'magit-ido-completing-read)
  '(magit-diff-refine-hunk t)
  '(magit-popup-use-prefix-argument 'default)
- '(magit-repo-dirs '("/Users/ryan/Projects"))
  '(magit-status-buffer-switch-function 'switch-to-buffer)
  '(make-header-hook
    '(header-title header-completely-blank header-copyright header-completely-blank header-file-name header-author header-creation-date header-version header-pkg-requires header-url header-keywords header-completely-blank header-not-part-of-emacs header-completely-blank header-end-line header-commentary header-completely-blank header-blank header-completely-blank header-end-line header-free-software header-code header-provide-statement header-eof))
@@ -269,13 +266,6 @@
           (emacs-lisp-mode inferior-lisp-mode lisp-mode scheme-mode))
      (8709 nil "\\<nil\\>"
            (emacs-lisp-mode inferior-lisp-mode lisp-mode scheme-mode))))
- '(projectile-cache-file "/Users/ryan/.emacs.d/persistence/projectile.cache")
- '(projectile-enable-idle-timer t)
- '(projectile-global-mode nil)
- '(projectile-globally-ignored-modes
-   '("erc-mode" "help-mode" "completion-list-mode" "Buffer-menu-mode" "gnus-.*-mode" "occur-mode" "apropos-mode"))
- '(projectile-known-projects-file "/Users/ryan/.emacs.d/persistence/projectile-bookmarks.eld")
- '(projectile-mode-line '(:eval (format " Proj[%s]" (projectile-project-name))))
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
@@ -480,7 +470,7 @@
    '(Custom-mode w3-mode Man-mode view-mode help-mode apropos-mode completion-list-mode dired-mode ibuffer-mode bookmark-bmenu-mode ess-help-mode compilation-mode vc-dir-mode vc-hg-log-view-mode occur-mode diff-mode magit-key-mode magit-log-edit-mode ess-help-mode))
  '(tool-bar-mode nil)
  '(tramp-default-method "sftp")
- '(tramp-persistency-file-name "/Users/ryan/.emacs.d/persistence/tramp")
+ '(tramp-persistency-file-name "~/.emacs.d/persistence/tramp")
  '(tramp-remote-path
    '(tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin"))
  '(tramp-use-ssh-controlmaster-options nil)
