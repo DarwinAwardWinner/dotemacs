@@ -1580,6 +1580,12 @@ regular ~python-mode~ is just fine.
     :require closql ghub)
 #+END_SRC
 
+** crosshairs
+
+#+BEGIN_SRC emacs-lisp
+  ;; (req-package crosshairs)
+#+END_SRC
+
 
 * TODO More packages?
 These are some packages in ~package-selected-packages~ as of the last
@@ -1622,34 +1628,14 @@ are incidental and which I actually wanted but forgot to configure.
 - lv
 - mac-pseudo-daemon
 - macrostep
-- magit
-- magit-filenotify
 - magit-find-file
-- magit-gh-pulls
-- magit-popup
-- magithub
-- markdown-mode
 - md-readme
-- memoize
-- mode-line-bell
 - multiple-cursors
 - nameless
-- neotreenginx-mode
-- noflet
-- occur-context-resize
-- package-build
-- package-lint
-- pallet
-- paradox
 - pcre2el
-- pdf-tools
-- php-mode
-- pkg-info
-- pointback
 - py-isort
 - pyenv-mode
 - restart-emacs
-- reveal-in-osx-finder
 - scratch-ext
 - shrink-whitespace
 - shut-up
