@@ -682,14 +682,6 @@ http://editorconfig.org/
     :config (editorconfig-mode 1))
 #+END_SRC
 
-** TODO elsa
-
-#+BEGIN_SRC emacs-lisp
-  ;; (req-package elsa)
-  ;; (req-package flycheck-elsa
-  ;;   :require flycheck elsa)
-#+END_SRC
-
 ** ess
 
 #+BEGIN_SRC emacs-lisp
@@ -843,6 +835,15 @@ This automatically inserts a header into any new elisp file.
         "Don't set the buffer modified flag."
         (preserve-buffer-modified-p
           (apply orig-fun args)))))
+#+END_SRC
+
+** highlight-function-calls
+
+#+BEGIN_SRC emacs-lisp
+  (req-package highlight-function-calls
+    :init
+    (define-activator highlight-function-calls-mode)
+    :hook ((lisp-interaction-mode emacs-lisp-mode) . turn-on-highlight-function-calls-mode))
 #+END_SRC
 
 ** highlight-stages
@@ -1560,16 +1561,15 @@ regular ~python-mode~ is just fine.
   (req-package yaml-mode)
 #+END_SRC
 
-** highlight-function-calls
+** TODO elsa
 
 #+BEGIN_SRC emacs-lisp
-  (req-package highlight-function-calls
-    :init
-    (define-activator highlight-function-calls-mode)
-    :hook ((lisp-interaction-mode emacs-lisp-mode) . turn-on-highlight-function-calls-mode))
+  ;; (req-package elsa)
+  ;; (req-package flycheck-elsa
+  ;;   :require flycheck elsa)
 #+END_SRC
 
-** forge
+** TODO forge
 
 #+BEGIN_SRC emacs-lisp
   ;; Straight fails to detect these dependencies, so we have to declare
