@@ -1038,7 +1038,7 @@ and minus keys (and 0 key to reset)
 
 ** org-mode
 
-*** Main org config
+*** TODO Main org config
 The default implementation of the ~org-in-src-block-p~ function is
 broken and always returns nil, so we reimplement it correctly here. We
 also add a function to insert a new src block into an org-mode buffer.
@@ -1054,6 +1054,9 @@ Org export job, we generate a minimal init file that just sets the
 ~load-path~ from this Emacs, disables backup & lock files, and then
 loads the appropriate Org-mode functionality. Then we tell the export
 process to use this file instead or the usual init file.
+
+TODO: Advise ~org-store-link~ to prompt for a CUSTOM_ID property when
+used on a headline without one.
 #+BEGIN_SRC emacs-lisp
   (req-package org
     :commands org-clocking-buffer
