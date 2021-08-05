@@ -1144,39 +1144,40 @@ used on a headline without one.
        ;; This must be a lambda so it is self-contained
        :export (lambda (link desc format) (or desc link))))
     ;; Use a minimal init file for org exporting
-    (progn
-      (require 'gnus)
-      (setq org-export-async-init-file (f-join user-emacs-directory ".temp-org-export-async-init.el"))
-      (let ((init-comment
-             "This minimal init file is used for quick initialization of important variables in org-mode async exports, without needing to load the full config.")
-            (init-form
-             `(progn
-                ,@(cl-loop
-                   for binding in
-                   '(load-path
-                     (create-lockfiles nil)
-                     (make-backup-files nil)
-                     org-emphasis-regexp-components)
-                   if (symbolp binding)
-                   collect (list 'setq binding (list 'quote (symbol-value binding)))
-                   else
-                   collect (cons 'setq binding))
-                ;; Bring all customized org variables along
-                ,@(cl-loop
-                   for sym being the symbols
-                   for symname = (symbol-name sym)
-                   if (and (s-matches-p "^org\\(?:tbl\\)?-" (symbol-name sym))
-                           (eq sym (indirect-variable sym))
-                           (custom-variable-p sym)
-                           (not (eq 'standard (custom-variable-state
-                                               sym (symbol-value sym)))))
-                   collect (list 'setq sym (list 'quote (symbol-value sym))))
-                (require 'ox))))
-        (with-temp-file org-export-async-init-file
-          (emacs-lisp-mode)
-          (insert ";; " init-comment)
-          (fill-paragraph)
-          (insert "\n\n" (gnus-pp-to-string init-form) "\n"))))
+    (eval-after-init
+     '(progn
+        (require 'gnus)
+        (setq org-export-async-init-file (f-join user-emacs-directory ".temp-org-export-async-init.el"))
+        (let ((init-comment
+               "This minimal init file is used for quick initialization of important variables in org-mode async exports, without needing to load the full config.")
+              (init-form
+               `(progn
+                  ,@(cl-loop
+                     for binding in
+                     '(load-path
+                       (create-lockfiles nil)
+                       (make-backup-files nil)
+                       org-emphasis-regexp-components)
+                     if (symbolp binding)
+                     collect (list 'setq binding (list 'quote (symbol-value binding)))
+                     else
+                     collect (cons 'setq binding))
+                  ;; Bring all customized org variables along
+                  ,@(cl-loop
+                     for sym being the symbols
+                     for symname = (symbol-name sym)
+                     if (and (s-matches-p "^org\\(?:tbl\\)?-" (symbol-name sym))
+                             (eq sym (indirect-variable sym))
+                             (custom-variable-p sym)
+                             (not (eq 'standard (custom-variable-state
+                                                 sym (symbol-value sym)))))
+                     collect (list 'setq sym (list 'quote (symbol-value sym))))
+                  (require 'ox))))
+          (with-temp-file org-export-async-init-file
+            (emacs-lisp-mode)
+            (insert ";; " init-comment)
+            (fill-paragraph)
+            (insert "\n\n" (gnus-pp-to-string init-form) "\n")))))
     ;; Fix an error in Emacs 28
     (define-advice org-eldoc-documentation-function (:filter-args (&rest _ignored) ignore-args)
       "Make the function accept and ignore any arguments."
