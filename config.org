@@ -1834,13 +1834,32 @@ This allows TRAMP to use sudo on remote hosts.
   (add-to-list 'tramp-default-proxies-alist
                (list (regexp-quote (system-name)) nil nil))
 #+END_SRC
-
-*** Tramp remote backup files
-This ensures that backup files for remote files are created on the
-same host as the file.
+*** Disable TRAMP backups entirely for su/sudo
+See [[https://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-and-Backup.html][this page]] for infromation on why this is needed for security.
 
 #+BEGIN_SRC emacs-lisp
-  (setq tramp-backup-directory-alist backup-directory-alist)
+  (defvar tramp-backup-forbidden-methods
+    '("su" "sudo")
+    "TRAMP methods for which backup files should be forbidden")
+
+  (defun backup-enable-predicate-custom (name)
+    "See `tramp-backup-forbidden-methods'"
+    (and (normal-backup-enable-predicate name)
+         (not
+          (let ((method (file-remote-p name 'method)))
+            (when (stringp method)
+              (member method tramp-backup-forbidden-methods))))))
+
+  (setq backup-enable-predicate #'backup-enable-predicate-custom)
+#+END_SRC
+
+*** Make TRAMP backup files on local filesystem
+This ensures that backup files for TRAMP remote files are created on
+the local machine. This is safe because backup files for su/sudo files
+are disabled entirely above.
+
+#+BEGIN_SRC emacs-lisp
+  (setq tramp-backup-directory-alist nil)
 #+END_SRC
 
 ** Use conf-mode for .gitignore files
