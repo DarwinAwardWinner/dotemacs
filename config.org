@@ -1330,6 +1330,13 @@ This doesn't seem to work properly in Emacs 28.
   ;; Error during ‘org-appear--post-cmd’: (user-error "Cannot move further up") [2 times]
 #+END_SRC
 
+*** org-special-block-extras
+
+#+BEGIN_SRC emacs-lisp
+  (req-package org-special-block-extras)
+#+END_SRC
+
+
 ** package-lint
 This is used to check packages for package.el compliance.
 
