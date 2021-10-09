@@ -2707,6 +2707,25 @@ unminimized. So we prevent ~suspend-frame~ from working on GUI frames.
       (apply orig-fun args)))
 #+END_SRC
 
+** Prevent ~face-at-point~ from always selecting hl-line
+~hl-line-mode~ means that the last-applied face at point will always be
+hl-line, which isn't very useful. This adds advice to transiently
+un-highlight the current line before running ~face-at-point~, ensuring
+that it returns whatever it /would/ have returned if hl-line-mode was
+disabled.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'hl-line)
+  (define-advice face-at-point (:before (&rest _ignored) avoid-hl-line)
+    (ignore-errors
+      (when hl-line-mode
+        (hl-line-unhighlight)))
+    (ignore-errors
+      (when global-hl-line-mode
+        (global-hl-line-unhighlight))))
+#+END_SRC
+
+
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
