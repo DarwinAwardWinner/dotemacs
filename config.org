@@ -1333,7 +1333,8 @@ This doesn't seem to work properly in Emacs 28.
 *** org-special-block-extras
 
 #+BEGIN_SRC emacs-lisp
-  (req-package org-special-block-extras)
+  (when (version<= "27.1" emacs-version)
+    (req-package org-special-block-extras))
 #+END_SRC
 
 
