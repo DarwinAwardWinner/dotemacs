@@ -1,7 +1,23 @@
-;; -*- lexical-binding: t -*-
+;;; init.el ---  -*- lexical-binding: t -*-
+
+;; Copyright (C) 2014 Ryan C. Thompson
+
+;; Filename: early-init.el
+;; Author: Ryan C. Thompson
+;; Created: Sun Jul 20 12:26:05 2014 (-0700)
+
+;; This file is NOT part of GNU Emacs.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Commentary:
 
 ;; The purpose of this file is to ensure that the latest org-mode is
 ;; installed before loading config.org.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Code:
 
 ;; See https://github.com/raxod502/straight.el/issues/742. Remove this
 ;; advice once that pull request is merged into master.
@@ -38,3 +54,5 @@
   ;; Note: My config file does NOT work if you compile it, for some
   ;; reason.
   (org-babel-load-file (expand-file-name "config.org" user-emacs-directory) nil))
+
+;;; init.el ends here

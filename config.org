@@ -59,6 +59,12 @@ Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https:
 manager]], which it uses to install Org mode. Here we complete the setup
 so Straight can be used to manage all pacakges below.
 
+* Early Init File
+The [[file:early-init.el::;;; early-init.el --- -*- lexical-binding: t -*-][=early-init.el=]] file contains any code that must be executed early
+during Emacs' startup process. Right now, it just contains code
+recommended by the Straight package manager for turning off
+package.el.
+
 * Enable Lexical Binding
 In order to enable lexical binding in the config, this must be the
 first line of Emacs Lisp:
