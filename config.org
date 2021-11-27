@@ -61,9 +61,16 @@ so Straight can be used to manage all pacakges below.
 
 * Early Init File
 The [[file:early-init.el::;;; early-init.el --- -*- lexical-binding: t -*-][=early-init.el=]] file contains any code that must be executed early
-during Emacs' startup process. Right now, it just contains code
-recommended by the Straight package manager for turning off
-package.el.
+during Emacs' startup process.
+
+** Disable garbage collection during init
+I am confident that Emacs will not run out of memory during init, so
+there's no point performing many small GC passes during init. Instead,
+GC is disabled during init and re-enabled afterward, resulting in one
+big GC pass at the end.
+
+** Disable package.el in favor of Straight
+This is recommended by the Straight package manager.
 
 * Enable Lexical Binding
 In order to enable lexical binding in the config, this must be the
@@ -231,6 +238,8 @@ initialization.
   to `(eval FORM)'."
     (if after-init-time
         (eval form)
+      ;; We don't use `add-hook' here because we want to add the form
+      ;; unconditionally, even if it is a duplicate.
       (add-to-list 'after-init-hook `(lambda () ,form))))
 #+END_SRC
 
