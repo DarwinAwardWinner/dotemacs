@@ -1144,40 +1144,61 @@ used on a headline without one.
        ;; This must be a lambda so it is self-contained
        :export (lambda (link desc format) (or desc link))))
     ;; Use a minimal init file for org exporting
+    (defun setup-org-export-async-init-file ()
+      (interactive)
+      (require 'gnus)
+      (setq org-export-async-init-file (f-join user-emacs-directory ".temp-org-export-async-init.el"))
+      (let ((init-comment
+             "This auto-generated minimal init file is used for quick initialization of important variables in org-mode async exports, without needing to load the full config.")
+            (init-form
+             `(progn
+                ;; Set some important variables
+                ,@(cl-loop
+                   for binding in
+                   '((gc-cons-percentage 0.6) ; Disable GC for batch script
+                     load-path
+                     (create-lockfiles nil)
+                     (make-backup-files nil)
+                     org-emphasis-regexp-components)
+                   if (symbolp binding)
+                   collect (list 'setq binding (list 'quote (symbol-value binding)))
+                   else
+                   collect (cons 'setq binding))
+                ;; Bring all customized org variables along
+                ,@(cl-loop
+                   for sym being the symbols
+                   for symname = (symbol-name sym)
+                   if (and (eq sym (indirect-variable sym))
+                           (custom-variable-p sym)
+                           (s-matches-p "^org\\(?:tbl\\)?-" (symbol-name sym))
+                           (not (eq 'standard (custom-variable-state
+                                               sym (symbol-value sym)))))
+                   collect (list 'setq sym (list 'quote (symbol-value sym))))
+                ;; (Try to) Load any org packages currently loaded in
+                ;; the parent
+                ,@(cl-loop
+                   for feat in features
+                   if (s-matches-p "^org\\(?:tbl\\)?-" (symbol-name feat))
+                   collect (list 'require (list 'quote feat) nil t))
+                ;; Try to copy any org-related autoloads from the parent
+                ,@(cl-loop
+                   for sym being the symbols
+                   for symname = (symbol-name sym)
+                   for symfun = (symbol-function sym)
+                   if (and (autoloadp symfun)
+                           (s-matches-p "^org\\(?:tbl\\)?-" (symbol-name sym)))
+                   collect (list 'fset (list 'quote sym) symfun))
+                ;; Load org export package, since we're definitely
+                ;; going to be using that.
+                (require 'ox))))
+        (with-temp-file org-export-async-init-file
+          (emacs-lisp-mode)
+          (insert ";; " init-comment)
+          (fill-paragraph)
+          (insert "\n\n" (gnus-pp-to-string init-form) "\n")
+          (add-file-local-variable 'eval '(auto-revert-mode 1)))))
     (eval-after-init
-     '(progn
-        (require 'gnus)
-        (setq org-export-async-init-file (f-join user-emacs-directory ".temp-org-export-async-init.el"))
-        (let ((init-comment
-               "This minimal init file is used for quick initialization of important variables in org-mode async exports, without needing to load the full config.")
-              (init-form
-               `(progn
-                  ,@(cl-loop
-                     for binding in
-                     '(load-path
-                       (create-lockfiles nil)
-                       (make-backup-files nil)
-                       org-emphasis-regexp-components)
-                     if (symbolp binding)
-                     collect (list 'setq binding (list 'quote (symbol-value binding)))
-                     else
-                     collect (cons 'setq binding))
-                  ;; Bring all customized org variables along
-                  ,@(cl-loop
-                     for sym being the symbols
-                     for symname = (symbol-name sym)
-                     if (and (s-matches-p "^org\\(?:tbl\\)?-" (symbol-name sym))
-                             (eq sym (indirect-variable sym))
-                             (custom-variable-p sym)
-                             (not (eq 'standard (custom-variable-state
-                                                 sym (symbol-value sym)))))
-                     collect (list 'setq sym (list 'quote (symbol-value sym))))
-                  (require 'ox))))
-          (with-temp-file org-export-async-init-file
-            (emacs-lisp-mode)
-            (insert ";; " init-comment)
-            (fill-paragraph)
-            (insert "\n\n" (gnus-pp-to-string init-form) "\n")))))
+     '(setup-org-export-async-init-file))
     ;; Fix an error in Emacs 28
     (define-advice org-eldoc-documentation-function (:filter-args (&rest _ignored) ignore-args)
       "Make the function accept and ignore any arguments."
