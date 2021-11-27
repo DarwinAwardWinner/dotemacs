@@ -2755,7 +2755,8 @@ unminimized. So we prevent ~suspend-frame~ from working on GUI frames.
 hl-line, which isn't very useful. This adds advice to transiently
 un-highlight the current line before running ~face-at-point~, ensuring
 that it returns whatever it /would/ have returned if hl-line-mode was
-disabled.
+disabled. There is no need to re-highlight the line, as the line
+highlght is always re-applied after each command anyway.
 
 #+BEGIN_SRC emacs-lisp
   (require 'hl-line)
@@ -2768,6 +2769,27 @@ disabled.
         (global-hl-line-unhighlight))))
 #+END_SRC
 
+** Replace ~just-one-space~ with ~cycle-spacing~
+The ~cycle-spacing~ command encompasses the functionality of
+~just-one-space~ and several other commands, so we remap ~just-one-space~
+(~M-SPC~ by default) to it.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map [remap just-one-space] 'cycle-spacing)
+#+END_SRC
+
+** Replace ~upcase-word~ with ~upcase-dwim~, etc.
+The DWIM versions are equivalent to the ~-word~ versions except that if
+the region is active, they operate on the entire region instead.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map [remap upcase-word] #'upcase-dwim)
+  (define-key global-map [remap downcase-word] #'downcase-dwim)
+  (define-key global-map [remap capitlize-word] #'capitlize-dwim)
+#+END_SRC
+
+Note that this frees up  ~C-x C-u~ and ~C-x C-l~, the bindings for
+~up/downcase-region~ respectively.
 
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
