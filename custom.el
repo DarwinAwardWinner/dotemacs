@@ -266,6 +266,7 @@
           (emacs-lisp-mode inferior-lisp-mode lisp-mode scheme-mode))
      (8709 nil "\\<nil\\>"
            (emacs-lisp-mode inferior-lisp-mode lisp-mode scheme-mode))))
+ '(recentf-mode t)
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
@@ -474,6 +475,7 @@
  '(tramp-remote-path
    '(tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin"))
  '(tramp-use-ssh-controlmaster-options nil)
+ '(truncate-lines t)
  '(undo-tree-auto-save-history t)
  '(undo-tree-history-directory-alist '(("." . "~/.emacs.d/persistence/undo-tree")))
  '(undo-tree-incompatible-major-modes '(term-mode eshell-mode))
@@ -512,6 +514,7 @@
  '(hl-line ((t (:background "azure"))))
  '(indent-guide-face ((t (:foreground "gray" :slant normal))))
  '(magit-item-highlight ((t nil)))
+ '(org-superstar-leading ((t (:foreground "gray95" :inherit default))))
  '(popup-face ((t (:inherit default :background "lightgray" :foreground "black")))))
 
 (put 'scroll-left 'disabled nil)
