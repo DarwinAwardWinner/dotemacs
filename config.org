@@ -490,6 +490,12 @@ Emacs Lisp packages.
   (req-package cask-mode)
 #+END_SRC
 
+** centered-cursor-mode
+
+#+BEGIN_SRC emacs-lisp
+  (req-package centered-cursor-mode)
+#+END_SRC
+
 ** cl-lib
 
 #+BEGIN_SRC emacs-lisp
