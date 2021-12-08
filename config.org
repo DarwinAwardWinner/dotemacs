@@ -2890,11 +2890,12 @@ standard Ubuntu orange selection color.
 
 #+BEGIN_SRC emacs-lisp
   (require 'frame)
-  (defun fix-gtk-region-colors (&optional frame)
-    "Set reasonable region colors on Ubuntu
+  ;; Lighter Ubuntu orange: #ffb499
+  ;; Lighter GNOME blue: #88beff
+  (defvar gtk-region-custom-color "#88beff")
 
-  On Ubuntu, the default region color is way too light. We instead
-  choose a desaturated Ubuntu Orange of an appropriate shade."
+  (defun fix-gtk-region-colors (&optional frame)
+    "Set reasonable region colors on GNOME"
     (interactive)
     (with-selected-frame (or frame (selected-frame))
              (when (and (equal (face-attribute 'region :distant-foreground)
@@ -2904,7 +2905,7 @@ standard Ubuntu orange selection color.
                (set-face-attribute
                 'region nil
                 :distant-foreground 'unspecified
-                :background "#ffb499"))))
+                :background gtk-region-custom-color))))
   ;; Fix for future frames
   (add-hook 'after-make-frame-functions #'fix-gtk-region-colors)
   ;; Fix for current frames
