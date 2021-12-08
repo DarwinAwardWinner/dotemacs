@@ -951,7 +951,22 @@ open after the last window is closed, by creating a new window and
 hiding it until Emacs is reactivated.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package mac-pseudo-daemon)
+  ;; (req-package mac-pseudo-daemon
+  ;;   :straight
+  ;;   (mac-pseudo-daemon
+  ;;    :type git
+  ;;    :host github
+  ;;    :repo "DarwinAwardWinner/mac-pseudo-daemon"
+  ;;    :branch "rewrite"
+  ;;    :files ("mac-pseudo-daemon.el")))
+  (req-package pseudo-daemon
+    :straight
+    (pseudo-daemon
+     :type git
+     :host github
+     :repo "DarwinAwardWinner/mac-pseudo-daemon"
+     :branch "rewrite"
+     :files ("pseudo-daemon.el")))
 #+END_SRC
 
 ** magit

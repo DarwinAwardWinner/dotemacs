@@ -174,7 +174,7 @@
 ")
  '(kept-old-versions 5)
  '(kill-whole-line t)
- '(mac-pseudo-daemon-mode t)
+ '(mac-pseudo-daemon-mode nil)
  '(magit-completing-read-function 'magit-ido-completing-read)
  '(magit-diff-refine-hunk t)
  '(magit-popup-use-prefix-argument 'default)
@@ -266,6 +266,7 @@
           (emacs-lisp-mode inferior-lisp-mode lisp-mode scheme-mode))
      (8709 nil "\\<nil\\>"
            (emacs-lisp-mode inferior-lisp-mode lisp-mode scheme-mode))))
+ '(pseudo-daemon-mode t)
  '(recentf-mode t)
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
