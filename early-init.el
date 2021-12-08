@@ -1,4 +1,4 @@
-;;; early-init.el ---  -*- lexical-binding: t -*-
+;;; early-init.el --- Early startup code -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2021 Ryan C. Thompson
 
