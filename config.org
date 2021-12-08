@@ -145,6 +145,49 @@ seconds for the file to become unlocked.
       (funcall oldfun file opponent)))
 #+END_SRC
 
+** Macros for running a function without user input
+This code builds up the ~without-user-input~ macro, which is like
+~progn~ except that if BODY makes any attempt to read user input, all
+further execution is canceled and the form returns nil (note that it
+does /not/ signal an error, it simply returns).
+
+#+BEGIN_SRC emacs-lisp
+  (require 'cl-macs)
+
+  (defmacro without-minibuffer (&rest body)
+    "Like `progn', but stop and return nil if BODY tries to use the minibuffer.
+
+  Also disable dialogs while evaluating BODY forms, since dialogs
+  are just an alternative to the minibuffer."
+    (declare (indent 0))
+    `(catch 'tried-to-use-minibuffer
+       (minibuffer-with-setup-hook
+           (lambda (&rest args) (throw 'tried-to-use-minibuffer nil))
+         (let ((use-dialog-box))          ; No cheating by using dialogs instead of minibuffer
+           ,@body))))
+
+  (defmacro without-functions (flist &rest body)
+    "Evaluate BODY, but stop and return nil if BODY calls any of the functions named in FLIST."
+    (declare (indent 1))
+    (let* (;; Functions are disabled by setting their body to this
+           ;; temporarily.
+           (fbody
+            '((&rest args) (throw 'forbidden-function nil)))
+           ;; This will form the first argument to `flet'
+           (function-redefinitions
+            (mapcar (lambda (fname) (cons fname fbody)) flist)))
+      `(catch 'forbidden-function
+         (cl-flet ,function-redefinitions
+           ,@body))))
+
+  (defmacro without-user-input (&rest body)
+    "Like `progn', but prevent any user interaction in BODY."
+    (declare (indent 0))
+    `(without-functions (read-event)
+       (without-minibuffer
+         ,@body)))
+#+END_SRC
+
 ** Start emacs server
  This allows ~emacsclient~ to connect. We avoid starting the server in
  batch mode since there is no point in that case. We also avoid
@@ -159,8 +202,9 @@ seconds for the file to become unlocked.
 
  #+BEGIN_SRC emacs-lisp
    (unless (or noninteractive (bound-and-true-p server-process))
-     (ignore-errors
-       (without-user-input (server-start))))
+     (condition-case err
+         (without-user-input (server-start))
+       (error (display-warning 'config (format "Error starting server: %S" err)))))
  #+END_SRC
 ** Tell use-package to install packages using straight
 This tells ~use-package~ (and by extension ~req-package~) to use
@@ -1933,49 +1977,6 @@ are disabled entirely above.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.gitignore\\'" . conf-mode))
-#+END_SRC
-
-** Macros for running a function without user input
-This code builds up the ~without-user-input~ macro, which is like
-~progn~ except that if BODY makes any attempt to read user input, all
-further execution is canceled and the form returns nil (note that it
-does /not/ signal an error, it simply returns).
-
-#+BEGIN_SRC emacs-lisp
-  (require 'cl-macs)
-
-  (defmacro without-minibuffer (&rest body)
-    "Like `progn', but stop and return nil if BODY tries to use the minibuffer.
-
-  Also disable dialogs while evaluating BODY forms, since dialogs
-  are just an alternative to the minibuffer."
-    (declare (indent 0))
-    `(catch 'tried-to-use-minibuffer
-       (minibuffer-with-setup-hook
-           (lambda (&rest args) (throw 'tried-to-use-minibuffer nil))
-         (let ((use-dialog-box))          ; No cheating by using dialogs instead of minibuffer
-           ,@body))))
-
-  (defmacro without-functions (flist &rest body)
-    "Evaluate BODY, but stop and return nil if BODY calls any of the functions named in FLIST."
-    (declare (indent 1))
-    (let* (;; Functions are disabled by setting their body to this
-           ;; temporarily.
-           (fbody
-            '((&rest args) (throw 'forbidden-function nil)))
-           ;; This will form the first argument to `flet'
-           (function-redefinitions
-            (mapcar (lambda (fname) (cons fname fbody)) flist)))
-      `(catch 'forbidden-function
-         (cl-flet ,function-redefinitions
-           ,@body))))
-
-  (defmacro without-user-input (&rest body)
-    "Like `progn', but prevent any user interaction in BODY."
-    (declare (indent 0))
-    `(without-functions (read-event)
-       (without-minibuffer
-         ,@body)))
 #+END_SRC
 
 ** Macro for suppressing messages
