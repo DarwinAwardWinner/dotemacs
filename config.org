@@ -1259,8 +1259,6 @@ used on a headline without one.
                 (require 'org-compat)
                 ;; This seems to be needed for some reason
                 (defalias 'org-file-name-concat #'file-name-concat)
-                (message "org-file-name-concat function: %s"
-                         (symbol-function 'org-file-name-concat))
                 (require 'ox)
                 ;; (Try to) Load any org packages currently loaded in
                 ;; the parent
@@ -1276,6 +1274,9 @@ used on a headline without one.
                    if (and (autoloadp symfun)
                            (s-matches-p "^org\\(?:tbl\\)?-" (symbol-name sym)))
                    collect (list 'fset (list 'quote sym) (list 'quote symfun)))
+                ;; We have to call this function after modifying the
+                ;; variable (which should happen above)
+                (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
                 )))
         (with-temp-file org-export-async-init-file
           (emacs-lisp-mode)
