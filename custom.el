@@ -230,8 +230,9 @@
      ("CANCELLED" . "darkred")
      ("REJECTED" . "darkred")
      ("WAITING" . "chocolate1")
-     ("WAIT" . "chocolate1")))
- '(org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
+     ("WAIT" . "chocolate1")
+     ("ON HOLD" . "chocolate2")))
+ '(org-todo-keywords '((sequence "TODO" "|" "DONE" "ON HOLD" "CANCELLED")))
  '(package-archives
    '(("gnu" . "https://elpa.gnu.org/packages/")
      ("melpa" . "https://melpa.org/packages/")))
