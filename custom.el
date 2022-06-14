@@ -232,7 +232,8 @@
      ("WAITING" . "chocolate1")
      ("WAIT" . "chocolate1")
      ("ON HOLD" . "chocolate2")))
- '(org-todo-keywords '((sequence "TODO" "|" "DONE" "ON HOLD" "CANCELLED")))
+ '(org-todo-keywords
+   '((sequence "TODO" "|" "DONE" "ON HOLD" "WAIT" "CANCELLED")))
  '(package-archives
    '(("gnu" . "https://elpa.gnu.org/packages/")
      ("melpa" . "https://melpa.org/packages/")))
