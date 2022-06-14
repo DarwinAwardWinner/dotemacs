@@ -87,6 +87,15 @@
  '(ess-use-flymake nil)
  '(ess-use-tracebug nil)
  '(esup-run-as-batch-p t)
+ '(face-font-family-alternatives
+   '(("Monospace" "courier" "fixed")
+     ("Monospace Serif" "Courier 10 Pitch" "Consolas" "Courier Std" "FreeMono" "Nimbus Mono L" "courier" "fixed")
+     ("courier" "CMU Typewriter Text" "fixed")
+     ("Sans Serif" "helv" "helvetica" "arial" "fixed")
+     ("helv" "helvetica" "arial" "fixed")
+     ("DejaVu Sans Mono" "Source Code Pro" "Ubuntu Mono" "Monospace" "courier" "fixed")
+     ("Source Code Pro" "Ubuntu Mono" "Monospace" "courier" "fixed")))
+ '(font-use-system-font t)
  '(forge-database-file "~/.emacs.d/persistence/forge-database.sqlite")
  '(git-gutter+-diff-options '("--patience"))
  '(git-gutter+-hide-gutter t)
@@ -502,7 +511,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:height 110 :family "DejaVu Sans Mono"))))
  '(auto-dim-other-buffers-face ((t (:background "gray97"))))
  '(git-gutter+-added ((t (:foreground "green4" :weight bold))))
  '(git-gutter+-deleted ((t (:foreground "red4" :weight bold))))
