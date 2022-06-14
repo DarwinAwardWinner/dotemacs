@@ -1835,7 +1835,7 @@ This is where I keep Emacs, but you'll probably need to edit this if
 you want look at the definitions of Emacs primitive functions.
 
 #+BEGIN_SRC emacs-lisp
-  (setq find-function-C-source-directory "~/Projects/emacs/src")
+  (setq find-function-C-source-directory "~/src/emacs/src")
 #+END_SRC
 
 ** Fix Mac OS movement keys
