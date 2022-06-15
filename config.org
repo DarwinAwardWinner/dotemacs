@@ -1693,9 +1693,11 @@ regular ~python-mode~ is just fine.
 ** TODO forge
 
 #+BEGIN_SRC emacs-lisp
-  ;; Straight fails to detect these dependencies, so we have to declare
-  ;; them here?
-  (req-package closql)
+  ;; Straight fails to auto-detect these dependencies, so we have to
+  ;; declare them here?
+  (req-package emacsql-sqlite)
+  (req-package closql
+    :require emacsql-sqlite)
   (req-package ghub)
   (req-package forge
     :require closql ghub)
