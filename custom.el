@@ -210,6 +210,7 @@
  '(org-adapt-indentation nil)
  '(org-agenda-files '("~/Sync/main.org" "~/Sync/sinai-onboarding.org"))
  '(org-appear-autolinks nil)
+ '(org-babel-load-languages '((emacs-lisp . t) (shell . t) (R . t) (python . t)))
  '(org-bullets-bullet-list '("◉" "✸" "✿"))
  '(org-completion-use-ido t)
  '(org-hide-emphasis-markers t)
@@ -282,7 +283,14 @@
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
-   '((eval when
+   '((eval add-hook 'kill-buffer-hook
+           (apply-partially #'message "Clipboard cleared.")
+           nil t)
+     (eval run-with-timer 1 nil #'revert-buffer t t t)
+     (eval run-with-timer 0.1 nil #'revert-buffer t t t)
+     (eval run-with-timer 0.01 nil #'revert-buffer t t t)
+     (epa-file-encrypt-to . rct@thompsonclan\.org)
+     (eval when
            (and
             (buffer-file-name)
             (not
