@@ -781,6 +781,11 @@ http://editorconfig.org/
                (string= ess-smart-S-assign-key "_"))
           (insert ess-smart-S-assign-key)
         (apply orig-fun args)))
+    ;; Don't let ESS trigger TRAMP when entering minibuffer
+    (define-advice ess-r-package-auto-activate (:before-until () not-in-minibuffer)
+      "Don't run this function in a minibuffer"
+      (minibufferp))
+    ;; Open R profile file in R-mode
     (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode))
     ;; TODO: Put this function in a more appropriate location
     (defun twiddle-mode (mode)
@@ -2811,6 +2816,7 @@ the region is active, they operate on the entire region instead.
 
 Note that this frees up  ~C-x C-u~ and ~C-x C-l~, the bindings for
 ~up/downcase-region~ respectively.
+
 
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
