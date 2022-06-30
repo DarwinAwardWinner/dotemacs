@@ -772,15 +772,6 @@ http://editorconfig.org/
        (ess-indent-from-lhs arguments)
        (ess-indent-from-chain-start . t)
        (ess-indent-with-fancy-comments)))
-    (define-advice ess-smart-S-assign
-        (:around (orig-fun &rest args) underscore-unless-space)
-      "Always insert underscores unless point is after a space.
-
-  This advice is only active if `ess-smart-S-assign-key' is \"_\"."
-      (if (and (looking-back "[^[:space:]]" 1)
-               (string= ess-smart-S-assign-key "_"))
-          (insert ess-smart-S-assign-key)
-        (apply orig-fun args)))
     ;; Don't let ESS trigger TRAMP when entering minibuffer
     (define-advice ess-r-package-auto-activate (:before-until () not-in-minibuffer)
       "Don't run this function in a minibuffer"
