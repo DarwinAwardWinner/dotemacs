@@ -233,9 +233,9 @@ to install them automatically. So we first need to install
 #+END_SRC
 
 ** Install and load basic libraries
-This installs and loads the ~s~ and ~f~ packages for string and
-filename manipulation. These are used in various places throughout the
-config, so we install them right now.
+This installs and loads the ~s~ and ~f~ packages for string and filename
+manipulation. These are used in various places throughout this config,
+so we install them right now.
 
 #+BEGIN_SRC emacs-lisp
   (req-package f :force t)
@@ -751,11 +751,14 @@ http://editorconfig.org/
 
 #+BEGIN_SRC emacs-lisp
   (req-package ess
+    :require f
     :init
     ;; Ensure that TRAMP is loaded before ESS, since loading ESS before
     ;; TRAMP causes problems
     (require 'tramp)
     :config
+    ;; Open R profile file in R-mode
+    (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode))
     ;; (setq ess-default-style 'OWN)
     (customize-set-variable
      'ess-own-style-list
@@ -776,15 +779,15 @@ http://editorconfig.org/
     (define-advice ess-r-package-auto-activate (:before-until () not-in-minibuffer)
       "Don't run this function in a minibuffer"
       (minibufferp))
-    ;; Open R profile file in R-mode
-    (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode))
-    ;; TODO: Put this function in a more appropriate location
-    (defun twiddle-mode (mode)
-      "If MODE is activated, then deactivate it and then activate it again.
-  If MODE is not active, do nothing."
-      (when (eval mode)
-        (funcall mode 0)
-        (funcall mode 1))))
+    (require 'f)
+    ;; When an R file is in a directory named "scripts", suggest the
+    ;; parent directory as the starting directory.
+    (defun my-ess-directory-function ()
+      (cond (ess-directory)
+            ((string= "scripts" (f-filename (f-full default-directory)))
+             (f-parent default-directory))
+            (t nil)))
+    (setq ess-directory-function #'my-ess-directory-function))
 #+END_SRC
 
 ** esup
@@ -2807,6 +2810,17 @@ the region is active, they operate on the entire region instead.
 
 Note that this frees up  ~C-x C-u~ and ~C-x C-l~, the bindings for
 ~up/downcase-region~ respectively.
+
+** Define a ~twiddle-mode~ function
+
+#+BEGIN_SRC emacs-lisp
+  (defun twiddle-mode (mode)
+    "If MODE is activated, then deactivate it and then activate it again.
+  If MODE is not active, do nothing."
+    (when (eval mode)
+      (funcall mode 0)
+      (funcall mode 1)))
+#+END_SRC
 
 
 * Environment-specific settings
