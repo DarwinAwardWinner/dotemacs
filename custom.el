@@ -12,6 +12,8 @@
  '(amx-save-file "~/.emacs.d/persistence/amx-items")
  '(auth-source-save-behavior nil)
  '(auto-dim-other-buffers-mode t)
+ '(auto-save-file-name-transforms
+   '(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" "~/.emacs.d/persistence/auto-save/\\2" t)))
  '(autopair-global-mode t)
  '(backup-by-copying t)
  '(backup-directory-alist '(("." . "~/.emacs.d/persistence/backups")))
