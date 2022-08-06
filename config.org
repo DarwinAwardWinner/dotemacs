@@ -2822,6 +2822,47 @@ Note that this frees up  ~C-x C-u~ and ~C-x C-l~, the bindings for
       (funcall mode 1)))
 #+END_SRC
 
+** Don't allow diff to refine large hunks
+Diff hunk refinement is really slow for large hunks, so we establish a
+word threshold above which hunk refinement will not occur.
+
+#+BEGIN_SRC emacs-lisp
+  (defcustom diff-refine-max-words nil
+    "If non-nil, disable refinement for large hunks.
+
+  If non-nil, this variable should be set to an integer, which is the
+  limit for the number of words in a hunk to be refined. Hunks
+  containing more than this number of words will not be refined.
+  Note that the word count includes the entire hunk: additions,
+  deletions, and context (and header?)."
+    :group 'diff-mode
+    :type '(choice
+            (const :tag "No limit" nil)
+            (integer
+             :tag "Word limit" :value 1000
+             :validate
+             (lambda (widget)
+               (let ((v (widget-value widget)))
+                 (if (and (integerp v)
+                          (> v 0))
+                     nil
+                   (widget-put widget :error "This field should contain a positive integer")
+                   widget))))))
+
+  (define-advice diff--refine-hunk (:before-while (start end &rest _ignored) diff-refine-max-words)
+    "Implement logic for `diff-refine-max-words'."
+    ;; With `before-while', we need to return non-nil to indicate that
+    ;; hunk refinement should be allowed to occur.
+    (condition-case nil
+        (or
+         (null diff-refine-max-words)
+         (let ((hunk-word-count (count-words start end)))
+           (<= hunk-word-count diff-refine-max-words)))
+      ;; In case of error, do whatever would have happened if this
+      ;; advice didn't exist.
+      (error t)))
+#+END_SRC
+
 
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to

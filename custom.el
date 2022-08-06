@@ -46,6 +46,7 @@
    '(desktop-locals-to-save truncate-lines case-fold-search case-replace fill-column overwrite-mode change-log-default-name line-number-mode column-number-mode size-indication-mode buffer-file-coding-system indent-tabs-mode tab-width indicate-buffer-boundaries indicate-empty-lines show-trailing-whitespace buffer-display-time))
  '(desktop-path '("~/.emacs.d/persistence" "~"))
  '(desktop-save-mode t)
+ '(diff-refine-max-words 1000)
  '(diff-switches "-U3")
  '(diminished-minor-modes
    '((volatile-highlights-mode . "")
