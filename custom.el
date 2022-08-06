@@ -285,7 +285,14 @@
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
-   '((eval add-hook 'kill-buffer-hook
+   '((fill-column . most-positive-fixnum)
+     (eval add-hook 'after-save-hook
+           (lambda nil
+             (save-mark-and-excursion
+               (deactivate-mark 'force)
+               (org-export-to-file 'html "Therapy notes.html" t)))
+           t t)
+     (eval add-hook 'kill-buffer-hook
            (apply-partially #'message "Clipboard cleared.")
            nil t)
      (eval run-with-timer 1 nil #'revert-buffer t t t)
