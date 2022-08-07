@@ -1257,6 +1257,8 @@ used on a headline without one.
                 ;; Always going to need these
                 (require 'org)
                 (require 'org-compat)
+                ;; This one defines a function for some reason
+                (require 'org-macs)
                 ;; This seems to be needed for some reason
                 (defalias 'org-file-name-concat #'file-name-concat)
                 (require 'ox)
