@@ -2865,6 +2865,18 @@ word threshold above which hunk refinement will not occur.
       (error t)))
 #+END_SRC
 
+** Make sure the auto-save folder exists
+
+#+BEGIN_SRC emacs-lisp
+  (make-directory
+   (file-name-directory
+    (files--transform-file-name
+     (expand-file-name "~/temp.txt")
+     auto-save-file-name-transforms
+     "#" "#"))
+   t)
+#+END_SRC
+
 
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
