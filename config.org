@@ -2870,10 +2870,9 @@ word threshold above which hunk refinement will not occur.
 #+BEGIN_SRC emacs-lisp
   (make-directory
    (file-name-directory
-    (files--transform-file-name
-     (expand-file-name "~/temp.txt")
-     auto-save-file-name-transforms
-     "#" "#"))
+    (with-temp-buffer
+      (setq buffer-file-name (expand-file-name "~/temp.txt"))
+      (make-auto-save-file-name)))
    t)
 #+END_SRC
 
