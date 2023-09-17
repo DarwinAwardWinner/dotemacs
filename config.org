@@ -1143,36 +1143,6 @@ used on a headline without one.
     :config
     ;; Custom src-block behaviors
     (progn
-      (defun org-in-src-block-p (&optional inside)
-        "Whether point is in a code source block.
-
-  When INSIDE is non-nil, don't consider we are within a src block
-  when point is at #+BEGIN_SRC or #+END_SRC."
-        (save-match-data
-          (let* ((elem (org-element-at-point))
-                 (elem-type (car elem))
-                 (props (cadr elem))
-                 (end (plist-get props :end))
-                 (pb (plist-get props :post-blank))
-                 (content-end
-                  (save-excursion
-                    (goto-char end)
-                    (forward-line (- pb))
-                    (point)))
-                 (case-fold-search t))
-            (and
-             ;; Elem is a src block
-             (eq elem-type 'src-block)
-             ;; Make sure point is not on one of the blank lines after the
-             ;; element.
-             (< (point) content-end)
-             ;; If INSIDE is non-nil, then must not be at block delimiter
-             (not
-              (and
-               inside
-               (save-excursion
-                 (beginning-of-line)
-                 (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
       (defun org-insert-src-block (src-code-type)
         "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
         (interactive
