@@ -33,8 +33,8 @@
 (setq gc-cons-percentage (get 'gc-cons-percentage 'value-during-init))
 
 ;; Recommended by
-;; https://github.com/raxod502/straight.el#getting-started to prevent
-;; pacakge.el stepping on straight's toes.
+;; https://github.com/radian-software/straight.el#getting-started to
+;; prevent package.el stepping on straight's toes.
 (setq package-enable-at-startup nil)
 
 ;;; early-init.el ends here

@@ -55,9 +55,9 @@ be installed /before/ loading this file. Otherwise, loading this file
 first would auto-load the built-in version of Org-mode and prevent use
 of the newly-installed version until Emacs was restarted.
 
-Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https://github.com/raxod502/straight.el][Straight package
-manager]], which it uses to install Org mode. Here we complete the setup
-so Straight can be used to manage all pacakges below.
+Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https://github.com/radian-software/straight.el][Straight package
+manager]], which it uses to install Org mode. Here we complete the
+setup so Straight can be used to manage all pacakges below.
 
 * Early Init File
 The [[file:early-init.el::;;; early-init.el --- -*- lexical-binding: t -*-][=early-init.el=]] file contains any code that must be executed early
@@ -208,7 +208,7 @@ does /not/ signal an error, it simply returns).
  #+END_SRC
 ** Tell use-package to install packages using straight
 This tells ~use-package~ (and by extension ~req-package~) to use
-Straight to install packages by default. See [[https://github.com/raxod502/straight.el#integration-with-use-package][here]] for more
+Straight to install packages by default. See [[https://github.com/radian-software/straight.el#integration-with-use-package][here]] for more
 information.
 
 #+BEGIN_SRC emacs-lisp
@@ -217,8 +217,8 @@ information.
 
 ** Install req-package
 This config uses [[https://github.com/edvorg/req-package][~req-package~]] to configure packages, using Straight
-to install them automatically. So we first need to install
-~req-package~ and its dependencies (particularly [[https://github.com/jwiegley/use-package][~use-package~]]).
+to install them automatically. So we first need to install ~req-package~
+and its dependencies (particularly [[https://github.com/jwiegley/use-package][~use-package~]]).
 
 #+BEGIN_SRC emacs-lisp
   (straight-use-package

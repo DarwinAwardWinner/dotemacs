@@ -19,25 +19,15 @@
 ;;
 ;;; Code:
 
-;; See https://github.com/raxod502/straight.el/issues/742. Remove this
-;; advice once that pull request is merged into master.
-(define-advice straight--build-native-compile
-    (:around (oldfun &rest args) fix-native-comp-test)
-  "Properly disable native compilation on unsupported Emacsen."
-  (when (and (fboundp 'native-comp-available-p)
-             (native-comp-available-p)
-             (fboundp 'native-compile-async))
-    (apply oldfun args)))
-
 ;; Bootstrap straight package manager
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
+      (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
          'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
