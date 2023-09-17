@@ -2846,6 +2846,32 @@ word threshold above which hunk refinement will not occur.
    t)
 #+END_SRC
 
+** Automatically scroll to the left after filling
+Sometimes after filling a long line with ~C-q~, ~auto-fill-mode~, etc.,
+the window is still scrolled away from column 0, which isn't useful
+any more. So we define advice to automatically scroll back to column 0
+after any filling operation (unless doing so would put point outside
+the window).
+
+#+BEGIN_SRC emacs-lisp
+  (defun scroll-to-column0-after-fill (&rest _ignored)
+    "Scroll current window to column 0 if possible.
+
+  If scrolling the window to column 0 would pout point outside the
+  window, no scrolling is done.
+
+  This function is intended to be called after calling a filling
+  function such as `fill-paragraph'."
+    (when (and (> (window-hscroll))
+               (<= (current-column) (window-width)))
+      (set-window-hscroll (get-buffer-window (current-buffer)) 0)))
+
+  (cl-loop
+   for fun in '(fill-paragraph do-auto-fill org-fill-paragraph)
+   do (advice-add fun
+                  :after #'scroll-to-column0-after-fill
+                  '(:name "After filling, scroll back to column 0 if possible")))
+#+END_SRC
 
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
