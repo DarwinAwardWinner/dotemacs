@@ -1163,7 +1163,9 @@ used on a headline without one.
       (defun org-insert-or-edit-src-block (src-code-type &optional interactive-call)
         "Insert a source code block in org-mode or edit an existing one."
         (interactive (list nil t))
-        (if (org-in-src-block-p)
+        (if (and (org-in-src-block-p)
+                 ;; Matching the logic in `org-edit-src-code'
+                 (org-src--on-datum-p (org-element-at-point)))
             (org-edit-src-code)
           (if interactive-call
               (call-interactively 'org-insert-src-block)
