@@ -2932,7 +2932,7 @@ https://lists.gnu.org/archive/html/emacs-orgmode/2023-03/msg00299.html.
        ;; thrown and just replace the link with its text instead.
        (let* ((real-link
                (with-temp-buffer
-                 (save-excursion (insert "[[" path "][" desc "]]"))
+                 (save-excursion (insert "[[" path "][" (or desc path) "]]"))
                  (org-element-link-parser)))
               (real-link-transcoder (cdr (assoc 'link (org-export-get-all-transcoders backend)))))
          (condition-case err
