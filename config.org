@@ -2911,6 +2911,37 @@ https://lists.gnu.org/archive/html/emacs-orgmode/2023-03/msg00299.html.
   (with-eval-after-load 'org-ctags (setq org-open-link-functions nil))
 #+END_SRC
 
+** Define a "maybe" link protocol for org-mode
+
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'ol
+    (org-link-set-parameters
+     "maybe"
+     :follow
+     (lambda (path prefix)
+       (condition-case err
+           (org-link-open-from-string (format "[[%s]]" path))
+         (error (message "Failed to open maybe link %S" path))))
+     ;; This must be a lambda so it is self-contained
+     :export
+     (lambda (path desc backend &optional info)
+       (when (symbolp backend)
+         (setq backend (org-export-get-backend backend)))
+       ;; Generate the non-maybe version of the link, and call the
+       ;; backend's appropriate transcoder on it, but catch any error
+       ;; thrown and just replace the link with its text instead.
+       (let* ((real-link
+               (with-temp-buffer
+                 (save-excursion (insert "[[" path "][" desc "]]"))
+                 (org-element-link-parser)))
+              (real-link-transcoder (cdr (assoc 'link (org-export-get-all-transcoders backend)))))
+         (condition-case err
+             (funcall real-link-transcoder real-link desc info)
+           (error
+            (message "Skipping error during maybe link transcoding: %S" err)
+            (or desc path)))))))
+#+END_SRC
+
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
