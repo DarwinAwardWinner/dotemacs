@@ -287,7 +287,36 @@
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
-   '((fill-column . most-positive-fixnum)
+   '((eval add-hook 'kill-buffer-hook
+           (lambda nil
+             (ignore-errors
+               (clean-kill-ring)))
+           nil t)
+     (eval add-hook 'kill-buffer-hook
+           (lambda nil
+             (mapc
+              (lambda
+                (type)
+                (gui-set-selection type ""))
+              '(PRIMARY SECONDARY CLIPBOARD)))
+           nil t)
+     (eval add-hook 'kill-buffer-hook
+           (apply-partially #'mapc
+                            (lambda
+                              (type)
+                              (add-hook 'kill-buffer-hook
+                                        (apply-partially #'gui-set-selection type "")
+                                        nil t))
+                            '(PRIMARY SECONDARY CLIPBOARD))
+           nil t)
+     (eval mapc
+           (lambda
+             (type)
+             (add-hook 'kill-buffer-hook
+                       (apply-partially #'gui-set-selection type "")
+                       nil t))
+           '(PRIMARY SECONDARY CLIPBOARD))
+     (fill-column . most-positive-fixnum)
      (eval add-hook 'after-save-hook
            (lambda nil
              (save-mark-and-excursion
@@ -530,6 +559,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 125 :width normal :foundry "SRC" :family "Hack"))))
  '(auto-dim-other-buffers-face ((t (:background "gray97"))))
  '(fixed-pitch ((t nil)))
  '(git-gutter+-added ((t (:foreground "green4" :weight bold))))
@@ -544,6 +574,7 @@
  '(highlight-function-calls-face ((t (:inherit font-lock-function-name-face :foreground "blue4" :underline t))))
  '(hl-line ((t (:background "azure"))))
  '(indent-guide-face ((t (:foreground "gray" :slant normal))))
+ '(italic ((t (:slant italic))))
  '(magit-item-highlight ((t nil)))
  '(org-superstar-leading ((t (:foreground "gray95" :inherit default))))
  '(popup-face ((t (:inherit default :background "lightgray" :foreground "black")))))
