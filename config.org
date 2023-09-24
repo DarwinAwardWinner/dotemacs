@@ -2902,6 +2902,15 @@ the window).
     (message "Kill ring cleared of entries matching buffer %S" (buffer-name buffer)))
 #+END_SRC
 
+** Fix bad behavior in org-ctags
+See https://emacs.stackexchange.com/a/76352/2046 and
+https://lists.gnu.org/archive/html/emacs-orgmode/2023-03/msg00299.html.
+
+#+BEGIN_SRC emacs-lisp
+  ;;; work-around  for org-ctags obnoxious behavior
+  (with-eval-after-load 'org-ctags (setq org-open-link-functions nil))
+#+END_SRC
+
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
