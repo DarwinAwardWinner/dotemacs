@@ -2875,6 +2875,33 @@ the window).
                   '(:name "After filling, scroll back to column 0 if possible")))
 #+END_SRC
 
+** Define a function for clearing a buffer from ~kill-ring~
+
+#+BEGIN_SRC emacs-lisp
+  (defun clean-kill-ring (&optional buffer)
+    "Remove entries matching BUFFER from `kill-ring'.
+
+  Also clears PRIMARY and SECONDARY selections by setting them to
+  the empty string and clears CLIPBOARD by setting it to the first
+  remaining element of `kill-ring', which should clear the
+  clipboard for other applications as well."
+    (interactive)
+    ;; Just do this so current kill definitely doesn't contain any
+    ;; sensitive info. This element will be removed anyway since the
+    ;; empty string matches anything.
+    (kill-new "")
+    (setq kill-ring
+          (cl-loop
+           with bufstring = (with-current-buffer (or buffer (current-buffer)) (buffer-string))
+           for kill in kill-ring
+           unless (string-match-p (regexp-quote kill) bufstring)
+           collect kill))
+    (gui-set-selection 'CLIPBOARD (or (car kill-ring) ""))
+    (gui-set-selection 'PRIMARY "")
+    (gui-set-selection 'SECONDARY "")
+    (message "Kill ring cleared of entries matching buffer %S" (buffer-name buffer)))
+#+END_SRC
+
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
