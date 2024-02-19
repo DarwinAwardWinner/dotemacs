@@ -1298,8 +1298,12 @@ HTML less random. It sets the seed to a specific value before
 executing the export, which means that it should always generate the
 same anchors IDs given the same set of headlines.
 #+BEGIN_SRC emacs-lisp
-  (defmacro with-reproducible-rng (seed &rest body)
-    "Execute BODY with reproducible RNG.
+  (req-package ox-html
+    :require org
+    :straight nil
+    :config
+    (defmacro with-reproducible-rng (seed &rest body)
+      "Execute BODY with reproducible RNG.
 
   Before executing BODY, the random number generator will be
   initialized with SEED, which should be a string (see `random').
@@ -1311,20 +1315,20 @@ same anchors IDs given the same set of headlines.
   \(There does not seem to be a way to save and restore a specific
   RNG state, so the RNG state after executing this macro will not
   be the same as it was prior.)"
-    (declare (indent 1))
-    `(unwind-protect
-         (progn
-           (random (or ,seed ""))
-           ,@body)
-       (random t)))
+      (declare (indent 1))
+      `(unwind-protect
+           (progn
+             (random (or ,seed ""))
+             ,@body)
+         (random t)))
 
-  (define-advice org-html-export-to-html (:around (orig-fun &rest args) reproducible-rng)
-    "Use a reproducible RNG stream for HTML export.
+    (define-advice org-html-export-to-html (:around (orig-fun &rest args) reproducible-rng)
+      "Use a reproducible RNG stream for HTML export.
 
   This results in the same pseudo-random anchor IDs for
   the same set of headlines every time."
-    (with-reproducible-rng "org-html-export"
-      (apply orig-fun args)))
+      (with-reproducible-rng "org-html-export"
+        (apply orig-fun args))))
 #+END_SRC
 
 *** org-superstar
