@@ -106,6 +106,7 @@
  '(github-clone-url-slot :clone-url)
  '(global-adjust-parens-mode t)
  '(global-anzu-mode t)
+ '(global-auto-revert-mode t)
  '(global-git-gutter+-mode t)
  '(global-git-gutter-mode t)
  '(global-hardhat-mode t)
