@@ -1331,12 +1331,12 @@ same anchors IDs given the same set of headlines.
         (apply orig-fun args))))
 #+END_SRC
 
-*** org-superstar
+*** CANCELLED org-superstar
 
 #+BEGIN_SRC emacs-lisp
-  (req-package org-superstar
-    :require org
-    :init (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+  ;; (req-package org-superstar
+  ;;   :require org
+  ;;   :init (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 #+END_SRC
 
 *** org-sidebar
@@ -1414,6 +1414,12 @@ This doesn't seem to work properly in Emacs 28.
 #+BEGIN_SRC emacs-lisp
   (when (version<= "27.1" emacs-version)
     (req-package org-special-block-extras))
+#+END_SRC
+
+*** org-modern
+
+#+BEGIN_SRC emacs-lisp
+  (req-package org-modern)
 #+END_SRC
 
 
