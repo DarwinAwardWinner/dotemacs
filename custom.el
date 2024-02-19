@@ -218,6 +218,11 @@
  '(org-babel-load-languages '((emacs-lisp . t) (shell . t) (R . t) (python . t)))
  '(org-bullets-bullet-list '("◉" "✸" "✿"))
  '(org-completion-use-ido t)
+ '(org-fold-show-context-detail
+   '((agenda . local)
+     (bookmark-jump . canonical)
+     (isearch . canonical)
+     (default . canonical)))
  '(org-hide-emphasis-markers t)
  '(org-html-allow-name-attribute-in-anchors t)
  '(org-html-infojs-options
@@ -232,9 +237,45 @@
      (ltoc . "1")
      (up . :html-link-up)
      (home . :html-link-home)))
+ '(org-html-mathjax-template
+   "<script>
+  window.MathJax = {
+    tex: {
+      packages: {'[+]': ['xfrac', 'fontspec']},
+      ams: {
+        multlineWidth: '%MULTLINEWIDTH'
+      },
+      tags: '%TAGS',
+      tagSide: '%TAGSIDE',
+      tagIndent: '%TAGINDENT'
+    },
+    chtml: {
+      scale: %SCALE,
+      displayAlign: '%ALIGN',
+      displayIndent: '%INDENT'
+    },
+    svg: {
+      scale: %SCALE,
+      displayAlign: '%ALIGN',
+      displayIndent: '%INDENT'
+    },
+    output: {
+      font: '%FONT',
+      displayOverflow: '%OVERFLOW'
+    }
+  };
+</script>
+
+<script
+  id=\"MathJax-script\"
+  async
+  src=\"%PATH\">
+</script>")
  '(org-html-use-infojs 'when-configured)
  '(org-image-actual-width '(400))
  '(org-modern-hide-stars " ")
+ '(org-safe-remote-resources
+   '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(org-sidebar-tree-jump-fn 'org-sidebar-tree-jump-source)
  '(org-special-ctrl-a/e t)
  '(org-startup-folded t)
@@ -289,7 +330,8 @@
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
-   '((eval add-hook 'kill-buffer-hook
+   '((org-html-inline-images)
+     (eval add-hook 'kill-buffer-hook
            (lambda nil
              (ignore-errors
                (clean-kill-ring)))
