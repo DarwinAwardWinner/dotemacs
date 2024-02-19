@@ -1037,14 +1037,7 @@ in normal operation.
     (define-advice magit-init (:after (&rest args) show-status)
       "Show the status buffer after initialization if interactive."
       (when (called-interactively-p 'interactive)
-        (magit-status-setup-buffer (car args))))
-    ;; Redirect "git" command to "hub" for interactive use only
-    (defvar magit-hub-executable (when (executable-find "hub") "hub"))
-    (define-advice magit-git-command (:around (orig-fun &rest args) use-hub)
-      "Use `hub' instead of `git' if available."
-      (let ((magit-git-executable
-             (or magit-hub-executable magit-git-executable)))
-        (apply orig-fun args))))
+        (magit-status-setup-buffer (car args)))))
 
   ;; Magit is apparently missing an autoload for `magit-process-file',
   ;; which is called by a function in `post-command-hook', resulting in
