@@ -184,8 +184,7 @@
  '(indent-tabs-mode nil)
  '(initial-buffer-choice t)
  '(initial-scratch-message
-   ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
-")
+   ";; This buffer is for notes you don't want to save, and for Lisp evaluation.\12")
  '(kept-old-versions 5)
  '(kill-whole-line t)
  '(mac-pseudo-daemon-mode nil)
@@ -373,7 +372,7 @@
      (eval run-with-timer 1 nil #'revert-buffer t t t)
      (eval run-with-timer 0.1 nil #'revert-buffer t t t)
      (eval run-with-timer 0.01 nil #'revert-buffer t t t)
-     (epa-file-encrypt-to . rct@thompsonclan\.org)
+     (epa-file-encrypt-to . rct@thompsonclan.org)
      (eval when
            (and
             (buffer-file-name)
@@ -563,6 +562,7 @@
  '(save-place-mode t nil (saveplace))
  '(savehist-file "~/.emacs.d/persistence/history")
  '(savehist-mode t)
+ '(scroll-bar-mode nil)
  '(selectrum-prescient-mode t)
  '(selectrum-show-indices nil)
  '(send-mail-function 'mailclient-send-it)
