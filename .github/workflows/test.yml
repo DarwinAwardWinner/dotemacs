@@ -21,14 +21,26 @@ jobs:
           - 26.3
           - snapshot
     steps:
-    - name: Set up Emacs
-      uses: purcell/setup-emacs@master
-      with:
-        version: ${{matrix.emacs_version}}
+      # GCC & SQLite3 needed for sqlite3 package
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
 
-    - name: Check out the source code
-      uses: actions/checkout@v4
+      # See https://github.com/ccorsi/setup-sqlite for sqlite version
+      # info
+      - name: Set up SQLite3
+        uses: ccorsi/setup-sqlite@v1.0.1
+        with:
+          sqlite-version: 3.40.0
+          sqlite-year: 2022
 
-    - name: Load the config
-      run: |
-        ./test-config-batch.sh
+      - name: Set up Emacs
+        uses: purcell/setup-emacs@master
+        with:
+          version: ${{matrix.emacs_version}}
+
+      - name: Check out the source code
+        uses: actions/checkout@v4
+
+      - name: Load the config
+        run: |
+          ./test-config-batch.sh
