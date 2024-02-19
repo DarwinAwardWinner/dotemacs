@@ -185,7 +185,9 @@ does /not/ signal an error, it simply returns).
     (declare (indent 0))
     `(without-functions (read-event)
        (without-minibuffer
-         ,@body)))
+         ;; Tell BODY that it is running noninteractively
+         (let ((noninteractive t))
+           ,@body))))
 #+END_SRC
 
 ** Start emacs server
@@ -1674,12 +1676,16 @@ Forge seems to be broken right now
 #+BEGIN_SRC emacs-lisp
   ;; Straight fails to auto-detect these dependencies, so we have to
   ;; declare them here?
-  ;; (req-package emacsql-sqlite)
-  ;; (req-package closql
-  ;;   :require emacsql-sqlite)
-  ;; (req-package ghub)
-  ;; (req-package forge
-  ;;   :require closql ghub)
+  (req-package emacsql-sqlite)
+  (req-package closql
+    :require emacsql-sqlite)
+  (req-package ghub)
+  (req-package forge
+    :require closql ghub)
+  ;; I'm unsure how this fits into the dependency hierarchy, but I think
+  ;; it's fine because it's only a dependency at runtime, so load order
+  ;; doesn't matter.
+  (req-package sqlite3)
 #+END_SRC
 
 ** crosshairs
@@ -1755,8 +1761,13 @@ of code below is run. At this time, ~req-package~ resolves any
 dependencies between packages and then installs and loads them in the
 correct order to satisfy those dependencies.
 
+We use ~without-user-input~ here mainly because sometimes packages (e.g.
+sqlite3) want to ask the user questions during install, but they will
+avoid doing so if Emacs says it's noninteractive.
+
 #+BEGIN_SRC emacs-lisp
-  (req-package-finish)
+  (without-user-input
+    (req-package-finish))
 #+END_SRC
 * Set up and load a separate custom file
 This is the file where everything set via =M-x customize= goes.
