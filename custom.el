@@ -165,7 +165,7 @@
  '(ido-complete-space-or-hyphen-mode t)
  '(ido-confirm-unique-completion t)
  '(ido-cr+-disable-list
-   '(read-file-name-internal read-buffer todo-add-category gnus-emacs-completing-read gnus-iswitchb-completing-read grep-read-files magit-builtin-completing-read ess-completing-read Info-read-node-name tmm-prompt dired-do-rename org-tags-completion-function org-olpath-completing-read))
+   '(read-file-name-internal read-buffer internal-complete-buffer todo-add-category gnus-emacs-completing-read gnus-iswitchb-completing-read grep-read-files magit-builtin-completing-read ess-completing-read Info-read-node-name tmm-prompt org-tags-completion-function ffap-read-file-or-url ffap-read-file-or-url-internal sly-read-symbol-name org-olpath-completing-read dired-do-rename))
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory 'first)
  '(ido-everywhere t)
