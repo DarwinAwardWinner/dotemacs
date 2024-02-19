@@ -2959,6 +2959,23 @@ https://lists.gnu.org/archive/html/emacs-orgmode/2023-03/msg00299.html.
             (or desc path)))))))
 #+END_SRC
 
+** Fix the major mode in the scratch buffer
+For some reason, Emacs sometimes starts up with the scratch buffer in
+Fundamental mode with no initial message. Until the root cause is
+isolated, we just fix this manually afterward
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-init
+   '(progn
+      (with-current-buffer (get-scratch-buffer-create)
+        (normal-mode)
+        (when (and initial-scratch-message
+                   (= (point-min) (point-max)))
+          (insert (substitute-command-keys initial-scratch-message))
+          (goto-char (point-max))
+          (set-buffer-modified-p nil)))))
+#+END_SRC
+
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
 set options that should vary depending on which system Emacs is
