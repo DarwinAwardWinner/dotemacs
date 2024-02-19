@@ -1021,14 +1021,22 @@ The defvar suppresses Magit upgrade instructions. The magit-init
 advice causes Magit to display the status buffer for an new repository
 immediately after a ~git init~ (but only when called interactively).
 
-It's nice to have the added features of GitHub's ~hub~ command, but
-magit makes a lot of calls to git, and so redirectig it to hub all the
-time slows it down considerably. So we use advice to tell only
-~magit-git-command~ to use hub if it is available. This allows the
-user to interactively invoke hub commands without slowing down Magit
-in normal operation.
 #+BEGIN_SRC emacs-lisp
   (req-package magit
+    ;; We override the recipe to choose the main branch
+    :straight
+    (magit
+     :type git
+     :flavor melpa
+     :files ("lisp/magit*.el" "lisp/git-rebase.el" "docs/magit.texi"
+             "docs/AUTHORS.md" "LICENSE" "Documentation/magit.texi"
+             "Documentation/AUTHORS.md"
+             (:exclude "lisp/magit-libgit.el" "lisp/magit-libgit-pkg.el"
+                       "lisp/magit-section.el" "lisp/magit-section-pkg.el")
+             "magit-pkg.el")
+     :host github
+     :repo "magit/magit"
+     :branch "main")
     :bind (("C-c g" . magit-status))
     :init
     ;; This needs to be set or else magit will warn about things.
@@ -1661,16 +1669,17 @@ regular ~python-mode~ is just fine.
 #+END_SRC
 
 ** TODO forge
+Forge seems to be broken right now
 
 #+BEGIN_SRC emacs-lisp
   ;; Straight fails to auto-detect these dependencies, so we have to
   ;; declare them here?
-  (req-package emacsql-sqlite)
-  (req-package closql
-    :require emacsql-sqlite)
-  (req-package ghub)
-  (req-package forge
-    :require closql ghub)
+  ;; (req-package emacsql-sqlite)
+  ;; (req-package closql
+  ;;   :require emacsql-sqlite)
+  ;; (req-package ghub)
+  ;; (req-package forge
+  ;;   :require closql ghub)
 #+END_SRC
 
 ** crosshairs
