@@ -238,39 +238,7 @@
      (up . :html-link-up)
      (home . :html-link-home)))
  '(org-html-mathjax-template
-   "<script>
-  window.MathJax = {
-    tex: {
-      packages: {'[+]': ['xfrac', 'fontspec']},
-      ams: {
-        multlineWidth: '%MULTLINEWIDTH'
-      },
-      tags: '%TAGS',
-      tagSide: '%TAGSIDE',
-      tagIndent: '%TAGINDENT'
-    },
-    chtml: {
-      scale: %SCALE,
-      displayAlign: '%ALIGN',
-      displayIndent: '%INDENT'
-    },
-    svg: {
-      scale: %SCALE,
-      displayAlign: '%ALIGN',
-      displayIndent: '%INDENT'
-    },
-    output: {
-      font: '%FONT',
-      displayOverflow: '%OVERFLOW'
-    }
-  };
-</script>
-
-<script
-  id=\"MathJax-script\"
-  async
-  src=\"%PATH\">
-</script>")
+   "<script>\12  window.MathJax = {\12    tex: {\12      packages: {'[+]': ['xfrac', 'fontspec']},\12      ams: {\12        multlineWidth: '%MULTLINEWIDTH'\12      },\12      tags: '%TAGS',\12      tagSide: '%TAGSIDE',\12      tagIndent: '%TAGINDENT'\12    },\12    chtml: {\12      scale: %SCALE,\12      displayAlign: '%ALIGN',\12      displayIndent: '%INDENT'\12    },\12    svg: {\12      scale: %SCALE,\12      displayAlign: '%ALIGN',\12      displayIndent: '%INDENT'\12    },\12    output: {\12      font: '%FONT',\12      displayOverflow: '%OVERFLOW'\12    }\12  };\12</script>\12\12<script\12  id=\"MathJax-script\"\12  async\12  src=\"%PATH\">\12</script>")
  '(org-html-use-infojs 'when-configured)
  '(org-image-actual-width '(400))
  '(org-modern-hide-stars " ")
