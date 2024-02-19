@@ -1514,12 +1514,6 @@ regular ~python-mode~ is just fine.
   (req-package slime)
 #+END_SRC
 
-** sml-modeline
-
-#+BEGIN_SRC emacs-lisp
-  (req-package sml-modeline)
-#+END_SRC
-
 ** smooth-scrolling
 
 #+BEGIN_SRC emacs-lisp
