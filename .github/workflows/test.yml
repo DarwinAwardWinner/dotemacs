@@ -16,9 +16,6 @@ jobs:
       matrix:
         emacs_version:
           - 29.2
-          - 28.2
-          - 27.2
-          - 26.3
           - snapshot
     steps:
       # GCC & SQLite3 needed for sqlite3 package
