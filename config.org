@@ -808,16 +808,16 @@ http://editorconfig.org/
 ** flycheck
 
 #+BEGIN_SRC emacs-lisp
-  (req-package flycheck
-    :require f
-    :config
-    ;; (or
-    ;;  (and (stringp flycheck-cwl-schema-path)
-    ;;       (f-exists-p flycheck-cwl-schema-path))
-    ;;  (setq flycheck-cwl-schema-path
-    ;;        (car (f-glob "~/.pyenv/versions/*/lib/python*/site-packages/cwltool/schemas/v1.0/CommonWorkflowLanguage.yml")))
-    ;;  (display-warning 'init "Could not find a CWL schema. See https://qiita.com/tm_tn/items/6c9653847412d115bec0 for more info."))
-    )
+  ;; (req-package flycheck
+  ;;   :require f
+  ;;   :config
+  ;;   ;; (or
+  ;;   ;;  (and (stringp flycheck-cwl-schema-path)
+  ;;   ;;       (f-exists-p flycheck-cwl-schema-path))
+  ;;   ;;  (setq flycheck-cwl-schema-path
+  ;;   ;;        (car (f-glob "~/.pyenv/versions/*/lib/python*/site-packages/cwltool/schemas/v1.0/CommonWorkflowLanguage.yml")))
+  ;;   ;;  (display-warning 'init "Could not find a CWL schema. See https://qiita.com/tm_tn/items/6c9653847412d115bec0 for more info."))
+  ;;   )
 #+END_SRC
 
 ** git-gutter
