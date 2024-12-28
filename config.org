@@ -1038,20 +1038,6 @@ immediately after a ~git init~ (but only when called interactively).
 
 #+BEGIN_SRC emacs-lisp
   (req-package magit
-    ;; We override the recipe to choose the main branch
-    :straight
-    (magit
-     :type git
-     :flavor melpa
-     :files ("lisp/magit*.el" "lisp/git-rebase.el" "docs/magit.texi"
-             "docs/AUTHORS.md" "LICENSE" "Documentation/magit.texi"
-             "Documentation/AUTHORS.md"
-             (:exclude "lisp/magit-libgit.el" "lisp/magit-libgit-pkg.el"
-                       "lisp/magit-section.el" "lisp/magit-section-pkg.el")
-             "magit-pkg.el")
-     :host github
-     :repo "magit/magit"
-     :branch "main")
     :bind (("C-c g" . magit-status))
     :init
     ;; This needs to be set or else magit will warn about things.
@@ -1681,24 +1667,6 @@ regular ~python-mode~ is just fine.
   ;; (req-package elsa)
   ;; (req-package flycheck-elsa
   ;;   :require flycheck elsa)
-#+END_SRC
-
-** TODO forge
-Forge seems to be broken right now
-
-#+BEGIN_SRC emacs-lisp
-  ;; Straight fails to auto-detect these dependencies, so we have to
-  ;; declare them here?
-  (req-package emacsql-sqlite)
-  (req-package closql
-    :require emacsql-sqlite)
-  (req-package ghub)
-  (req-package forge
-    :require closql ghub)
-  ;; I'm unsure how this fits into the dependency hierarchy, but I think
-  ;; it's fine because it's only a dependency at runtime, so load order
-  ;; doesn't matter.
-  (req-package sqlite3)
 #+END_SRC
 
 ** crosshairs
