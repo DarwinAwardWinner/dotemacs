@@ -424,6 +424,19 @@ This loads apache-mode and sets it up to detect the vim
   (req-package apt-sources-list)
 #+END_SRC
 
+** ass-mode
+This is for editing ASS/SSA subtitle files.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package ass-mode
+    :straight
+    (ass-mode
+     :type git
+     :flavor melpa
+     :host github
+     :repo "disbeliever/ass-mode"))
+#+END_SRC
+
 ** async
 
 #+BEGIN_SRC emacs-lisp
