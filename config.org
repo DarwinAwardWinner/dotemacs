@@ -710,49 +710,6 @@ control the diminishing of modes.
      '(diminish-init)))
 #+END_SRC
 
-** dpkg-dev-el
-This is a series of elisp provided by the Debian package dpkg-dev-el.
-Some of them have uses outside Debian, so it's nice to have a way to
-install them without dpkg.
-
-https://packages.debian.org/sid/dpkg-dev-el
-https://salsa.debian.org/debian/emacs-goodies-el/tree/master/elisp/dpkg-dev-el
-
-#+BEGIN_SRC emacs-lisp
-  (req-package debian-changelog-mode
-    :straight
-    (debian-changelog-mode
-     :type git
-     :flavor melpa
-     :host nil
-     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-     :files ("debian-changelog-mode.el")))
-  (req-package debian-control-mode
-    :straight
-    (debian-control-mode
-     :type git
-     :flavor melpa
-     :host nil
-     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-     :files ("debian-control-mode.el")))
-  (req-package debian-copyright
-    :straight
-    (debian-copyright
-     :type git
-     :flavor melpa
-     :host nil
-     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-     :files ("debian-copyright.el")))
-  (req-package readme-debian
-    :straight
-    (readme-debian
-     :type git
-     :flavor melpa
-     :host nil
-     :repo "https://salsa.debian.org/emacsen-team/dpkg-dev-el.git"
-     :files ("readme-debian.el")))
-#+END_SRC
-
 ** editorconfig
 This allows Emacs to support EditorConfig files. See
 http://editorconfig.org/
