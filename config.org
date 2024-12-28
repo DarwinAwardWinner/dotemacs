@@ -1074,6 +1074,11 @@ only enable it for local files.
     (add-hook 'magit-status-mode-hook
               'turn-on-magit-filenotify-mode-if-local))
 #+END_SRC
+*** git-modes
+
+#+BEGIN_SRC emacs-lisp
+  (req-package git-modes)
+#+END_SRC
 
 ** markdown-mode
 This mode is for editing Markdown files.
@@ -1696,7 +1701,6 @@ are incidental and which I actually wanted but forgot to configure.
 - fireplace
 - github-browse-file
 - github-clone
-- gitignore-mode
 - guide-key
 - hardhat
 - haskell-mode
@@ -1946,12 +1950,6 @@ are disabled entirely above.
 
 #+BEGIN_SRC emacs-lisp
   (setq tramp-backup-directory-alist nil)
-#+END_SRC
-
-** Use conf-mode for .gitignore files
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.gitignore\\'" . conf-mode))
 #+END_SRC
 
 ** Macro for suppressing messages
