@@ -298,7 +298,17 @@
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
-   '((org-html-inline-images)
+   '((eval and buffer-file-name
+           (not
+            (eq major-mode 'package-recipe-mode))
+           (or
+            (require 'package-recipe-mode nil t)
+            (let
+                ((load-path
+                  (cons "../package-build" load-path)))
+              (require 'package-recipe-mode nil t)))
+           (package-recipe-mode))
+     (org-html-inline-images)
      (eval add-hook 'kill-buffer-hook
            (lambda nil
              (ignore-errors
