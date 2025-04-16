@@ -787,7 +787,11 @@ http://editorconfig.org/
             ((string= "scripts" (f-filename (f-full default-directory)))
              (f-parent default-directory))
             (t nil)))
-    (setq ess-directory-function #'my-ess-directory-function))
+    (setq ess-directory-function #'my-ess-directory-function)
+    (defsubst ess-execute-screen-options-invisibly ()
+      "Run `ess-execute-screen-options' with INVISIBLY = t"
+      (ess-execute-screen-options t))
+    (add-hook 'ess-r-post-run-hook #'ess-execute-screen-options-invisibly))
 #+END_SRC
 
 ** esup
