@@ -284,6 +284,7 @@
  '(pseudo-daemon-mode t)
  '(recentf-mode t)
  '(recentf-save-file "~/.emacs.d/persistence/recentf")
+ '(remote-file-name-inhibit-locks t)
  '(require-final-newline t)
  '(safe-local-variable-values
    '((fill-column . most-positive-fixnum)
@@ -515,6 +516,7 @@
  '(use-dialog-box nil)
  '(user-mail-address "rct@thompsonclan.org")
  '(vc-follow-symlinks t)
+ '(vc-handled-backends '(Git Hg))
  '(vc-make-backup-files t)
  '(version-control t)
  '(visible-bell t)
