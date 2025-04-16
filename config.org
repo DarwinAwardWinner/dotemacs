@@ -2880,6 +2880,14 @@ word threshold above which hunk refinement will not occur.
    t)
 #+END_SRC
 
+** Turn off autopair mode in password prompts
+
+#+BEGIN_SRC emacs-lisp
+  (defun turn-off-autopair-mode ()
+    (autopair-mode -1))
+  (add-hook 'read-passwd-mode-hook #'turn-off-autopair-mode)
+#+END_SRC
+
 
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
