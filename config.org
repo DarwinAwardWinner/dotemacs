@@ -1628,7 +1628,13 @@ regular ~python-mode~ is just fine.
 ** ws-butler
 
 #+BEGIN_SRC emacs-lisp
-  (req-package ws-butler)
+  (req-package ws-butler
+    :straight
+    (ws-butler
+     :type git
+     :host github
+     :repo "lewang/ws-butler"
+     :branch "master"))
 #+END_SRC
 
 ** yaml-mode
