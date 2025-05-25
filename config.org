@@ -705,6 +705,9 @@ http://editorconfig.org/
 #+END_SRC
 
 ** ess
+ESS: Emacs Speaks Statistics
+
+For editing R code, mainly
 
 #+BEGIN_SRC emacs-lisp
   (req-package ess
@@ -714,6 +717,8 @@ http://editorconfig.org/
     ;; TRAMP causes problems
     (require 'tramp)
     :config
+    ;; Ensure that loading ess-r-package also loads ess-rd
+    (eval-after-load 'ess-r-package '(require 'ess-rd))
     ;; Open R profile file in R-mode
     (add-to-list 'auto-mode-alist '("\\.Rprofile\\'" . R-mode))
     ;; (setq ess-default-style 'OWN)
