@@ -1014,6 +1014,13 @@ in normal operation.
     :require magit
     :commands (magit-process-file))
 #+END_SRC
+*** magit-ido
+
+#+BEGIN_SRC emacs-lisp
+  (req-package magit-ido
+    :require magit)
+#+END_SRC
+
 *** magit-filenotify
 This package allows magit to refresh the status buffer whenever a file
 is modified. This mode causes problems on remote (TRAMP) files, so we
