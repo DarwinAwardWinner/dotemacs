@@ -545,7 +545,8 @@ Emacs Lisp packages.
 ** cask
 
 #+BEGIN_SRC emacs-lisp
-  (req-package cask)
+  (req-package cask
+    :require package-build)
   (req-package cask-mode)
 #+END_SRC
 
