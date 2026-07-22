@@ -285,6 +285,17 @@
      ("melpa" . "https://melpa.org/packages/")))
  '(paradox-execute-asynchronously t)
  '(paradox-github-token t)
+ '(password-word-equivalents
+   '("Microsoft verification code" "password" "passcode" "passphrase"
+     "pass phrase" "pin" "decryption key" "encryption key" "암호"
+     "パスワード" "ପ୍ରବେଶ ସଙ୍କେତ" "ពាក្យសម្ងាត់" "adgangskode" "contraseña"
+     "contrasenya" "geslo" "hasło" "heslo" "iphasiwedi" "jelszó"
+     "lösenord" "lozinka" "mật khẩu" "mot de passe" "parola"
+     "pasahitza" "passord" "passwort" "pasvorto" "salasana" "senha"
+     "slaptažodis" "wachtwoord" "كلمة السر" "ססמה" "лозинка" "пароль"
+     "गुप्तशब्द" "शब्दकूट" "પાસવર્ડ" "సంకేతపదము" "ਪਾਸਵਰਡ" "ಗುಪ್ತಪದ"
+     "கடவுச்சொல்" "അടയാളവാക്ക്" "গুপ্তশব্দ" "পাসওয়ার্ড" "රහස්පදය" "密码"
+     "密碼"))
  '(prescient-filter-method '(literal regexp initialism fuzzy))
  '(prescient-persist-mode t)
  '(prescient-save-file "~/.emacs.d/persistence/prescient-save.el")
@@ -520,6 +531,8 @@
                  magit-key-mode magit-log-edit-mode ess-help-mode))
  '(tool-bar-mode nil)
  '(tramp-default-method "sftp")
+ '(tramp-password-prompt-regexp
+   "\\(?:^.*\\(\\(?:Microsoft verification code\\|adgangskode\\|contrase\\(?:\\(?:ny\\|ñ\\)a\\)\\|decryption key\\|encryption key\\|geslo\\|h\\(?:\\(?:asł\\|esl\\)o\\)\\|iphasiwedi\\|jelszó\\|l\\(?:ozinka\\|ösenord\\)\\|m\\(?:ot de passe\\|ật khẩu\\)\\|p\\(?:a\\(?:rola\\|s\\(?:ahitza\\|s\\(?: phrase\\|code\\|ord\\|phrase\\|wor[dt]\\)\\|vorto\\)\\)\\|in\\)\\|s\\(?:alasana\\|enha\\|laptažodis\\)\\|wachtwoord\\|лозинка\\|пароль\\|ססמה\\|كلمة السر\\|गुप्तशब्द\\|शब्दकूट\\|গুপ্তশব্দ\\|পাসওয়ার্ড\\|ਪਾਸਵਰਡ\\|પાસવર્ડ\\|ପ୍ରବେଶ ସଙ୍କେତ\\|கடவுச்சொல்\\|సంకేతపదము\\|ಗುಪ್ತಪದ\\|അടയാളവാക്ക്\\|රහස්පදය\\|ពាក្យសម្ងាត់\\|パスワード\\|密[码碼]\\|암호\\)\\).*[:៖︓﹕：]?\0?[[:blank:]]*\\)")
  '(tramp-persistency-file-name "~/.emacs.d/persistence/tramp")
  '(tramp-remote-path
    '(tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin"
