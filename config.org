@@ -750,10 +750,16 @@ For editing R code, mainly
              (f-parent default-directory))
             (t nil)))
     (setq ess-directory-function #'my-ess-directory-function)
+    ;; Silently auto-update width in R console buffers
     (defsubst ess-execute-screen-options-invisibly ()
       "Run `ess-execute-screen-options' with INVISIBLY = t"
       (ess-execute-screen-options t))
-    (add-hook 'ess-r-post-run-hook #'ess-execute-screen-options-invisibly))
+    (add-hook 'ess-r-post-run-hook #'ess-execute-screen-options-invisibly)
+    ;; Tweak jit-lock settings only in R buffers
+    (defun ess-r-setup-jit-lock ()
+      (setq-local
+       jit-lock-defer-time 0.25))
+    (add-hook 'ess-r-mode-hook #'ess-r-setup-jit-lock))
 #+END_SRC
 
 ** esup
