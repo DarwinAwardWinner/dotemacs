@@ -5,7 +5,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(S-pager "cat")
- '(Vhl/highlight-zero-width-ranges t)
  '(abbrev-file-name "~/.emacs.d/persistence/abbrev_defs")
  '(ac-comphist-file "~/.emacs.d/persistence/ac-comphist.dat")
  '(amx-mode t)
@@ -557,6 +556,7 @@
  '(vc-handled-backends '(Git Hg))
  '(vc-make-backup-files t)
  '(version-control t)
+ '(vhl/highlight-zero-width-ranges t)
  '(visible-bell t)
  '(void-text-area-pointer 'text)
  '(volatile-highlights-mode t)
