@@ -1064,6 +1064,19 @@ Ring the bell by flashing the mode line of the active window.
   (req-package mode-line-bell)
 #+END_SRC
 
+** nextflow-mode
+
+#+BEGIN_SRC emacs-lisp
+  (req-package nextflow-mode
+    :straight
+    (nextflow-mode
+     :type git
+     :flavor melpa
+     :files ("nextflow-mode.el")
+     :host github
+     :repo "edmundmiller/nextflow-mode"))
+#+END_SRC
+
 ** noflet
 Noflet provides an enhanced version of ~flet~, and more importantly,
 provides proper indentation support for flet-like macros.
