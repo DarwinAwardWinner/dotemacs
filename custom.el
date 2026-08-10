@@ -520,6 +520,7 @@
  '(sentence-end-double-space nil)
  '(show-paren-mode t)
  '(sml-modeline-mode t)
+ '(split-height-threshold nil)
  '(sx-cache-directory "~/.emacs.d/persistence/sx")
  '(sx-default-site "stackoverflow")
  '(tempbuf-temporary-major-modes
