@@ -525,8 +525,7 @@ Emacs Lisp packages.
      :files (:defaults "bin" "buttercup-pkg.el")
      :host github
      :repo "jorgenschaefer/emacs-buttercup"
-     :fork (:host github
-                  :repo "DarwinAwardWinner/emacs-buttercup")))
+     :fork t))
 #+END_SRC
 
 ** caddyfile-mode
@@ -1496,8 +1495,7 @@ regular ~python-mode~ is just fine.
      :flavor melpa
      :host github
      :repo "aspiers/smooth-scrolling"
-     :fork (:host github
-                  :repo "DarwinAwardWinner/smooth-scrolling")))
+     :fork t))
 #+END_SRC
 
 ** snakemake
