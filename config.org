@@ -1739,6 +1739,10 @@ avoid doing so if Emacs says it's noninteractive.
   (without-user-input
     (req-package-finish))
 #+END_SRC
+
+All code after this point can assume that all the declared packages
+are now installed and ready for use (either loaded or with autoloads
+fully set up). (Except for noflet, see above.)
 * Set up and load a separate custom file
 This is the file where everything set via =M-x customize= goes.
 
