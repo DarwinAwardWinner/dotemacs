@@ -1036,6 +1036,12 @@ only enable it for local files.
 #+BEGIN_SRC emacs-lisp
   (req-package git-modes)
 #+END_SRC
+*** magit-ido
+Needed for ido support in magit.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package magit-ido)
+#+END_SRC
 
 ** markdown-mode
 This mode is for editing Markdown files.
