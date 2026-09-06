@@ -19,6 +19,21 @@
 ;;
 ;;; Code:
 
+;; Suppress "Missing lexical-binding warnings for "org-loaddefs.el".
+;; This file doesn't need a lexical binding cookie.
+(require 'warnings)
+(require 'nadvice)
+(define-advice display-warning
+    (:before-until (type message &rest _args) spurious-lexical-binding)
+  "Silence spurious lexical-binding warnings.
+
+org-loaddefs.el and custom.el are auto-generated files that don't need
+lexical binding cookies, so we suppress those warnings."
+  (and (listp type)
+       (memq 'missing-lexbind-cookie type)
+       (stringp message)
+       (string-match-p "\\(custom\\|org-loaddefs\\)\\.el" message)))
+
 ;; Bootstrap straight package manager
 (defvar bootstrap-version)
 (let ((bootstrap-file
