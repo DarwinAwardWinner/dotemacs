@@ -1072,8 +1072,23 @@ Ring the bell by flashing the mode line of the active window.
 Noflet provides an enhanced version of ~flet~, and more importantly,
 provides proper indentation support for flet-like macros.
 
+For some reason, calling ~req-package~ on noflet simply does nothing
+during init, but it works after init. So we just do it after init. I
+have no idea why this is the case.
+
 #+BEGIN_SRC emacs-lisp
-  (req-package noflet)
+  (eval-after-init
+   '(progn
+      (req-package noflet
+        :demand
+        :straight
+        (emacs-noflet
+         :type git
+         :flavor melpa
+         :host github
+         :repo "nicferrier/emacs-noflet"
+         :fork (:branch "interactive")))
+      (req-package-finish)))
 #+END_SRC
 
 ** occur-context-resize
