@@ -5,7 +5,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(S-pager "cat")
- '(Vhl/highlight-zero-width-ranges t)
  '(abbrev-file-name "~/.emacs.d/persistence/abbrev_defs")
  '(ac-comphist-file "~/.emacs.d/persistence/ac-comphist.dat")
  '(amx-mode t)
@@ -580,12 +579,13 @@
  '(undo-tree-incompatible-major-modes '(term-mode eshell-mode))
  '(undo-tree-limit 80000)
  '(uniquify-buffer-name-style 'post-forward-angle-brackets nil (uniquify))
- '(uniquify-trailing-separator-p nil)
+ '(uniquify-trailing-separator-flag nil)
  '(use-dialog-box nil)
  '(user-mail-address "rct@thompsonclan.org")
  '(vc-follow-symlinks t)
  '(vc-make-backup-files t)
  '(version-control t)
+ '(vhl/highlight-zero-width-ranges t)
  '(visible-bell t)
  '(void-text-area-pointer 'text)
  '(volatile-highlights-mode t)
@@ -599,7 +599,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :extend nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 110 :width normal :foundry "SRC" :family "Hack"))))
- '(auto-dim-other-buffers-face ((t (:background "gray97"))))
+ '(auto-dim-other-buffers ((t (:background "gray97"))))
  '(fixed-pitch ((t nil)))
  '(git-gutter+-added ((t (:foreground "green4" :weight bold))))
  '(git-gutter+-deleted ((t (:foreground "red4" :weight bold))))
