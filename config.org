@@ -710,6 +710,14 @@ control the diminishing of modes.
      '(diminish-init)))
 #+END_SRC
 
+** Eask accessories
+
+#+BEGIN_SRC emacs-lisp
+  (req-package easky)
+  (req-package eask-mode)
+#+END_SRC
+
+
 ** editorconfig
 This allows Emacs to support EditorConfig files. See
 http://editorconfig.org/
