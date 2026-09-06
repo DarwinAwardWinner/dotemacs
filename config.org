@@ -1813,13 +1813,13 @@ themselves.
         ;; noflet after this is merged:
         ;; https://github.com/nicferrier/emacs-noflet/pull/17
         (define-advice org-metaleft (:around (orig-fun &rest args) osx-command)
-          (flet ((backward-word (&rest args)))
+          (cl-flet ((backward-word (&rest args)))
             (defun backward-word (&rest args)
               (interactive)
               (call-interactively #'move-beginning-of-line))
             (apply orig-fun args)))
         (define-advice org-metaright (:around (orig-fun &rest args) osx-command)
-          (flet ((forward-word (&rest args)))
+          (cl-flet ((forward-word (&rest args)))
             (defun forward-word (&rest args)
               (interactive)
               (call-interactively #'move-end-of-line))
@@ -1923,7 +1923,7 @@ are disabled entirely above.
   This temporarily binds the `message' function to `ignore' while
   executing BODY."
     (declare (indent 0))
-    `(noflet ((message (&rest ignore) nil))
+    `(cl-flet ((message (&rest ignore) nil))
        ,@body))
 #+END_SRC
 
@@ -2306,7 +2306,7 @@ use ~call-process~ instead.
   so we use `call-process' instead. This is fine because both the
   OS X \"open\" and unix \"xdg-email\" commands exit
   immediately."
-    (noflet ((start-process (name buffer program &rest program-args)
+    (cl-flet ((start-process (name buffer program &rest program-args)
                             (apply #'call-process program nil buffer nil program-args)))
       (apply orig-fun args)))
 #+END_SRC
