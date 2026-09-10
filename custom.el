@@ -105,6 +105,7 @@
      "http://newsboyhat.livejournal.com/data/rss"
      "http://sarahsgeologicadventures.blogspot.com/feeds/posts/default"))
  '(enable-recursive-minibuffers t)
+ '(epg-pinentry-mode 'loopback)
  '(ess-indent-with-fancy-comments nil)
  '(ess-r-pager "cat")
  '(ess-style 'OWN)
@@ -128,10 +129,12 @@
  '(github-clone-url-slot :clone-url)
  '(global-adjust-parens-mode t)
  '(global-anzu-mode t)
+ '(global-auto-revert-mode t)
  '(global-git-gutter+-mode t)
  '(global-git-gutter-mode t)
  '(global-hardhat-mode t)
  '(global-hl-line-mode t)
+ '(global-org-modern-mode t)
  '(global-undo-tree-mode t)
  '(hardhat-fullpath-protected-regexps
    '("~/\\.cask/" "~/\\.emacs\\.d/\\.cask/" "~/\\.emacs\\.d/elpa/"
@@ -188,15 +191,19 @@
  '(ido-complete-space-or-hyphen-mode t)
  '(ido-confirm-unique-completion t)
  '(ido-cr+-disable-list
-   '(read-file-name-internal read-buffer todo-add-category
+   '(read-file-name-internal read-buffer internal-complete-buffer
+                             todo-add-category
                              gnus-emacs-completing-read
                              gnus-iswitchb-completing-read
                              grep-read-files
                              magit-builtin-completing-read
                              ess-completing-read Info-read-node-name
-                             tmm-prompt dired-do-rename
-                             org-tags-completion-function
-                             org-olpath-completing-read))
+                             tmm-prompt org-tags-completion-function
+                             ffap-read-file-or-url
+                             ffap-read-file-or-url-internal
+                             sly-read-symbol-name
+                             org-olpath-completing-read
+                             dired-do-rename))
  '(ido-enable-flex-matching t)
  '(ido-enter-matching-directory 'first)
  '(ido-everywhere t)
@@ -258,6 +265,9 @@
  '(org-babel-load-languages '((emacs-lisp . t) (shell . t) (R . t) (python . t)))
  '(org-bullets-bullet-list '("◉" "✸" "✿"))
  '(org-completion-use-ido t)
+ '(org-fold-show-context-detail
+   '((agenda . local) (bookmark-jump . canonical) (isearch . canonical)
+     (default . canonical)))
  '(org-hide-emphasis-markers t)
  '(org-html-allow-name-attribute-in-anchors t)
  '(org-html-infojs-options
@@ -265,8 +275,13 @@
      (toc . :with-toc) (ftoc . "0") (tdepth . "max") (sdepth . "max")
      (mouse . "underline") (buttons . "0") (ltoc . "1")
      (up . :html-link-up) (home . :html-link-home)))
+ '(org-html-mathjax-template
+   "<script>\12  window.MathJax = {\12    tex: {\12      packages: {'[+]': ['xfrac', 'fontspec']},\12      ams: {\12        multlineWidth: '%MULTLINEWIDTH'\12      },\12      tags: '%TAGS',\12      tagSide: '%TAGSIDE',\12      tagIndent: '%TAGINDENT'\12    },\12    chtml: {\12      scale: %SCALE,\12      displayAlign: '%ALIGN',\12      displayIndent: '%INDENT'\12    },\12    svg: {\12      scale: %SCALE,\12      displayAlign: '%ALIGN',\12      displayIndent: '%INDENT'\12    },\12    output: {\12      font: '%FONT',\12      displayOverflow: '%OVERFLOW'\12    }\12  };\12</script>\12\12<script\12  id=\"MathJax-script\"\12  async\12  src=\"%PATH\">\12</script>")
  '(org-html-use-infojs 'when-configured)
  '(org-image-actual-width '(400))
+ '(org-modern-hide-stars " ")
+ '(org-safe-remote-resources
+   '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(org-sidebar-tree-jump-fn 'org-sidebar-tree-jump-source)
  '(org-special-ctrl-a/e t)
  '(org-startup-folded t)
@@ -298,7 +313,7 @@
  '(prescient-filter-method '(literal regexp initialism fuzzy))
  '(prescient-persist-mode t)
  '(prescient-save-file "~/.emacs.d/persistence/prescient-save.el")
- '(pretty-symbol-categories (lambda relational nil))
+ '(pretty-symbol-categories '(lambda))
  '(pretty-symbol-patterns
    '((955 lambda "\\<lambda\\>"
           (emacs-lisp-mode inferior-lisp-mode lisp-mode scheme-mode
@@ -344,6 +359,35 @@
  '(safe-local-variable-values
    '((elisp-lint-indent-specs (git-gutter:awhen . 1))
      (checkdoc-allow-quoting-nil-and-t . t)
+   '((eval and buffer-file-name
+           (not (eq major-mode 'package-recipe-mode))
+           (or (require 'package-recipe-mode nil t)
+               (let ((load-path (cons "../package-build" load-path)))
+                 (require 'package-recipe-mode nil t)))
+           (package-recipe-mode))
+     (org-html-inline-images)
+     (eval add-hook 'kill-buffer-hook
+           (lambda nil (ignore-errors (clean-kill-ring))) nil t)
+     (eval add-hook 'kill-buffer-hook
+           (lambda nil
+             (mapc (lambda (type) (gui-set-selection type ""))
+                   '(PRIMARY SECONDARY CLIPBOARD)))
+           nil t)
+     (eval add-hook 'kill-buffer-hook
+           (apply-partially #'mapc
+                            (lambda (type)
+                              (add-hook 'kill-buffer-hook
+                                        (apply-partially
+                                         #'gui-set-selection type "")
+                                        nil t))
+                            '(PRIMARY SECONDARY CLIPBOARD))
+           nil t)
+     (eval mapc
+           (lambda (type)
+             (add-hook 'kill-buffer-hook
+                       (apply-partially #'gui-set-selection type "")
+                       nil t))
+           '(PRIMARY SECONDARY CLIPBOARD))
      (fill-column . most-positive-fixnum)
      (eval add-hook 'after-save-hook
            (lambda nil
@@ -515,6 +559,7 @@
  '(save-place-mode t nil (saveplace))
  '(savehist-file "~/.emacs.d/persistence/history")
  '(savehist-mode t)
+ '(scroll-bar-mode nil)
  '(selectrum-prescient-mode t)
  '(selectrum-show-indices nil)
  '(send-mail-function 'mailclient-send-it)
@@ -522,6 +567,7 @@
  '(show-paren-mode t)
  '(sml-modeline-mode t)
  '(split-height-threshold nil)
+ '(straight-host-usernames '((github . "DarwinAwardWinner")))
  '(sx-cache-directory "~/.emacs.d/persistence/sx")
  '(sx-default-site "stackoverflow")
  '(tempbuf-temporary-major-modes
@@ -551,7 +597,7 @@
  '(undo-tree-incompatible-major-modes '(term-mode eshell-mode))
  '(undo-tree-limit 80000)
  '(uniquify-buffer-name-style 'post-forward-angle-brackets nil (uniquify))
- '(uniquify-trailing-separator-p nil)
+ '(uniquify-trailing-separator-flag nil)
  '(use-dialog-box nil)
  '(user-mail-address "rct@thompsonclan.org")
  '(vc-follow-symlinks t)
@@ -571,6 +617,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 110 :width normal :foundry "SRC" :family "Hack"))))
  '(auto-dim-other-buffers ((t (:background "gray97"))))
  '(fixed-pitch ((t nil)))
  '(git-gutter+-added ((t (:foreground "green4" :weight bold))))
@@ -585,6 +632,7 @@
  '(highlight-function-calls-face ((t (:inherit font-lock-function-name-face :foreground "blue4" :underline t))))
  '(hl-line ((t (:background "azure"))))
  '(indent-guide-face ((t (:foreground "gray" :slant normal))))
+ '(italic ((t (:slant italic))))
  '(magit-item-highlight ((t nil)))
  '(org-superstar-leading ((t (:foreground "gray95" :inherit default))))
  '(popup-face ((t (:inherit default :background "lightgray" :foreground "black")))))

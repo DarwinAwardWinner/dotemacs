@@ -55,9 +55,9 @@ be installed /before/ loading this file. Otherwise, loading this file
 first would auto-load the built-in version of Org-mode and prevent use
 of the newly-installed version until Emacs was restarted.
 
-Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https://github.com/raxod502/straight.el][Straight package
-manager]], which it uses to install Org mode. Here we complete the setup
-so Straight can be used to manage all pacakges below.
+Note that the [[*Bootstrappping][bootstrapping]] code also installs the [[https://github.com/radian-software/straight.el][Straight package
+manager]], which it uses to install Org mode. Here we complete the
+setup so Straight can be used to manage all pacakges below.
 
 * Early Init File
 The [[file:early-init.el::;;; early-init.el --- -*- lexical-binding: t -*-][=early-init.el=]] file contains any code that must be executed early
@@ -84,6 +84,18 @@ first line of Emacs Lisp:
 This section sets up a functions and other aspects of the environment
 that will be needed later in the configuration, so they need to be
 defined/prepared up front.
+
+** Set up and load a separate custom file
+This is the file where everything set via =M-x customize= goes. This
+needs to be loaded before the package configuration section because
+req-package needs to know my Guthub username.
+
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (if (file-exists-p custom-file)
+      (load custom-file)
+    (display-warning 'init "Could not load custom file"))
+#+END_SRC
 
 ** Don't ask about file locks in non-interactive sessions
 If multiple Emacsen are starting up at the same time, one of them may
@@ -185,7 +197,9 @@ does /not/ signal an error, it simply returns).
     (declare (indent 0))
     `(without-functions (read-event)
        (without-minibuffer
-         ,@body)))
+         ;; Tell BODY that it is running noninteractively
+         (let ((noninteractive t))
+           ,@body))))
 #+END_SRC
 
 ** Start emacs server
@@ -208,7 +222,7 @@ does /not/ signal an error, it simply returns).
  #+END_SRC
 ** Tell use-package to install packages using straight
 This tells ~use-package~ (and by extension ~req-package~) to use
-Straight to install packages by default. See [[https://github.com/raxod502/straight.el#integration-with-use-package][here]] for more
+Straight to install packages by default. See [[https://github.com/radian-software/straight.el#integration-with-use-package][here]] for more
 information.
 
 #+BEGIN_SRC emacs-lisp
@@ -217,8 +231,8 @@ information.
 
 ** Install req-package
 This config uses [[https://github.com/edvorg/req-package][~req-package~]] to configure packages, using Straight
-to install them automatically. So we first need to install
-~req-package~ and its dependencies (particularly [[https://github.com/jwiegley/use-package][~use-package~]]).
+to install them automatically. So we first need to install ~req-package~
+and its dependencies (particularly [[https://github.com/jwiegley/use-package][~use-package~]]).
 
 #+BEGIN_SRC emacs-lisp
   (straight-use-package
@@ -422,6 +436,19 @@ This loads apache-mode and sets it up to detect the vim
   (req-package apt-sources-list)
 #+END_SRC
 
+** ass-mode
+This is for editing ASS/SSA subtitle files.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package ass-mode
+    :straight
+    (ass-mode
+     :type git
+     :flavor melpa
+     :host github
+     :repo "disbeliever/ass-mode"))
+#+END_SRC
+
 ** async
 
 #+BEGIN_SRC emacs-lisp
@@ -510,8 +537,7 @@ Emacs Lisp packages.
      :files (:defaults "bin" "buttercup-pkg.el")
      :host github
      :repo "jorgenschaefer/emacs-buttercup"
-     :fork (:host github
-                  :repo "DarwinAwardWinner/emacs-buttercup")))
+     :fork t))
 #+END_SRC
 
 ** caddyfile-mode
@@ -530,7 +556,8 @@ Emacs Lisp packages.
 ** cask
 
 #+BEGIN_SRC emacs-lisp
-  (req-package cask)
+  (req-package cask
+    :require package-build)
   (req-package cask-mode)
 #+END_SRC
 
@@ -695,6 +722,13 @@ control the diminishing of modes.
      '(diminish-init)))
 #+END_SRC
 
+** Eask accessories
+
+#+BEGIN_SRC emacs-lisp
+  (req-package easky)
+  (req-package eask-mode)
+#+END_SRC
+
 ** editorconfig
 This allows Emacs to support EditorConfig files. See
 http://editorconfig.org/
@@ -778,16 +812,16 @@ For editing R code, mainly
 ** flycheck
 
 #+BEGIN_SRC emacs-lisp
-  (req-package flycheck
-    :require f
-    :config
-    ;; (or
-    ;;  (and (stringp flycheck-cwl-schema-path)
-    ;;       (f-exists-p flycheck-cwl-schema-path))
-    ;;  (setq flycheck-cwl-schema-path
-    ;;        (car (f-glob "~/.pyenv/versions/*/lib/python*/site-packages/cwltool/schemas/v1.0/CommonWorkflowLanguage.yml")))
-    ;;  (display-warning 'init "Could not find a CWL schema. See https://qiita.com/tm_tn/items/6c9653847412d115bec0 for more info."))
-    )
+  ;; (req-package flycheck
+  ;;   :require f
+  ;;   :config
+  ;;   ;; (or
+  ;;   ;;  (and (stringp flycheck-cwl-schema-path)
+  ;;   ;;       (f-exists-p flycheck-cwl-schema-path))
+  ;;   ;;  (setq flycheck-cwl-schema-path
+  ;;   ;;        (car (f-glob "~/.pyenv/versions/*/lib/python*/site-packages/cwltool/schemas/v1.0/CommonWorkflowLanguage.yml")))
+  ;;   ;;  (display-warning 'init "Could not find a CWL schema. See https://qiita.com/tm_tn/items/6c9653847412d115bec0 for more info."))
+  ;;   )
 #+END_SRC
 
 ** git-gutter
@@ -1000,12 +1034,6 @@ The defvar suppresses Magit upgrade instructions. The magit-init
 advice causes Magit to display the status buffer for an new repository
 immediately after a ~git init~ (but only when called interactively).
 
-It's nice to have the added features of GitHub's ~hub~ command, but
-magit makes a lot of calls to git, and so redirectig it to hub all the
-time slows it down considerably. So we use advice to tell only
-~magit-git-command~ to use hub if it is available. This allows the
-user to interactively invoke hub commands without slowing down Magit
-in normal operation.
 #+BEGIN_SRC emacs-lisp
   (req-package magit
     :bind (("C-c g" . magit-status))
@@ -1051,6 +1079,17 @@ only enable it for local files.
     (add-hook 'magit-status-mode-hook
               'turn-on-magit-filenotify-mode-if-local))
 #+END_SRC
+*** git-modes
+
+#+BEGIN_SRC emacs-lisp
+  (req-package git-modes)
+#+END_SRC
+*** magit-ido
+Needed for ido support in magit.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package magit-ido)
+#+END_SRC
 
 ** markdown-mode
 This mode is for editing Markdown files.
@@ -1094,8 +1133,23 @@ Ring the bell by flashing the mode line of the active window.
 Noflet provides an enhanced version of ~flet~, and more importantly,
 provides proper indentation support for flet-like macros.
 
+For some reason, calling ~req-package~ on noflet simply does nothing
+during init, but it works after init. So we just do it after init. I
+have no idea why this is the case.
+
 #+BEGIN_SRC emacs-lisp
-  (req-package noflet)
+  (eval-after-init
+   '(progn
+      (req-package noflet
+        :demand
+        :straight
+        (emacs-noflet
+         :type git
+         :flavor melpa
+         :host github
+         :repo "nicferrier/emacs-noflet"
+         :fork (:branch "interactive")))
+      (req-package-finish)))
 #+END_SRC
 
 ** occur-context-resize
@@ -1135,36 +1189,6 @@ used on a headline without one.
     :config
     ;; Custom src-block behaviors
     (progn
-      ;; (defun org-in-src-block-p (&optional inside)
-      ;;       "Whether point is in a code source block.
-
-      ;; When INSIDE is non-nil, don't consider we are within a src block
-      ;; when point is at #+BEGIN_SRC or #+END_SRC."
-      ;;       (save-match-data
-      ;;         (let* ((elem (org-element-at-point))
-      ;;                (elem-type (car elem))
-      ;;                (props (cadr elem))
-      ;;                (end (plist-get props :end))
-      ;;                (pb (plist-get props :post-blank))
-      ;;                (content-end
-      ;;                 (save-excursion
-      ;;                   (goto-char end)
-      ;;                   (forward-line (- pb))
-      ;;                   (point)))
-      ;;                (case-fold-search t))
-      ;;           (and
-      ;;            ;; Elem is a src block
-      ;;            (eq elem-type 'src-block)
-      ;;            ;; Make sure point is not on one of the blank lines after the
-      ;;            ;; element.
-      ;;            (< (point) content-end)
-      ;;            ;; If INSIDE is non-nil, then must not be at block delimiter
-      ;;            (not
-      ;;             (and
-      ;;              inside
-      ;;              (save-excursion
-      ;;                (beginning-of-line)
-      ;;                (looking-at ".*#\\+\\(begin\\|end\\)_src"))))))))
       (defun org-insert-src-block (src-code-type)
         "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
         (interactive
@@ -1185,7 +1209,9 @@ used on a headline without one.
       (defun org-insert-or-edit-src-block (src-code-type &optional interactive-call)
         "Insert a source code block in org-mode or edit an existing one."
         (interactive (list nil t))
-        (if (org-in-src-block-p)
+        (if (and (org-in-src-block-p)
+                 ;; Matching the logic in `org-edit-src-code'
+                 (org-src--on-datum-p (org-element-at-point)))
             (org-edit-src-code)
           (if interactive-call
               (call-interactively 'org-insert-src-block)
@@ -1325,8 +1351,12 @@ HTML less random. It sets the seed to a specific value before
 executing the export, which means that it should always generate the
 same anchors IDs given the same set of headlines.
 #+BEGIN_SRC emacs-lisp
-  (defmacro with-reproducible-rng (seed &rest body)
-    "Execute BODY with reproducible RNG.
+  (req-package ox-html
+    :require org
+    :straight nil
+    :config
+    (defmacro with-reproducible-rng (seed &rest body)
+      "Execute BODY with reproducible RNG.
 
   Before executing BODY, the random number generator will be
   initialized with SEED, which should be a string (see `random').
@@ -1338,28 +1368,28 @@ same anchors IDs given the same set of headlines.
   \(There does not seem to be a way to save and restore a specific
   RNG state, so the RNG state after executing this macro will not
   be the same as it was prior.)"
-    (declare (indent 1))
-    `(unwind-protect
-         (progn
-           (random (or ,seed ""))
-           ,@body)
-       (random t)))
+      (declare (indent 1))
+      `(unwind-protect
+           (progn
+             (random (or ,seed ""))
+             ,@body)
+         (random t)))
 
-  (define-advice org-html-export-to-html (:around (orig-fun &rest args) reproducible-rng)
-    "Use a reproducible RNG stream for HTML export.
+    (define-advice org-html-export-to-html (:around (orig-fun &rest args) reproducible-rng)
+      "Use a reproducible RNG stream for HTML export.
 
   This results in the same pseudo-random anchor IDs for
   the same set of headlines every time."
-    (with-reproducible-rng "org-html-export"
-      (apply orig-fun args)))
+      (with-reproducible-rng "org-html-export"
+        (apply orig-fun args))))
 #+END_SRC
 
-*** org-superstar
+*** CANCELLED org-superstar
 
 #+BEGIN_SRC emacs-lisp
-  (req-package org-superstar
-    :require org
-    :init (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+  ;; (req-package org-superstar
+  ;;   :require org
+  ;;   :init (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 #+END_SRC
 
 *** org-sidebar
@@ -1437,6 +1467,12 @@ This doesn't seem to work properly in Emacs 28.
 #+BEGIN_SRC emacs-lisp
   (when (version<= "27.1" emacs-version)
     (req-package org-special-block-extras))
+#+END_SRC
+
+*** org-modern
+
+#+BEGIN_SRC emacs-lisp
+  (req-package org-modern)
 #+END_SRC
 
 
@@ -1531,12 +1567,6 @@ regular ~python-mode~ is just fine.
   (req-package slime)
 #+END_SRC
 
-** sml-modeline
-
-#+BEGIN_SRC emacs-lisp
-  (req-package sml-modeline)
-#+END_SRC
-
 ** smooth-scrolling
 
 #+BEGIN_SRC emacs-lisp
@@ -1547,8 +1577,7 @@ regular ~python-mode~ is just fine.
      :flavor melpa
      :host github
      :repo "aspiers/smooth-scrolling"
-     :fork (:host github
-                  :repo "DarwinAwardWinner/smooth-scrolling")))
+     :fork t))
 #+END_SRC
 
 ** snakemake
@@ -1689,19 +1718,6 @@ regular ~python-mode~ is just fine.
   ;;   :require flycheck elsa)
 #+END_SRC
 
-** TODO forge
-
-#+BEGIN_SRC emacs-lisp
-  ;; Straight fails to auto-detect these dependencies, so we have to
-  ;; declare them here?
-  ;; (req-package emacsql-sqlite)
-  ;; (req-package closql
-  ;;   :require emacsql-sqlite)
-  ;; (req-package ghub)
-  ;; (req-package forge
-  ;;   :require closql ghub)
-#+END_SRC
-
 ** crosshairs
 
 #+BEGIN_SRC emacs-lisp
@@ -1729,7 +1745,6 @@ are incidental and which I actually wanted but forgot to configure.
 - fireplace
 - github-browse-file
 - github-clone
-- gitignore-mode
 - guide-key
 - hardhat
 - haskell-mode
@@ -1775,19 +1790,18 @@ of code below is run. At this time, ~req-package~ resolves any
 dependencies between packages and then installs and loads them in the
 correct order to satisfy those dependencies.
 
-#+BEGIN_SRC emacs-lisp
-  (req-package-finish)
-#+END_SRC
-* Set up and load a separate custom file
-This is the file where everything set via =M-x customize= goes.
+We use ~without-user-input~ here mainly because sometimes packages (e.g.
+sqlite3) want to ask the user questions during install, but they will
+avoid doing so if Emacs says it's noninteractive.
 
 #+BEGIN_SRC emacs-lisp
-  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-  (if (f-exists? custom-file)
-      (load custom-file)
-    (display-warning 'init "Could not load custom file"))
+  (without-user-input
+    (req-package-finish))
 #+END_SRC
 
+All code after this point can assume that all the declared packages
+are now installed and ready for use (either loaded or with autoloads
+fully set up). (Except for noflet, see above.)
 * Tweaks
 This section contains a set of tweaks to Emacs behavior that are not
 specific to a single package and cannot be accomplished by customizing
@@ -1875,13 +1889,13 @@ themselves.
         ;; noflet after this is merged:
         ;; https://github.com/nicferrier/emacs-noflet/pull/17
         (define-advice org-metaleft (:around (orig-fun &rest args) osx-command)
-          (flet ((backward-word (&rest args)))
+          (cl-flet ((backward-word (&rest args)))
             (defun backward-word (&rest args)
               (interactive)
               (call-interactively #'move-beginning-of-line))
             (apply orig-fun args)))
         (define-advice org-metaright (:around (orig-fun &rest args) osx-command)
-          (flet ((forward-word (&rest args)))
+          (cl-flet ((forward-word (&rest args)))
             (defun forward-word (&rest args)
               (interactive)
               (call-interactively #'move-end-of-line))
@@ -1976,12 +1990,6 @@ are disabled entirely above.
   (setq tramp-backup-directory-alist nil)
 #+END_SRC
 
-** Use conf-mode for .gitignore files
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.gitignore\\'" . conf-mode))
-#+END_SRC
-
 ** Macro for suppressing messages
 
 #+BEGIN_SRC emacs-lisp
@@ -1991,7 +1999,7 @@ are disabled entirely above.
   This temporarily binds the `message' function to `ignore' while
   executing BODY."
     (declare (indent 0))
-    `(noflet ((message (&rest ignore) nil))
+    `(cl-flet ((message (&rest ignore) nil))
        ,@body))
 #+END_SRC
 
@@ -2374,7 +2382,7 @@ use ~call-process~ instead.
   so we use `call-process' instead. This is fine because both the
   OS X \"open\" and unix \"xdg-email\" commands exit
   immediately."
-    (noflet ((start-process (name buffer program &rest program-args)
+    (cl-flet ((start-process (name buffer program &rest program-args)
                             (apply #'call-process program nil buffer nil program-args)))
       (apply orig-fun args)))
 #+END_SRC
@@ -2882,6 +2890,118 @@ word threshold above which hunk refinement will not occur.
   (add-hook 'read-passwd-mode-hook #'turn-off-autopair-mode)
 #+END_SRC
 
+** Automatically scroll to the left after filling
+Sometimes after filling a long line with ~C-q~, ~auto-fill-mode~, etc.,
+the window is still scrolled away from column 0, which isn't useful
+any more. So we define advice to automatically scroll back to column 0
+after any filling operation (unless doing so would put point outside
+the window).
+
+#+BEGIN_SRC emacs-lisp
+  (defun scroll-to-column0-after-fill (&rest _ignored)
+    "Scroll current window to column 0 if possible.
+
+  If scrolling the window to column 0 would pout point outside the
+  window, no scrolling is done.
+
+  This function is intended to be called after calling a filling
+  function such as `fill-paragraph'."
+    (when (and (> (window-hscroll))
+               (<= (current-column) (window-width)))
+      (set-window-hscroll (get-buffer-window (current-buffer)) 0)))
+
+  (cl-loop
+   for fun in '(fill-paragraph do-auto-fill org-fill-paragraph)
+   do (advice-add fun
+                  :after #'scroll-to-column0-after-fill
+                  '(:name "After filling, scroll back to column 0 if possible")))
+#+END_SRC
+
+** Define a function for clearing a buffer from ~kill-ring~
+
+#+BEGIN_SRC emacs-lisp
+  (defun clean-kill-ring (&optional buffer)
+    "Remove entries matching BUFFER from `kill-ring'.
+
+  Also clears PRIMARY and SECONDARY selections by setting them to
+  the empty string and clears CLIPBOARD by setting it to the first
+  remaining element of `kill-ring', which should clear the
+  clipboard for other applications as well."
+    (interactive)
+    ;; Just do this so current kill definitely doesn't contain any
+    ;; sensitive info. This element will be removed anyway since the
+    ;; empty string matches anything.
+    (kill-new "")
+    (setq kill-ring
+          (cl-loop
+           with bufstring = (with-current-buffer (or buffer (current-buffer)) (buffer-string))
+           for kill in kill-ring
+           unless (or
+                   (string-match-p "^https?://" kill)
+                   (string-match-p (regexp-quote kill) bufstring))
+           collect kill))
+    (ignore-errors (gui-set-selection 'CLIPBOARD (or (car kill-ring) "")))
+    (ignore-errors (gui-set-selection 'PRIMARY ""))
+    (ignore-errors (gui-set-selection 'SECONDARY ""))
+    (message "Kill ring cleared of HTTP URLs and entries matching buffer %S" (buffer-name buffer)))
+#+END_SRC
+
+** Fix bad behavior in org-ctags
+See https://emacs.stackexchange.com/a/76352/2046 and
+https://lists.gnu.org/archive/html/emacs-orgmode/2023-03/msg00299.html.
+
+#+BEGIN_SRC emacs-lisp
+  ;;; work-around  for org-ctags obnoxious behavior
+  (with-eval-after-load 'org-ctags (setq org-open-link-functions nil))
+#+END_SRC
+
+** Define a "maybe" link protocol for org-mode
+
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'ol
+    (org-link-set-parameters
+     "maybe"
+     :follow
+     (lambda (path prefix)
+       (condition-case err
+           (org-link-open-from-string (format "[[%s]]" path))
+         (error (message "Failed to open maybe link %S" path))))
+     ;; This must be a lambda so it is self-contained
+     :export
+     (lambda (path desc backend &optional info)
+       (when (symbolp backend)
+         (setq backend (org-export-get-backend backend)))
+       ;; Generate the non-maybe version of the link, and call the
+       ;; backend's appropriate transcoder on it, but catch any error
+       ;; thrown and just replace the link with its text instead.
+       (let* ((real-link
+               (with-temp-buffer
+                 (save-excursion (insert "[[" path "][" (or desc path) "]]"))
+                 (org-element-link-parser)))
+              (real-link-transcoder (cdr (assoc 'link (org-export-get-all-transcoders backend)))))
+         (condition-case err
+             (funcall real-link-transcoder real-link desc info)
+           (error
+            (message "Skipping error during maybe link transcoding: %S" err)
+            (or desc path)))))))
+#+END_SRC
+
+** Fix the major mode in the scratch buffer
+For some reason, Emacs sometimes starts up with the scratch buffer in
+Fundamental mode with no initial message. Until the root cause is
+isolated, we just fix this manually afterward
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-init
+   '(progn
+      (with-current-buffer (get-scratch-buffer-create)
+        (normal-mode)
+        (when (and initial-scratch-message
+                   (= (point-min) (point-max)))
+          (insert (substitute-command-keys initial-scratch-message))
+          (goto-char (point-max))
+          (set-buffer-modified-p nil)))))
+#+END_SRC
 
 * Environment-specific settings
 This section uses the macros defined in ~system-specific-settings~ to
