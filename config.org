@@ -796,7 +796,14 @@ what parts of the file have been added, deleted, or modified since the
 last Git commit.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package git-gutter)
+  (req-package git-gutter
+    :config
+    (define-advice git-gutter--turn-on
+        (:before-until (&rest args) disallow-on-tramp)
+      "Don't enable git-gutter in TRAMP buffers."
+      ;; We can ignore errors here because if buffer file name is
+      ;; invalid, then git gutter won't activate anyway.
+      (ignore-errors (file-remote-p (buffer-file-name)))))
   (req-package git-gutter-fringe)
 #+END_SRC
 

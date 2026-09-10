@@ -342,7 +342,8 @@
  '(remote-file-name-inhibit-locks t)
  '(require-final-newline t)
  '(safe-local-variable-values
-   '((checkdoc-allow-quoting-nil-and-t . t)
+   '((elisp-lint-indent-specs (git-gutter:awhen . 1))
+     (checkdoc-allow-quoting-nil-and-t . t)
      (fill-column . most-positive-fixnum)
      (eval add-hook 'after-save-hook
            (lambda nil
