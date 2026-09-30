@@ -106,6 +106,7 @@
      "http://sarahsgeologicadventures.blogspot.com/feeds/posts/default"))
  '(enable-recursive-minibuffers t)
  '(epg-pinentry-mode 'loopback)
+ '(ess-auto-width 'window)
  '(ess-indent-with-fancy-comments nil)
  '(ess-r-pager "cat")
  '(ess-style 'OWN)
