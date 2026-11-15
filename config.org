@@ -1889,16 +1889,18 @@ themselves.
         ;; noflet after this is merged:
         ;; https://github.com/nicferrier/emacs-noflet/pull/17
         (define-advice org-metaleft (:around (orig-fun &rest args) osx-command)
-          (cl-flet ((backward-word (&rest args)))
-            (defun backward-word (&rest args)
-              (interactive)
-              (call-interactively #'move-beginning-of-line))
+          (cl-letf
+              (((symbol-function 'backward-word)
+                (lambda (&rest args)
+                  (interactive)
+                  (call-interactively #'move-beginning-of-line))))
             (apply orig-fun args)))
         (define-advice org-metaright (:around (orig-fun &rest args) osx-command)
-          (cl-flet ((forward-word (&rest args)))
-            (defun forward-word (&rest args)
-              (interactive)
-              (call-interactively #'move-end-of-line))
+          (cl-letf
+              (((symbol-function 'forward-word)
+                (lambda (&rest args)
+                  (interactive)
+                  (call-interactively #'move-end-of-line))))
             (apply orig-fun args))))))
 #+END_SRC
 
