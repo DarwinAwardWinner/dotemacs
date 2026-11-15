@@ -1808,7 +1808,18 @@ specific to a single package and cannot be accomplished by customizing
 variables.
 
 ** Fixes for packages
-(Currently none)
+
+*** Actually enable amx mode
+For some reason Emacs starts up without amx mode enabled even if it is
+customized to be enabled. This code just enables amx-mode if custom.el
+says it should be enabled.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-init
+   '(amx-mode
+     (if (get 'amx-mode 'saved-value) 1 0)))
+#+END_SRC
+
 
 ** Environment tweaks
 *** Use GNU ls for ~insert-directory~ if possible
