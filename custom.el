@@ -360,7 +360,7 @@
  '(safe-local-variable-values
    '((elisp-lint-indent-specs (git-gutter:awhen . 1))
      (checkdoc-allow-quoting-nil-and-t . t)
-   '((eval and buffer-file-name
+     (eval and buffer-file-name
            (not (eq major-mode 'package-recipe-mode))
            (or (require 'package-recipe-mode nil t)
                (let ((load-path (cons "../package-build" load-path)))
